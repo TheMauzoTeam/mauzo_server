@@ -23,13 +23,6 @@ public class ServerApp extends Application {
     }
 
     public static void setConnection() throws SQLException, ClassNotFoundException {
-        // Obtenemos las variables del contenedor correspondiente
-        String host = System.getenv("PGSQL_HOST");
-        String port = System.getenv("PGSQL_PORT");
-        String user = System.getenv("PGSQL_USER");
-        String password = System.getenv("PGSQL_PASS");
-        String database = System.getenv("PGSQL_DATABASE");
-
         // Formamos la URL de conexion correspondiente.
         String url = System.getenv("DATABASE_URL");
 
@@ -37,7 +30,7 @@ public class ServerApp extends Application {
         Class.forName("org.postgresql.Driver");
 
         // Inicializamos el objeto correspondiente a la conexión.
-        connection = DriverManager.getConnection(url, user, password);
+        connection = DriverManager.getConnection(url);
 
         // Creamos la estructura de datos de la bbdd, en caso de ser necesario.
         if(isSetDatabase != true) {
