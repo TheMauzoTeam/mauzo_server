@@ -1,7 +1,10 @@
 package io.GestionTiendas.Server;
 
 // Core basico para inicializar las conexiones SQL.
-import java.sql.*;
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.DriverManager;
 import java.util.logging.Logger;
 
 // Core basico para inicializar la REST API
@@ -22,12 +25,16 @@ public class ServerApp extends Application {
         return connection;
     }
 
-    public static void setConnection() throws SQLException, ClassNotFoundException {
+    public static void setConnection() throws SQLException {
         // Formamos la URL de conexion correspondiente.
         String url = System.getenv("DATABASE_URL");
 
-        // Cargamos las dependencias del driver
-        Class.forName("org.postgresql.Driver");
+        try {
+            // Cargamos las dependencias del driver
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            loggerSystem.severe("No se ha encontrado el driver de PostgreSQL: " + e.toString());
+        }
 
         // Inicializamos el objeto correspondiente a la conexión.
         connection = DriverManager.getConnection(url);
