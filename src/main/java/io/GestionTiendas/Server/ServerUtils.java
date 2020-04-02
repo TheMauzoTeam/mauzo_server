@@ -1,4 +1,4 @@
-package io.GestionTiendas.Server.Helpers;
+package io.GestionTiendas.Server;
 
 import java.sql.SQLException;
 
@@ -21,10 +21,12 @@ import io.jsonwebtoken.security.SignatureException;
 
 import io.GestionTiendas.Server.ServerApp;
 
-public class Utils {
+public class ServerUtils {
     public interface Content {
         ResponseBuilder executeContent() throws SQLException;
     }
+
+    private static String base64Key = System.getenv("LOGIN_KEY");
 
     /**
      * Método para procesar y responder a una petición generica con las
@@ -169,8 +171,6 @@ public class Utils {
         // Lanzamos la respuesta.
         return response.build();
     }
-
-    private static String base64Key = System.getenv("LOGIN_KEY");
 
     /**
      * Método para recuperar el token recibido desde la cabecera AUTHENTICATOR el

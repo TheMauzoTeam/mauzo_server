@@ -21,10 +21,10 @@ import javax.ws.rs.core.MediaType;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import io.GestionTiendas.Server.ServerUtils;
 import io.GestionTiendas.Server.ServerApp;
-import io.GestionTiendas.Server.Controllers.UsersCtrl;
-import io.GestionTiendas.Server.Helpers.Utils;
 import io.GestionTiendas.Server.Models.Users;
+import io.GestionTiendas.Server.Controllers.UsersCtrl;
 
 public class UsersView {
     private static String base64Key = System.getenv("LOGIN_KEY");
@@ -32,7 +32,7 @@ public class UsersView {
     @POST @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response loginMethod(@Context final HttpServletRequest req, String jsonData) {
-        return Utils.genericMethod(req, null, jsonData, () -> {
+        return ServerUtils.genericMethod(req, null, jsonData, () -> {
             ResponseBuilder response = null;
 
             // Convertimos la información JSON recibida en un objeto.
@@ -72,7 +72,7 @@ public class UsersView {
     @POST @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerMethod(@Context final HttpServletRequest req, String jsonData) {
-        return Utils.genericAdminMethod(req, null, jsonData, () -> {
+        return ServerUtils.genericAdminMethod(req, null, jsonData, () -> {
             // Incializamos el objeto.
             Users userAux = new Users();
 
