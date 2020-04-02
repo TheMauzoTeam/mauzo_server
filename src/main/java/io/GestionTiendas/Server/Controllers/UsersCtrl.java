@@ -45,7 +45,8 @@ public class UsersCtrl {
         }
     }
 
-    public static void pullUsers() throws ClassNotFoundException, SQLException {
+    // TODO: Repasar esta funcion para obtener el listado
+    public static void pullUsers() throws SQLException {
         if(usersList == null) {
             // Conectamos con la base de datos en caso de no haberlo hecho.
             if(ServerApp.getConnection() == null)
@@ -75,4 +76,7 @@ public class UsersCtrl {
             }
         }
     }
+
+    // TODO: Preparar funcion para sincronizar los cambios con la base de datos.
+    public static void pushUsers() throws SQLException {}
 }

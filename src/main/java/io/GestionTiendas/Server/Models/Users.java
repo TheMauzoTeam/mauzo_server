@@ -28,6 +28,10 @@ public class Users {
     public boolean isAdmin() {
         return isAdmin;
     }
+    
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
 
     public boolean isPassword(String password) {
         return this.password.equals(password);

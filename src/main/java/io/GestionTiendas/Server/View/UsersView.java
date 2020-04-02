@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -28,15 +26,13 @@ import io.GestionTiendas.Server.Controllers.UsersCtrl;
 import io.GestionTiendas.Server.Helpers.Utils;
 import io.GestionTiendas.Server.Models.Users;
 
-@Path("/login")
 public class UsersView {
     private static String base64Key = System.getenv("LOGIN_KEY");
 
-    @POST
+    @POST @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postMethod(@Context final HttpServletRequest req, @PathParam("param_id") String paramId, String jsonData) {
-        return Utils.genericMethod(req, paramId, jsonData, () -> {
+    public Response loginMethod(@Context final HttpServletRequest req, String jsonData) {
+        return Utils.genericMethod(req, null, jsonData, () -> {
             ResponseBuilder response = null;
 
             // Convertimos la información JSON recibida en un objeto.
@@ -47,7 +43,7 @@ public class UsersView {
 
             Users userAux = UsersCtrl.getUser(username);
 
-            // Comprobamos la contraseña si es valida
+            // Comprobamos la contraseña si es valida.
             if (userAux.isPassword(password)) {
                 // Inicializamos las variables de retorno al usuario, el token durará un dia.
                 String token = null;
@@ -61,7 +57,7 @@ public class UsersView {
                         .signWith(SignatureAlgorithm.HS512, base64Key).compact();
 
                 // Retornamos al cliente la respuesta con el token.
-                response = Response.status(Status.ACCEPTED);
+                response = Response.status(Status.OK);
                 response.header(HttpHeaders.AUTHORIZATION, "Bearer" + " " + token);
             } else {
                 // En caso de no estar disponible, paramos el login.
@@ -72,4 +68,34 @@ public class UsersView {
             return response;
         });
     }
+
+    @POST @Path("/register")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response registerMethod(@Context final HttpServletRequest req, String jsonData) {
+        return Utils.genericAdminMethod(req, null, jsonData, () -> {
+            // Incializamos el objeto.
+            Users userAux = new Users();
+
+            // Convertimos la información JSON recibida en un objeto.
+            final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
+
+            // Agregamos la información al usuario.
+            userAux.setUsername(jsonRequest.getString("username"));
+            userAux.setFirstName(jsonRequest.getString("firstname"));
+            userAux.setLastName(jsonRequest.getString("lastname"));
+            userAux.setEmail(jsonRequest.getString("email"));
+            userAux.setPassword(jsonRequest.getString("password"));
+            userAux.setAdmin(jsonRequest.getBoolean("isadmin"));
+
+            // Agregamos el usuario a la lista.
+            UsersCtrl.addUser(userAux);
+            
+            // Lanzamos una sincronzación de la lista con la base de datos.
+            UsersCtrl.pushUsers();
+
+            // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
+            return Response.status(Status.OK);
+        });
+    }
+
 }
