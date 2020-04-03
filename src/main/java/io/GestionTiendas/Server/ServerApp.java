@@ -17,14 +17,37 @@ public class ServerApp extends Application {
     private static Logger loggerSystem = Logger.getLogger("Servidor Tiendas");
     private static boolean isSetDatabase = Boolean.parseBoolean(System.getenv("IS_DEPLOYED"));
     
+    /**
+     * Getter para devolver el objeto que se está utilizando
+     * para registrar los eventos del servidor por la consola 
+     * del sistema.
+     * 
+     * @return  Devuelve el objeto usado como Logger.
+     */
     public static Logger getLoggerSystem() {
         return loggerSystem;
     }
-	
+    
+    /**
+     * Getter para obtener el objeto que se está utilizando
+     * para registrar la conexion con la base de datos.
+     * 
+     * @return  Devuelve el objeto usado como Conexion.
+     */
     public static Connection getConnection() {
         return connection;
     }
 
+    /**
+     * Método para inicializar la conexión con la base de datos
+     * usado por el servidor.
+     * 
+     * Este obtendrá una variable de entorno llamada DATABASE_URL,
+     * procedente de la infraestructura de Heroku usado para albergar
+     * el servidor, este tendrá la URL con los parametros de conexión.
+     * 
+     * @throws SQLException Execepcion en caso de no poder conectar con la BBDD.
+     */
     public static void setConnection() throws SQLException {
         // Formamos la URL de conexion correspondiente.
         String url = System.getenv("DATABASE_URL");

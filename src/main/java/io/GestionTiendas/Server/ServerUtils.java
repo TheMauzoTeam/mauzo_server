@@ -25,7 +25,15 @@ import io.GestionTiendas.Server.ServerApp;
 
 public class ServerUtils {
     public interface Content {
-        ResponseBuilder executeContent() throws SQLException;
+        /**
+         * Funcion lambda para permitir la personalizacion de instrucciones que se van a
+         * ejecutar en los metodos generic de este archivo de utilidades.
+         * 
+         * @return La respuesta del servidor preconstruida.
+         * @throws Exception Puede devolver cualquier tipo de excepcion que será
+         *                   capturado por los métodos generic.
+         */
+        ResponseBuilder executeContent() throws Exception;
     }
 
     private static String base64Key = System.getenv("LOGIN_KEY");
