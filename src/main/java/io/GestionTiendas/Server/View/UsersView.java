@@ -27,9 +27,19 @@ import io.GestionTiendas.Server.Models.Users;
 import io.GestionTiendas.Server.Controllers.UsersCtrl;
 
 public class UsersView {
-    private static String base64Key = System.getenv("LOGIN_KEY");
-
-    @POST @Path("/login")
+    /**
+     * Vista para permitir el inicio de sesion de lo usuarios, cuya entrada será en
+     * el http://HOST-SERVIDOR/api/login.
+     * 
+     * El contenido que recibirá esta vista http es mediante una peticion POST con
+     * la estructura de atributos de username y password.
+     * 
+     * @param req      El header de la petición HTTP.
+     * @param jsonData El body de la petición HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
+    @POST
+    @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response loginMethod(@Context final HttpServletRequest req, String jsonData) {
         return ServerUtils.genericMethod(req, null, jsonData, () -> {
@@ -54,7 +64,7 @@ public class UsersView {
                 token = Jwts.builder().setIssuedAt(new Date()).setIssuer(System.getenv("HOSTNAME"))
                         .setId(Integer.toString(userAux.getId())).setSubject(userAux.getUsername())
                         .claim("adm", userAux.isAdmin()).setExpiration(new Date(dateExp))
-                        .signWith(SignatureAlgorithm.HS512, base64Key).compact();
+                        .signWith(SignatureAlgorithm.HS512, ServerUtils.getBase64Key()).compact();
 
                 // Retornamos al cliente la respuesta con el token.
                 response = Response.status(Status.OK);
@@ -69,7 +79,21 @@ public class UsersView {
         });
     }
 
-    @POST @Path("/register")
+    /**
+     * Vista que permite a un administrador registrar usuarios dentro del servidor,
+     * permitiendo asi agregar de manera dinamica usuarios validos o otros
+     * administradores validos dentro del sistema.
+     * 
+     * El contenido que recibirá esta vista http es mediante una peticion POST con
+     * la estructura de atributos de username, email, password, firstname, lastname
+     * y isAdmin.
+     * 
+     * @param req      El header de la petición HTTP.
+     * @param jsonData El body de la petición HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
+    @POST
+    @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerMethod(@Context final HttpServletRequest req, String jsonData) {
         return ServerUtils.genericAdminMethod(req, null, jsonData, () -> {
@@ -89,7 +113,7 @@ public class UsersView {
 
             // Agregamos el usuario a la lista.
             UsersCtrl.addUser(userAux);
-            
+
             // Lanzamos una sincronzación de la lista con la base de datos.
             UsersCtrl.pushUsers();
 
@@ -97,5 +121,4 @@ public class UsersView {
             return Response.status(Status.OK);
         });
     }
-
 }

@@ -1,11 +1,13 @@
 package io.GestionTiendas.Server;
 
-import java.sql.SQLException;
-
+// Paquetes del framework estandar de java
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Collections;
+import java.sql.SQLException;
+
+// Paquetes del framework extendido de java
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -140,7 +142,8 @@ public class ServerUtils {
      * @param content  Funcion lambda con todos los pasos a seguir.
      * @return La respuesta con la cual responderemos al cliente.
      */
-    public static Response genericAdminMethod(HttpServletRequest req, String paramId, String jsonData, Content content) {
+    public static Response genericAdminMethod(HttpServletRequest req, String paramId, String jsonData,
+            Content content) {
         // Obtenemos el token
         String token = getToken(req);
 
@@ -279,5 +282,17 @@ public class ServerUtils {
 
         // Devolvemos el estado del token esté como este.
         return returnVar;
+    }
+
+    /**
+     * Método para recuperar la llave que firma el Json Web Token que recibe el
+     * cliente, tambien sirve esta llave para validar si el token de seguridad no ha
+     * sido manipulado.
+     * 
+     * @return Llave en base64 del Json Web Token
+     */
+
+    public static String getBase64Key() {
+        return ServerUtils.base64Key;
     }
 }
