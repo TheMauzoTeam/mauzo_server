@@ -59,7 +59,7 @@ public class ServerApp extends Application {
             // Cargamos las dependencias del driver
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
-            loggerSystem.severe("No se ha encontrado el driver de PostgreSQL: " + e.toString());
+            throw new SQLException("No se ha encontrado el driver de PostgreSQL: " + e.toString());
         }
 
         // Inicializamos el objeto correspondiente a la conexión.
