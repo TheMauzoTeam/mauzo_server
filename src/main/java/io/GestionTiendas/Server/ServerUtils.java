@@ -61,10 +61,6 @@ public class ServerUtils {
         ResponseBuilder response = null;
 
         try {
-            // Validamos la conexión con la base de datos.
-            if (ServerApp.getConnection() == null)
-                ServerApp.setConnection();
-
             // Lanzamos el resto de la secuencia a ejecutar.
             response = content.executeContent();
         } catch (SQLException e) {
@@ -108,10 +104,6 @@ public class ServerUtils {
 
         if (isTokenLogged(token) != false) {
             try {
-                // Validamos la conexión con la base de datos.
-                if (ServerApp.getConnection() == null)
-                    ServerApp.setConnection();
-
                 // Lanzamos el resto de la secuencia a ejecutar.
                 response = content.executeContent();
             } catch (SQLException e) {
@@ -160,10 +152,6 @@ public class ServerUtils {
 
         if (isTokenLogged(token) != false && isTokenAdmin(token) == true) {
             try {
-                // Validamos la conexión con la base de datos.
-                if (ServerApp.getConnection() == null)
-                    ServerApp.setConnection();
-
                 // Lanzamos el resto de la secuencia a ejecutar.
                 response = content.executeContent();
             } catch (SQLException e) {
@@ -263,10 +251,6 @@ public class ServerUtils {
 
             // Obtenemos los datos del token.
             final Claims claims = jwtsParser.parseClaimsJws(token).getBody();
-
-            // Validamos la conexión con la base de datos.
-            if (ServerApp.getConnection() == null)
-                ServerApp.setConnection();
 
             // Ejecutamos la consulta de verificación.
             Statement st = ServerApp.getConnection().createStatement();
