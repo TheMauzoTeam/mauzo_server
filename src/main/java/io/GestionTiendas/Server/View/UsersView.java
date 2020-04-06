@@ -51,10 +51,10 @@ public class UsersView {
             final String username = jsonRequest.getString("username");
             final String password = jsonRequest.getString("password");
 
-            Users userAux = UsersCtrl.getUser(username);
+            Users userAux = UsersCtrl.getController().getUser(username);
 
             // Comprobamos la contraseña si es valida.
-            if (userAux.isPassword(password)) {
+            if (userAux.getPassword() == password) {
                 // Inicializamos las variables de retorno al usuario, el token durará un dia.
                 String token = null;
                 final long dateExp = System.currentTimeMillis() + 86400000;
@@ -93,7 +93,7 @@ public class UsersView {
      * @return La respuesta generada por parte de la vista.
      */
     @POST
-    @Path("/register")
+    @Path("/users")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerMethod(@Context final HttpServletRequest req, String jsonData) {
         return ServerUtils.genericAdminMethod(req, null, jsonData, () -> {
@@ -112,10 +112,7 @@ public class UsersView {
             userAux.setAdmin(jsonRequest.getBoolean("isadmin"));
 
             // Agregamos el usuario a la lista.
-            UsersCtrl.addUser(userAux);
-
-            // Lanzamos una sincronzación de la lista con la base de datos.
-            UsersCtrl.pushUsers();
+            UsersCtrl.getController().addUser(userAux);
 
             // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
             return Response.status(Status.OK);

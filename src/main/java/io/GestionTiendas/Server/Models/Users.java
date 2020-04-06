@@ -33,8 +33,8 @@ public class Users {
         isAdmin = admin;
     }
 
-    public boolean isPassword(String password) {
-        return this.password.equals(password);
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {

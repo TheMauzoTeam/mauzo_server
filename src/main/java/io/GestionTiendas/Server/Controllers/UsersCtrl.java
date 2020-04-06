@@ -4,79 +4,171 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import io.GestionTiendas.Server.ServerApp;
 import io.GestionTiendas.Server.Models.Users;
 
 public class UsersCtrl {
-    private static List<Users> usersList = null;
+    private static UsersCtrl controller = null;
 
-    public static void addUser(Users user) {
-        usersList.add(user);
+    /**
+     * Método para añadir usuarios a la base de datos.
+     * 
+     * @param user El usuario encapsulado en un objeto.
+     * @throws SQLException Excepcion en la consulta SQL.
+     */
+    public void addUser(Users user) throws SQLException {
+        // Guardamos el puntero de conexion con la base de datos.
+        final Connection mainSql = ServerApp.getConnection();
+
+        // Preparamos la consulta sql.
+        try (PreparedStatement statementSql = mainSql.prepareStatement(
+                "INSERT INTO Users (firstname, lastname, username, email, password, isAdmin) VALUES (?, ?, ?, ?, ?, ?);")) {
+            // Asociamos los valores respecto a la sentencia sql.
+            statementSql.setString(1, user.getFirstName());
+            statementSql.setString(2, user.getLastName());
+            statementSql.setString(3, user.getUsername());
+            statementSql.setString(4, user.getEmail());
+            statementSql.setString(5, user.getPassword());
+            statementSql.setBoolean(6, user.isAdmin());
+
+            // Ejecutamos la sentencia sql.
+            statementSql.execute();
+        }
     }
-    
-    public static Users getUser(String username) {
+
+    /**
+     * Método para obtener en forma de objeto el usuario, a partir de un id de
+     * usuario, el usuario encapsulado.
+     * 
+     * @param id El id de usuario.
+     * @return El usuario encapsulado en forma de objeto.
+     * @throws SQLException Excepcion en la consulta SQL.
+     */
+    public Users getUser(int id) throws SQLException {
         Users user = null;
 
-        for (int i = 0; i < usersList.size(); i++) {
-            user = usersList.get(i);
+        // Guardamos el puntero de conexion con la base de datos.
+        final Connection mainSql = ServerApp.getConnection();
 
-            if (user.getUsername().equals(username)) {
-                break;
-            } else {
-                user = null;
+        // Preparamos la consulta sql.
+        try (PreparedStatement statementSql = mainSql.prepareStatement("SELECT * FROM Users WHERE id = ?;")) {
+            // Asociamos los valores respecto a la sentencia sql.
+            statementSql.setInt(1, id);
+
+            // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
+            try (ResultSet rs = statementSql.executeQuery()) {
+                while (rs.next()) {
+                    user = new Users();
+
+                    user.setId(rs.getInt("id"));
+                    user.setAdmin(rs.getBoolean("isAdmin"));
+                    user.setEmail(rs.getString("email"));
+                    user.setFirstName(rs.getString("firstname"));
+                    user.setLastName(rs.getString("lastname"));
+                    user.setPassword(rs.getString("password"));
+                    user.setUsername(rs.getString("username"));
+                }
             }
         }
 
         return user;
     }
 
-    public static void removeUser(String username) {
+    /**
+     * Método para obtener en forma de objeto el usuario, a partir de un nombre de
+     * usuario, el usuario encapsulado.
+     * 
+     * @param username El nombre de usuario.
+     * @return El usuario encapsulado en forma de objeto.
+     * @throws SQLException Excepcion en la consulta SQL.
+     */
+    public Users getUser(String username) throws SQLException {
         Users user = null;
 
-        for (int i = 0; i < usersList.size(); i++) {
-            user = usersList.get(i);
+        // Guardamos el puntero de conexion con la base de datos.
+        final Connection mainSql = ServerApp.getConnection();
 
-            if (user.getUsername().equals(username)) {
-                usersList.remove(i);
-            }
-        }
-    }
+        // Preparamos la consulta sql.
+        try (PreparedStatement statementSql = mainSql.prepareStatement("SELECT * FROM Users WHERE username = ?;")) {
+            // Asociamos los valores respecto a la sentencia sql.
+            statementSql.setString(1, username);
 
-    // TODO: Repasar esta funcion para obtener el listado
-    public static void pullUsers() throws SQLException {
-        if(usersList == null) {
-            // Conectamos con la base de datos en caso de no haberlo hecho.
-            if(ServerApp.getConnection() == null)
-                ServerApp.setConnection();
+            // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
+            try (ResultSet rs = statementSql.executeQuery()) {
+                while (rs.next()) {
+                    user = new Users();
 
-            // Guardamos el puntero de conexion con la base de datos.
-            final Connection mainSql = ServerApp.getConnection();
-
-            // Preparamos la consulta de verificación.
-            final PreparedStatement statementSql = mainSql.prepareStatement("SELECT * FROM Users");
-
-            // Consultamos a la base de datos y volcamos la información a la lista.
-            try(ResultSet rs = statementSql.executeQuery()) {
-                usersList = new ArrayList<>();
-
-                while(rs.next()) {
-                    Users userAux = new Users();
-
-                    userAux.setId(rs.getInt("id"));
-                    userAux.setEmail(rs.getString("email"));
-                    userAux.setFirstName(rs.getString("firstname"));
-                    userAux.setLastName(rs.getString("lastname"));
-                    userAux.setPassword(rs.getString("password"));
-
-                    usersList.add(userAux);
+                    user.setId(rs.getInt("id"));
+                    user.setAdmin(rs.getBoolean("isAdmin"));
+                    user.setEmail(rs.getString("email"));
+                    user.setFirstName(rs.getString("firstname"));
+                    user.setLastName(rs.getString("lastname"));
+                    user.setPassword(rs.getString("password"));
+                    user.setUsername(rs.getString("username"));
                 }
             }
         }
+
+        return user;
     }
 
-    // TODO: Preparar funcion para sincronizar los cambios con la base de datos.
-    public static void pushUsers() throws SQLException {}
+    /**
+     * Método para eliminar el usuario en la base de datos.
+     * 
+     * @param user El usuario encapsulado en un objeto.
+     * @throws SQLException Excepcion en la consulta SQL.
+     */
+    public void removeUser(Users user) throws SQLException {
+        // Guardamos el puntero de conexion con la base de datos.
+        final Connection mainSql = ServerApp.getConnection();
+
+        // Preparamos la sentencia sql.
+        try (PreparedStatement statementSql = mainSql.prepareStatement("SELECT * FROM Users WHERE id = ?;")) {
+            statementSql.setInt(1, user.getId());
+
+            // Ejecutamos la sentencia sql.
+            statementSql.execute();
+        }
+    }
+
+    /**
+     * Método para actualizar el usuario en la base de datos.
+     * 
+     * @param user El usuario encapsulado en un objeto.
+     * @throws SQLException Excepcion en la consulta SQL.
+     */
+    public void modifyUser(Users user) throws SQLException {
+        // Guardamos el puntero de conexion con la base de datos.
+        final Connection mainSql = ServerApp.getConnection();
+
+        // Preparamos la sentencia sql.
+        try (PreparedStatement statementSql = mainSql.prepareStatement(
+                "UPDATE Users SET firstname = ?, lastname = ?, username = ?, email = ?, password = ?, isAdmin = ? WHILE id = ?;")) {
+
+            // Asociamos los valores respecto a la sentencia sql.
+            statementSql.setString(1, user.getFirstName());
+            statementSql.setString(2, user.getLastName());
+            statementSql.setString(3, user.getUsername());
+            statementSql.setString(4, user.getEmail());
+            statementSql.setString(5, user.getPassword());
+            statementSql.setBoolean(6, user.isAdmin());
+            statementSql.setInt(7, user.getId());
+
+            // Ejecutamos la sentencia sql.
+            statementSql.execute();
+        }
+    }
+
+    /**
+     * Método para recuperar el controlador de la clase UsersCtrl.
+     * 
+     * @return El controlador de la clase UsersCtrl.
+     */
+    public static UsersCtrl getController() {
+        if (controller == null)
+            controller = new UsersCtrl();
+
+        return controller;
+    }
 }
