@@ -1,4 +1,4 @@
-package io.GestionTiendas.Server.Models;
+package io.GestionTiendas.Server.Templates;
 
 public class Users {
     private int Id;

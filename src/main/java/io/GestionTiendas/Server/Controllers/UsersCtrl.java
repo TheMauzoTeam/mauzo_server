@@ -1,174 +1,121 @@
 package io.GestionTiendas.Server.Controllers;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.Date;
+import java.io.StringReader;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.servlet.http.HttpServletRequest;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.MediaType;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+import io.GestionTiendas.Server.ServerUtils;
 import io.GestionTiendas.Server.ServerApp;
-import io.GestionTiendas.Server.Models.Users;
+import io.GestionTiendas.Server.Templates.Users;
+import io.GestionTiendas.Server.Managers.UsersMgt;
 
 public class UsersCtrl {
-    private static UsersCtrl controller = null;
-
     /**
-     * Método para añadir usuarios a la base de datos.
+     * Vista para permitir el inicio de sesion de lo usuarios, cuya entrada será en
+     * el http://HOST-SERVIDOR/api/login.
      * 
-     * @param user El usuario encapsulado en un objeto.
-     * @throws SQLException Excepcion en la consulta SQL.
-     */
-    public void addUser(Users user) throws SQLException {
-        // Guardamos el puntero de conexion con la base de datos.
-        final Connection mainSql = ServerApp.getConnection();
-
-        // Preparamos la consulta sql.
-        try (PreparedStatement statementSql = mainSql.prepareStatement(
-                "INSERT INTO Users (firstname, lastname, username, email, password, isAdmin) VALUES (?, ?, ?, ?, ?, ?);")) {
-            // Asociamos los valores respecto a la sentencia sql.
-            statementSql.setString(1, user.getFirstName());
-            statementSql.setString(2, user.getLastName());
-            statementSql.setString(3, user.getUsername());
-            statementSql.setString(4, user.getEmail());
-            statementSql.setString(5, user.getPassword());
-            statementSql.setBoolean(6, user.isAdmin());
-
-            // Ejecutamos la sentencia sql.
-            statementSql.execute();
-        }
-    }
-
-    /**
-     * Método para obtener en forma de objeto el usuario, a partir de un id de
-     * usuario, el usuario encapsulado.
+     * El contenido que recibirá esta vista http es mediante una peticion POST con
+     * la estructura de atributos de username y password.
      * 
-     * @param id El id de usuario.
-     * @return El usuario encapsulado en forma de objeto.
-     * @throws SQLException Excepcion en la consulta SQL.
+     * @param req      El header de la petición HTTP.
+     * @param jsonData El body de la petición HTTP.
+     * @return La respuesta generada por parte de la vista.
      */
-    public Users getUser(int id) throws SQLException {
-        Users user = null;
+    @POST
+    @Path("/login")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response loginMethod(@Context final HttpServletRequest req, String jsonData) {
+        return ServerUtils.genericMethod(req, null, jsonData, () -> {
+            ResponseBuilder response = null;
 
-        // Guardamos el puntero de conexion con la base de datos.
-        final Connection mainSql = ServerApp.getConnection();
+            // Convertimos la información JSON recibida en un objeto.
+            final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
-        // Preparamos la consulta sql.
-        try (PreparedStatement statementSql = mainSql.prepareStatement("SELECT * FROM Users WHERE id = ?;")) {
-            // Asociamos los valores respecto a la sentencia sql.
-            statementSql.setInt(1, id);
+            final String username = jsonRequest.getString("username");
+            final String password = jsonRequest.getString("password");
 
-            // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
-            try (ResultSet rs = statementSql.executeQuery()) {
-                while (rs.next()) {
-                    user = new Users();
+            Users userAux = UsersMgt.getController().getUser(username);
 
-                    user.setId(rs.getInt("id"));
-                    user.setAdmin(rs.getBoolean("isAdmin"));
-                    user.setEmail(rs.getString("email"));
-                    user.setFirstName(rs.getString("firstname"));
-                    user.setLastName(rs.getString("lastname"));
-                    user.setPassword(rs.getString("password"));
-                    user.setUsername(rs.getString("username"));
-                }
+            // Comprobamos la contraseña si es valida.
+            if (userAux.getPassword() == password) {
+                // Inicializamos las variables de retorno al usuario, el token durará un dia.
+                String token = null;
+                final long dateExp = System.currentTimeMillis() + 86400000;
+
+                // Generamos el token de seguridad.
+                // Comando para generar la key: openssl rand -base64 172 | tr -d '\n'
+                token = Jwts.builder().setIssuedAt(new Date()).setIssuer(System.getenv("HOSTNAME"))
+                        .setId(Integer.toString(userAux.getId())).setSubject(userAux.getUsername())
+                        .claim("adm", userAux.isAdmin()).setExpiration(new Date(dateExp))
+                        .signWith(SignatureAlgorithm.HS512, ServerUtils.getBase64Key()).compact();
+
+                // Retornamos al cliente la respuesta con el token.
+                response = Response.status(Status.OK);
+                response.header(HttpHeaders.AUTHORIZATION, "Bearer" + " " + token);
+            } else {
+                // En caso de no estar disponible, paramos el login.
+                ServerApp.getLoggerSystem().severe("Inicio de sesión fallido para la IP: " + req.getRemoteAddr());
+                response = Response.status(Status.FORBIDDEN);
             }
-        }
 
-        return user;
+            return response;
+        });
     }
 
     /**
-     * Método para obtener en forma de objeto el usuario, a partir de un nombre de
-     * usuario, el usuario encapsulado.
+     * Vista que permite a un administrador registrar usuarios dentro del servidor,
+     * permitiendo asi agregar de manera dinamica usuarios validos o otros
+     * administradores validos dentro del sistema.
      * 
-     * @param username El nombre de usuario.
-     * @return El usuario encapsulado en forma de objeto.
-     * @throws SQLException Excepcion en la consulta SQL.
-     */
-    public Users getUser(String username) throws SQLException {
-        Users user = null;
-
-        // Guardamos el puntero de conexion con la base de datos.
-        final Connection mainSql = ServerApp.getConnection();
-
-        // Preparamos la consulta sql.
-        try (PreparedStatement statementSql = mainSql.prepareStatement("SELECT * FROM Users WHERE username = ?;")) {
-            // Asociamos los valores respecto a la sentencia sql.
-            statementSql.setString(1, username);
-
-            // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
-            try (ResultSet rs = statementSql.executeQuery()) {
-                while (rs.next()) {
-                    user = new Users();
-
-                    user.setId(rs.getInt("id"));
-                    user.setAdmin(rs.getBoolean("isAdmin"));
-                    user.setEmail(rs.getString("email"));
-                    user.setFirstName(rs.getString("firstname"));
-                    user.setLastName(rs.getString("lastname"));
-                    user.setPassword(rs.getString("password"));
-                    user.setUsername(rs.getString("username"));
-                }
-            }
-        }
-
-        return user;
-    }
-
-    /**
-     * Método para eliminar el usuario en la base de datos.
+     * El contenido que recibirá esta vista http es mediante una peticion POST con
+     * la estructura de atributos de username, email, password, firstname, lastname
+     * y isAdmin.
      * 
-     * @param user El usuario encapsulado en un objeto.
-     * @throws SQLException Excepcion en la consulta SQL.
+     * @param req      El header de la petición HTTP.
+     * @param jsonData El body de la petición HTTP.
+     * @return La respuesta generada por parte de la vista.
      */
-    public void removeUser(Users user) throws SQLException {
-        // Guardamos el puntero de conexion con la base de datos.
-        final Connection mainSql = ServerApp.getConnection();
+    @POST
+    @Path("/users")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response registerMethod(@Context final HttpServletRequest req, String jsonData) {
+        return ServerUtils.genericAdminMethod(req, null, jsonData, () -> {
+            // Incializamos el objeto.
+            Users userAux = new Users();
 
-        // Preparamos la sentencia sql.
-        try (PreparedStatement statementSql = mainSql.prepareStatement("SELECT * FROM Users WHERE id = ?;")) {
-            statementSql.setInt(1, user.getId());
+            // Convertimos la información JSON recibida en un objeto.
+            final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
-            // Ejecutamos la sentencia sql.
-            statementSql.execute();
-        }
-    }
+            // Agregamos la información al usuario.
+            userAux.setUsername(jsonRequest.getString("username"));
+            userAux.setFirstName(jsonRequest.getString("firstname"));
+            userAux.setLastName(jsonRequest.getString("lastname"));
+            userAux.setEmail(jsonRequest.getString("email"));
+            userAux.setPassword(jsonRequest.getString("password"));
+            userAux.setAdmin(jsonRequest.getBoolean("isadmin"));
 
-    /**
-     * Método para actualizar el usuario en la base de datos.
-     * 
-     * @param user El usuario encapsulado en un objeto.
-     * @throws SQLException Excepcion en la consulta SQL.
-     */
-    public void modifyUser(Users user) throws SQLException {
-        // Guardamos el puntero de conexion con la base de datos.
-        final Connection mainSql = ServerApp.getConnection();
+            // Agregamos el usuario a la lista.
+            UsersMgt.getController().addUser(userAux);
 
-        // Preparamos la sentencia sql.
-        try (PreparedStatement statementSql = mainSql.prepareStatement(
-                "UPDATE Users SET firstname = ?, lastname = ?, username = ?, email = ?, password = ?, isAdmin = ? WHILE id = ?;")) {
-
-            // Asociamos los valores respecto a la sentencia sql.
-            statementSql.setString(1, user.getFirstName());
-            statementSql.setString(2, user.getLastName());
-            statementSql.setString(3, user.getUsername());
-            statementSql.setString(4, user.getEmail());
-            statementSql.setString(5, user.getPassword());
-            statementSql.setBoolean(6, user.isAdmin());
-            statementSql.setInt(7, user.getId());
-
-            // Ejecutamos la sentencia sql.
-            statementSql.execute();
-        }
-    }
-
-    /**
-     * Método para recuperar el controlador de la clase UsersCtrl.
-     * 
-     * @return El controlador de la clase UsersCtrl.
-     */
-    public static UsersCtrl getController() {
-        if (controller == null)
-            controller = new UsersCtrl();
-
-        return controller;
+            // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
+            return Response.status(Status.OK);
+        });
     }
 }
