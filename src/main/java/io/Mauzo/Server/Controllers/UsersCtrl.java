@@ -73,7 +73,7 @@ public class UsersCtrl {
                     token = Jwts.builder().setIssuedAt(new Date()).setIssuer(System.getenv("HOSTNAME"))
                             .setId(Integer.toString(userAux.getId())).setSubject(userAux.getUsername())
                             .claim("adm", userAux.isAdmin()).setExpiration(new Date(dateExp))
-                            .signWith(SignatureAlgorithm.HS512, ServerUtils.getBase64Key()).compact();
+                            .signWith(ServerUtils.getKey(), SignatureAlgorithm.HS512).compact();
 
                     // Retornamos al cliente la respuesta con el token.
                     response = Response.status(Status.OK);

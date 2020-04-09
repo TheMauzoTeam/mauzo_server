@@ -2,6 +2,7 @@ package io.Mauzo.Server;
 
 // Paquetes del framework estandar de java
 import java.util.List;
+import java.security.Key;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Collections;
@@ -11,7 +12,9 @@ import java.sql.SQLException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.xml.bind.DatatypeConverter;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 
 // Paquetes para la validación del token de inicio de sesión.
@@ -19,6 +22,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.SignatureException;
 
 public class ServerUtils {
@@ -34,7 +38,7 @@ public class ServerUtils {
         ResponseBuilder executeContent() throws Exception;
     }
 
-    private static String base64Key = System.getenv("LOGIN_KEY");
+    private static Key privateKey;
 
     /**
      * Método para procesar y responder a una petición generica con las
@@ -208,7 +212,7 @@ public class ServerUtils {
             final JwtParser jwtsParser = Jwts.parser();
 
             // Cargamos la llave y validamos el token
-            jwtsParser.setSigningKey(base64Key);
+            jwtsParser.setSigningKey(ServerUtils.getKey());
             jwtsParser.parseClaimsJws(token);
 
             // Si no ha lanzado una excepción anda okey el token.
@@ -244,7 +248,7 @@ public class ServerUtils {
             final JwtParser jwtsParser = Jwts.parser();
 
             // Cargamos la llave y validamos el token.
-            jwtsParser.setSigningKey(base64Key);
+            jwtsParser.setSigningKey(ServerUtils.getKey());
             jwtsParser.parseClaimsJws(token);
 
             // Obtenemos los datos del token.
@@ -279,9 +283,14 @@ public class ServerUtils {
      * cliente, tambien sirve esta llave para validar si el token de seguridad no ha
      * sido manipulado.
      * 
-     * @return Llave en base64 del Json Web Token
+     * @return Llave en forma de objeto del Json Web Token
      */
-    public static String getBase64Key() {
-        return ServerUtils.base64Key;
+    public static Key getKey() {
+        if (privateKey == null) {
+            byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(System.getenv("LOGIN_KEY"));
+            privateKey = new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS512.getJcaName());
+        }
+
+        return privateKey;
     }
 }

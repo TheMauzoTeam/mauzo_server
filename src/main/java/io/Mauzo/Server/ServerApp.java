@@ -15,23 +15,22 @@ import javax.ws.rs.core.Application;
 public class ServerApp extends Application {
     private static Connection connection = null;
     private static Logger loggerSystem = Logger.getLogger("MauzoServer");
-    
+
     /**
-     * Getter para devolver el objeto que se está utilizando
-     * para registrar los eventos del servidor por la consola 
-     * del sistema.
+     * Getter para devolver el objeto que se está utilizando para registrar los
+     * eventos del servidor por la consola del sistema.
      * 
-     * @return  Devuelve el objeto usado como Logger.
+     * @return Devuelve el objeto usado como Logger.
      */
     public static Logger getLoggerSystem() {
         return loggerSystem;
     }
-    
+
     /**
-     * Getter para obtener el objeto que se está utilizando
-     * para registrar la conexion con la base de datos.
+     * Getter para obtener el objeto que se está utilizando para registrar la
+     * conexion con la base de datos.
      * 
-     * @return  Devuelve el objeto usado como Conexion.
+     * @return Devuelve el objeto usado como Conexion.
      */
     public static Connection getConnection() throws SQLException {
         // Validamos la conexión con la base de datos.
@@ -42,12 +41,12 @@ public class ServerApp extends Application {
     }
 
     /**
-     * Método para inicializar la conexión con la base de datos
-     * usado por el servidor.
+     * Método para inicializar la conexión con la base de datos usado por el
+     * servidor.
      * 
-     * Este obtendrá una variable de entorno llamada DATABASE_URL,
-     * procedente de la infraestructura de Heroku usado para albergar
-     * el servidor, este tendrá la URL con los parametros de conexión.
+     * Este obtendrá una variable de entorno llamada DATABASE_URL, procedente de la
+     * infraestructura de Heroku usado para albergar el servidor, este tendrá la URL
+     * con los parametros de conexión.
      * 
      * @throws SQLException Execepcion en caso de no poder conectar con la BBDD.
      */
