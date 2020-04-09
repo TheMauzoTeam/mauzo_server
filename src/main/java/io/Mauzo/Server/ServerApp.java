@@ -1,4 +1,4 @@
-package io.GestionTiendas.Server;
+package io.Mauzo.Server;
 
 // Core basico para inicializar las conexiones SQL.
 import java.sql.Statement;
@@ -14,7 +14,7 @@ import javax.ws.rs.core.Application;
 @ApplicationPath("/api")
 public class ServerApp extends Application {
     private static Connection connection = null;
-    private static Logger loggerSystem = Logger.getLogger("ServidorTiendas");
+    private static Logger loggerSystem = Logger.getLogger("MauzoServer");
     
     /**
      * Getter para devolver el objeto que se está utilizando

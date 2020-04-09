@@ -1,4 +1,4 @@
-package io.GestionTiendas.Server;
+package io.Mauzo.Server;
 
 // Paquetes del framework estandar de java
 import java.util.List;
@@ -20,8 +20,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SignatureException;
-
-import io.GestionTiendas.Server.ServerApp;
 
 public class ServerUtils {
     public interface Content {
@@ -283,7 +281,6 @@ public class ServerUtils {
      * 
      * @return Llave en base64 del Json Web Token
      */
-
     public static String getBase64Key() {
         return ServerUtils.base64Key;
     }

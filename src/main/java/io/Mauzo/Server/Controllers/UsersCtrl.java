@@ -1,4 +1,4 @@
-package io.GestionTiendas.Server.Controllers;
+package io.Mauzo.Server.Controllers;
 
 // Paquetes relativos al framework estandar de Java.
 import java.util.Date;
@@ -28,11 +28,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 // Paquetes propios de la aplicación.
-import io.GestionTiendas.Server.ServerUtils;
-import io.GestionTiendas.Server.ServerApp;
-import io.GestionTiendas.Server.Templates.Users;
-import io.GestionTiendas.Server.Managers.UsersMgt;
-import io.GestionTiendas.Server.Managers.UsersMgt.UsersException;
+import io.Mauzo.Server.ServerUtils;
+import io.Mauzo.Server.ServerApp;
+import io.Mauzo.Server.Templates.Users;
+import io.Mauzo.Server.Managers.UsersMgt;
+import io.Mauzo.Server.Managers.UsersMgt.UsersException;
 
 public class UsersCtrl {
     /**

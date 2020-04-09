@@ -1,4 +1,4 @@
-package io.GestionTiendas.Server.Templates;
+package io.Mauzo.Server.Templates;
 
 public class Users {
     private int Id;

@@ -1,12 +1,12 @@
-package io.GestionTiendas.Server.Managers;
+package io.Mauzo.Server.Managers;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import io.GestionTiendas.Server.ServerApp;
-import io.GestionTiendas.Server.Templates.Users;
+import io.Mauzo.Server.ServerApp;
+import io.Mauzo.Server.Templates.Users;
 
 public class UsersMgt {
     private static UsersMgt controller = null;
