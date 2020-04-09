@@ -12,6 +12,17 @@ public class UsersMgt {
     private static UsersMgt controller = null;
 
     /**
+     * Excepcion generica para cuando existe algún problema relativo a los usuarios.
+     */
+    public static class UsersException extends Exception {
+        private static final long serialVersionUID = 1L;
+
+        public UsersException(String msg) {
+            super(msg);
+        }
+    }
+
+    /**
      * Método para añadir usuarios a la base de datos.
      * 
      * @param user El usuario encapsulado en un objeto.
@@ -45,7 +56,7 @@ public class UsersMgt {
      * @return El usuario encapsulado en forma de objeto.
      * @throws SQLException Excepcion en la consulta SQL.
      */
-    public Users getUser(int id) throws SQLException {
+    public Users getUser(int id) throws SQLException, UsersException {
         Users user = null;
 
         // Guardamos el puntero de conexion con la base de datos.
@@ -58,16 +69,20 @@ public class UsersMgt {
 
             // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
             try (ResultSet rs = statementSql.executeQuery()) {
-                while (rs.next()) {
-                    user = new Users();
+                if (!(rs.isLast())) {
+                    while (rs.next()) {
+                        user = new Users();
 
-                    user.setId(rs.getInt("id"));
-                    user.setAdmin(rs.getBoolean("isAdmin"));
-                    user.setEmail(rs.getString("email"));
-                    user.setFirstName(rs.getString("firstname"));
-                    user.setLastName(rs.getString("lastname"));
-                    user.setPassword(rs.getString("password"));
-                    user.setUsername(rs.getString("username"));
+                        user.setId(rs.getInt("id"));
+                        user.setAdmin(rs.getBoolean("isAdmin"));
+                        user.setEmail(rs.getString("email"));
+                        user.setFirstName(rs.getString("firstname"));
+                        user.setLastName(rs.getString("lastname"));
+                        user.setPassword(rs.getString("password"));
+                        user.setUsername(rs.getString("username"));
+                    }
+                } else {
+                    throw new UsersException("No se ha encontrado el usuario");
                 }
             }
         }
@@ -83,7 +98,7 @@ public class UsersMgt {
      * @return El usuario encapsulado en forma de objeto.
      * @throws SQLException Excepcion en la consulta SQL.
      */
-    public Users getUser(String username) throws SQLException {
+    public Users getUser(String username) throws SQLException, UsersException {
         Users user = null;
 
         // Guardamos el puntero de conexion con la base de datos.
@@ -96,16 +111,20 @@ public class UsersMgt {
 
             // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
             try (ResultSet rs = statementSql.executeQuery()) {
-                while (rs.next()) {
-                    user = new Users();
+                if (!(rs.isLast())) {
+                    while (rs.next()) {
+                        user = new Users();
 
-                    user.setId(rs.getInt("id"));
-                    user.setAdmin(rs.getBoolean("isAdmin"));
-                    user.setEmail(rs.getString("email"));
-                    user.setFirstName(rs.getString("firstname"));
-                    user.setLastName(rs.getString("lastname"));
-                    user.setPassword(rs.getString("password"));
-                    user.setUsername(rs.getString("username"));
+                        user.setId(rs.getInt("id"));
+                        user.setAdmin(rs.getBoolean("isAdmin"));
+                        user.setEmail(rs.getString("email"));
+                        user.setFirstName(rs.getString("firstname"));
+                        user.setLastName(rs.getString("lastname"));
+                        user.setPassword(rs.getString("password"));
+                        user.setUsername(rs.getString("username"));
+                    }
+                } else {
+                    throw new UsersException("No se ha encontrado el usuario");
                 }
             }
         }
@@ -124,6 +143,7 @@ public class UsersMgt {
         final Connection mainSql = ServerApp.getConnection();
 
         // Preparamos la sentencia sql.
+        // TODO: Retocar funcion para añadir la excepcion de Usuarios.
         try (PreparedStatement statementSql = mainSql.prepareStatement("SELECT * FROM Users WHERE id = ?;")) {
             statementSql.setInt(1, user.getId());
 
@@ -143,6 +163,7 @@ public class UsersMgt {
         final Connection mainSql = ServerApp.getConnection();
 
         // Preparamos la sentencia sql.
+        // TODO: Retocar funcion para añadir la excepcion de Usuarios.
         try (PreparedStatement statementSql = mainSql.prepareStatement(
                 "UPDATE Users SET firstname = ?, lastname = ?, username = ?, email = ?, password = ?, isAdmin = ? WHILE id = ?;")) {
 
