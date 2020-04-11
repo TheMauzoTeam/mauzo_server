@@ -83,7 +83,7 @@ public class UsersCtrl {
                     response = Response.status(Status.OK);
                     response.header(HttpHeaders.AUTHORIZATION, "Bearer" + " " + token);
                 } else {
-                    throw new UserNotFoundException("Contraseña incorrecta para el usuario " + username + " con IP " + req.getRemoteAddr());
+                    throw new UserNotFoundException("Login invalido para el usuario " + username + " con IP " + req.getRemoteAddr());
                 }
             } catch (UserNotFoundException e) {
                 ServerApp.getLoggerSystem().severe(e.toString());

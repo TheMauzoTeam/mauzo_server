@@ -56,6 +56,7 @@ public class UsersMgt {
      * @param id El id de usuario.
      * @return El usuario encapsulado en forma de objeto.
      * @throws SQLException Excepcion en la consulta SQL.
+     * @throws UserNotFoundException Excepcion dada al no encontrar el usuario solicitado.
      */
     public Users getUser(int id) throws SQLException, UserNotFoundException {
         Users user = null;
@@ -98,6 +99,7 @@ public class UsersMgt {
      * @param username El nombre de usuario.
      * @return El usuario encapsulado en forma de objeto.
      * @throws SQLException Excepcion en la consulta SQL.
+     * @throws UserNotFoundException Excepcion dada al no encontrar el usuario solicitado.
      */
     public Users getUser(String username) throws SQLException, UserNotFoundException {
         Users user = null;
@@ -133,6 +135,13 @@ public class UsersMgt {
         return user;
     }
 
+    /**
+     * Método para obtener en forma de lista de usuarios, los usuarios presentes
+     * en la base de datos.
+     * 
+     * @return El listado de usuarios.
+     * @throws SQLException Excepcion en la consulta SQL.
+     */
     public List<Users> getUsersList() throws SQLException {
         // Guardamos el puntero de conexion con la base de datos.
         final Connection conn = ServerApp.getConnection();
@@ -167,18 +176,19 @@ public class UsersMgt {
      * 
      * @param user El usuario encapsulado en un objeto.
      * @throws SQLException Excepcion en la consulta SQL.
+     * @throws UserNotFoundException Excepcion dada al no encontrar el usuario solicitado.
      */
-    public void removeUser(Users user) throws SQLException {
+    public void removeUser(Users user) throws SQLException, UserNotFoundException {
         // Guardamos el puntero de conexion con la base de datos.
         final Connection conn = ServerApp.getConnection();
 
         // Preparamos la sentencia sql.
-        // TODO: Retocar funcion para añadir la excepcion de Usuarios.
-        try (PreparedStatement st = conn.prepareStatement("SELECT * FROM Users WHERE id = ?;")) {
+        try (PreparedStatement st = conn.prepareStatement("DELETE FROM Users WHERE id = ?;")) {
             st.setInt(1, user.getId());
 
             // Ejecutamos la sentencia sql.
-            st.execute();
+            if(st.execute() == false) 
+                throw new UserNotFoundException("No se ha encontrado el usuario durante la eliminación del mismo.");
         }
     }
 
@@ -187,13 +197,13 @@ public class UsersMgt {
      * 
      * @param user El usuario encapsulado en un objeto.
      * @throws SQLException Excepcion en la consulta SQL.
+     * @throws UserNotFoundException Excepcion dada al no encontrar el usuario solicitado.
      */
-    public void modifyUser(Users user) throws SQLException {
+    public void modifyUser(Users user) throws SQLException, UserNotFoundException {
         // Guardamos el puntero de conexion con la base de datos.
         final Connection conn = ServerApp.getConnection();
 
         // Preparamos la sentencia sql.
-        // TODO: Retocar funcion para añadir la excepcion de Usuarios.
         try (PreparedStatement st = conn.prepareStatement("UPDATE Users SET firstname = ?, lastname = ?, username = ?, email = ?, password = ?, isAdmin = ? WHILE id = ?;")) {
 
             // Asociamos los valores respecto a la sentencia sql.
@@ -206,7 +216,8 @@ public class UsersMgt {
             st.setInt(7, user.getId());
 
             // Ejecutamos la sentencia sql.
-            st.execute();
+            if(st.execute() == false) 
+                throw new UserNotFoundException("No se ha encontrado el usuario durante la actualización del mismo.");
         }
     }
 
