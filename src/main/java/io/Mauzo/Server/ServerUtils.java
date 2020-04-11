@@ -67,11 +67,11 @@ public class ServerUtils {
             response = content.executeContent();
         } catch (SQLException e) {
             // Detectamos errores en la SQL
-            ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL.");
+            ServerConfig.getLoggerSystem().warning("Error en procesar la consulta SQL.");
             response = Response.serverError();
         } catch (Exception e) {
             // En caso de existir otros errores, devolvemos un error 500 y listo.
-            ServerApp.getLoggerSystem().warning("Error imprevisto, devolviendo error 500...");
+            ServerConfig.getLoggerSystem().warning("Error imprevisto, devolviendo error 500... " + e.toString());
             response = Response.serverError();
         }
 
@@ -110,11 +110,11 @@ public class ServerUtils {
                 response = content.executeContent();
             } catch (SQLException e) {
                 // Detectamos errores en la SQL
-                ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL.");
+                ServerConfig.getLoggerSystem().warning("Error en procesar la consulta SQL.");
                 response = Response.serverError();
             } catch (Exception e) {
                 // En caso de existir otros errores, devolvemos un error 500 y listo.
-                ServerApp.getLoggerSystem().warning("Error imprevisto, devolviendo error 500...");
+                ServerConfig.getLoggerSystem().warning("Error imprevisto, devolviendo error 500...");
                 response = Response.serverError();
             }
         } else {
@@ -158,11 +158,11 @@ public class ServerUtils {
                 response = content.executeContent();
             } catch (SQLException e) {
                 // Detectamos errores en la SQL
-                ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL.");
+                ServerConfig.getLoggerSystem().warning("Error en procesar la consulta SQL.");
                 response = Response.serverError();
             } catch (Exception e) {
                 // En caso de existir otros errores, devolvemos un error 500 y listo.
-                ServerApp.getLoggerSystem().warning("Error imprevisto, devolviendo error 500...");
+                ServerConfig.getLoggerSystem().warning("Error imprevisto, devolviendo error 500...");
                 response = Response.serverError();
             }
         } else {
@@ -255,7 +255,7 @@ public class ServerUtils {
             final Claims claims = jwtsParser.parseClaimsJws(token).getBody();
 
             // Ejecutamos la consulta de verificación.
-            Statement st = ServerApp.getConnection().createStatement();
+            Statement st = ServerConfig.getConnection().createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM Users WHERE id = " + claims.getId());
 
             // Obtenemos el resultado.

@@ -24,8 +24,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+
 import javax.ws.rs.core.MediaType;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Component;
 
 // Paquetes relativos al token de autenticacion.
 import io.jsonwebtoken.Jwts;
@@ -33,11 +35,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 // Paquetes propios de la aplicación.
 import io.Mauzo.Server.ServerUtils;
-import io.Mauzo.Server.ServerApp;
+import io.Mauzo.Server.ServerConfig;
 import io.Mauzo.Server.Templates.Users;
 import io.Mauzo.Server.Managers.UsersMgt;
 import io.Mauzo.Server.Managers.UsersMgt.UserNotFoundException;
 
+@Component
+@Path("/")
 public class UsersCtrl {
     /**
      * Controlador para permitir el inicio de sesion de lo usuarios, cuya entrada
@@ -55,41 +59,43 @@ public class UsersCtrl {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response loginMethod(@Context final HttpServletRequest req, String jsonData) {
         return ServerUtils.genericMethod(req, null, jsonData, () -> {
-            ResponseBuilder response = null;
+            ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
-            // Convertimos la información JSON recibida en un objeto.
-            final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
+            // Si la informacion que recibe es nula, no se procesa nada.
+            if(jsonData.length() != 0) {
+                // Convertimos la información JSON recibida en un objeto.
+                final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
-            final String username = jsonRequest.getString("username");
-            final String password = jsonRequest.getString("password");
+                final String username = jsonRequest.getString("username");
+                final String password = jsonRequest.getString("password");
 
-            try {
-                Users userAux = UsersMgt.getController().getUser(username);
+                try {
+                    Users userAux = UsersMgt.getController().getUser(username);
 
-                // Comprobamos la contraseña si es valida.
-                if (userAux.getPassword() == password) {
-                    // Inicializamos las variables de retorno al usuario, el token durará un dia.
-                    String token = null;
-                    final long dateExp = System.currentTimeMillis() + 86400000;
+                    // Comprobamos la contraseña si es valida.
+                    if (userAux.getPassword() == password) {
+                        // Inicializamos las variables de retorno al usuario, el token durará un dia.
+                        String token = null;
+                        final long dateExp = System.currentTimeMillis() + 86400000;
 
-                    // Generamos el token de seguridad.
-                    // Comando para generar la key: openssl rand -base64 172 | tr -d '\n'
-                    token = Jwts.builder().setIssuedAt(new Date()).setIssuer(System.getenv("HOSTNAME"))
-                            .setId(Integer.toString(userAux.getId())).setSubject(userAux.getUsername())
-                            .claim("adm", userAux.isAdmin()).setExpiration(new Date(dateExp))
-                            .signWith(ServerUtils.getKey(), SignatureAlgorithm.HS512).compact();
+                        // Generamos el token de seguridad.
+                        // Comando para generar la key: openssl rand -base64 172 | tr -d '\n'
+                        token = Jwts.builder().setIssuedAt(new Date()).setIssuer(System.getenv("HOSTNAME"))
+                                .setId(Integer.toString(userAux.getId())).setSubject(userAux.getUsername())
+                                .claim("adm", userAux.isAdmin()).setExpiration(new Date(dateExp))
+                                .signWith(ServerUtils.getKey(), SignatureAlgorithm.HS512).compact();
 
-                    // Retornamos al cliente la respuesta con el token.
-                    response = Response.status(Status.OK);
-                    response.header(HttpHeaders.AUTHORIZATION, "Bearer" + " " + token);
-                } else {
-                    throw new UserNotFoundException("Login invalido para el usuario " + username + " con IP " + req.getRemoteAddr());
+                        // Retornamos al cliente la respuesta con el token.
+                        response = Response.status(Status.OK);
+                        response.header(HttpHeaders.AUTHORIZATION, "Bearer" + " " + token);
+                    } else {
+                        throw new UserNotFoundException("Login invalido para el usuario " + username + " con IP " + req.getRemoteAddr());
+                    }
+                } catch (UserNotFoundException e) {
+                    ServerConfig.getLoggerSystem().severe(e.toString());
+                    response = Response.status(Status.FORBIDDEN);
                 }
-            } catch (UserNotFoundException e) {
-                ServerApp.getLoggerSystem().severe(e.toString());
-                response = Response.status(Status.FORBIDDEN);
             }
-
             return response;
         });
     }
@@ -152,25 +158,31 @@ public class UsersCtrl {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerMethod(@Context final HttpServletRequest req, String jsonData) {
         return ServerUtils.genericAdminMethod(req, null, jsonData, () -> {
-            // Convertimos la información JSON recibida en un objeto.
-            final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
+            ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
-            // Incializamos el objeto.
-            Users userAux = new Users();
+            // Si la informacion que recibe es nula, no se procesa nada.
+            if(jsonData.length() != 0) {
+                // Convertimos la información JSON recibida en un objeto.
+                final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
-            // Agregamos la información al usuario.
-            userAux.setUsername(jsonRequest.getString("username"));
-            userAux.setFirstName(jsonRequest.getString("firstname"));
-            userAux.setLastName(jsonRequest.getString("lastname"));
-            userAux.setEmail(jsonRequest.getString("email"));
-            userAux.setPassword(jsonRequest.getString("password"));
-            userAux.setAdmin(jsonRequest.getBoolean("isadmin"));
+                // Incializamos el objeto.
+                Users userAux = new Users();
 
-            // Agregamos el usuario a la lista.
-            UsersMgt.getController().addUser(userAux);
+                // Agregamos la información al usuario.
+                userAux.setUsername(jsonRequest.getString("username"));
+                userAux.setFirstName(jsonRequest.getString("firstname"));
+                userAux.setLastName(jsonRequest.getString("lastname"));
+                userAux.setEmail(jsonRequest.getString("email"));
+                userAux.setPassword(jsonRequest.getString("password"));
+                userAux.setAdmin(jsonRequest.getBoolean("isadmin"));
 
-            // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
-            return Response.status(Status.OK);
+                // Agregamos el usuario a la lista.
+                UsersMgt.getController().addUser(userAux);
+
+                // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
+                response = Response.status(Status.OK);
+            }
+            return response;
         });
     }
 
@@ -211,7 +223,7 @@ public class UsersCtrl {
                 response = Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
             } catch(UserNotFoundException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
-                ServerApp.getLoggerSystem().info(e.toString());
+                ServerConfig.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
             }
 
@@ -234,30 +246,34 @@ public class UsersCtrl {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response modifyUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") String paramId, String jsonData) {
         return ServerUtils.genericAdminMethod(req, paramId, jsonData, () -> {
-            // Convertimos la información JSON recibida en un objeto.
-            final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
-            ResponseBuilder response;
+            ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
-            try {
-                // Incializamos el objeto.
-                Users userAux = UsersMgt.getController().getUser(paramId);
+            // Si la informacion que recibe es nula, no se procesa nada.
+            if(jsonData.length() != 0) {
+                // Convertimos la información JSON recibida en un objeto.
+                final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
-                // Agregamos la información al usuario.
-                userAux.setFirstName(jsonRequest.isNull("firstname") ? jsonRequest.getString("firstname") : userAux.getFirstName());
-                userAux.setLastName(jsonRequest.isNull("lastname") ? jsonRequest.getString("lastname") : userAux.getLastName());
-                userAux.setEmail(jsonRequest.isNull("email") ? jsonRequest.getString("email") : userAux.getEmail());
-                userAux.setPassword(jsonRequest.isNull("password") ? jsonRequest.getString("password") : userAux.getPassword());
-                userAux.setAdmin(jsonRequest.isNull("isadmin") ? jsonRequest.getBoolean("isadmin") : userAux.isAdmin());
+                try {
+                    // Incializamos el objeto.
+                    Users userAux = UsersMgt.getController().getUser(paramId);
 
-                // Agregamos el usuario a la lista.
-                UsersMgt.getController().modifyUser(userAux);
+                    // Agregamos la información al usuario.
+                    userAux.setFirstName(jsonRequest.isNull("firstname") ? jsonRequest.getString("firstname") : userAux.getFirstName());
+                    userAux.setLastName(jsonRequest.isNull("lastname") ? jsonRequest.getString("lastname") : userAux.getLastName());
+                    userAux.setEmail(jsonRequest.isNull("email") ? jsonRequest.getString("email") : userAux.getEmail());
+                    userAux.setPassword(jsonRequest.isNull("password") ? jsonRequest.getString("password") : userAux.getPassword());
+                    userAux.setAdmin(jsonRequest.isNull("isadmin") ? jsonRequest.getBoolean("isadmin") : userAux.isAdmin());
 
-                // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
-                response = Response.status(Status.OK);
-            } catch (UserNotFoundException e) {
-                // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
-                ServerApp.getLoggerSystem().info(e.toString());
-                response = Response.status(Status.NOT_FOUND);
+                    // Agregamos el usuario a la lista.
+                    UsersMgt.getController().modifyUser(userAux);
+
+                    // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
+                    response = Response.status(Status.OK);
+                } catch (UserNotFoundException e) {
+                    // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
+                    ServerConfig.getLoggerSystem().info(e.toString());
+                    response = Response.status(Status.NOT_FOUND);
+                }
             }
 
             return response;
@@ -289,7 +305,7 @@ public class UsersCtrl {
                 response = Response.status(Status.OK);
             } catch (UserNotFoundException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
-                ServerApp.getLoggerSystem().info(e.toString());
+                ServerConfig.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
             }
 

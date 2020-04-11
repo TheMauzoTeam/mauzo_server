@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.Mauzo.Server.ServerApp;
+import io.Mauzo.Server.ServerConfig;
 import io.Mauzo.Server.Templates.Users;
 
 public class UsersMgt {
@@ -32,7 +32,7 @@ public class UsersMgt {
      */
     public void addUser(Users user) throws SQLException {
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection conn = ServerApp.getConnection();
+        final Connection conn = ServerConfig.getConnection();
 
         // Preparamos la consulta sql.
         try (PreparedStatement st = conn.prepareStatement("INSERT INTO Users (firstname, lastname, username, email, password, isAdmin) VALUES (?, ?, ?, ?, ?, ?);")) {
@@ -62,7 +62,7 @@ public class UsersMgt {
         Users user = null;
 
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection conn = ServerApp.getConnection();
+        final Connection conn = ServerConfig.getConnection();
 
         // Preparamos la consulta sql.
         try (PreparedStatement st = conn.prepareStatement("SELECT * FROM Users WHERE id = ?;")) {
@@ -105,7 +105,7 @@ public class UsersMgt {
         Users user = null;
 
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection conn = ServerApp.getConnection();
+        final Connection conn = ServerConfig.getConnection();
 
         // Preparamos la consulta sql.
         try (PreparedStatement st = conn.prepareStatement("SELECT * FROM Users WHERE username = ?;")) {
@@ -144,7 +144,7 @@ public class UsersMgt {
      */
     public List<Users> getUsersList() throws SQLException {
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection conn = ServerApp.getConnection();
+        final Connection conn = ServerConfig.getConnection();
         List<Users> usersList = null;
 
         // Lanzamos la consulta SQL y generamos la lista de usuarios.
@@ -180,7 +180,7 @@ public class UsersMgt {
      */
     public void removeUser(Users user) throws SQLException, UserNotFoundException {
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection conn = ServerApp.getConnection();
+        final Connection conn = ServerConfig.getConnection();
 
         // Preparamos la sentencia sql.
         try (PreparedStatement st = conn.prepareStatement("DELETE FROM Users WHERE id = ?;")) {
@@ -201,7 +201,7 @@ public class UsersMgt {
      */
     public void modifyUser(Users user) throws SQLException, UserNotFoundException {
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection conn = ServerApp.getConnection();
+        final Connection conn = ServerConfig.getConnection();
 
         // Preparamos la sentencia sql.
         try (PreparedStatement st = conn.prepareStatement("UPDATE Users SET firstname = ?, lastname = ?, username = ?, email = ?, password = ?, isAdmin = ? WHILE id = ?;")) {
