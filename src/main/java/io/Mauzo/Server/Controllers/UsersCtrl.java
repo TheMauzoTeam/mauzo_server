@@ -1,7 +1,6 @@
 package io.Mauzo.Server.Controllers;
 
 // Paquetes relativos al framework estandar de Java.
-import java.util.Date;
 import java.io.StringReader;
 
 // Paquetes relativos a los Json de entrada y salida.
@@ -20,7 +19,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
@@ -28,10 +26,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.MediaType;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
-
-// Paquetes relativos al token de autenticacion.
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 // Paquetes propios de la aplicación.
 import io.Mauzo.Server.ServerUtils;
@@ -41,65 +35,8 @@ import io.Mauzo.Server.Managers.UsersMgt;
 import io.Mauzo.Server.Managers.UsersMgt.UserNotFoundException;
 
 @Component
-@Path("/")
+@Path("/users")
 public class UsersCtrl {
-    /**
-     * Controlador para permitir el inicio de sesion de lo usuarios, cuya entrada
-     * será en el http://HOST-SERVIDOR/api/login.
-     * 
-     * El contenido que recibirá esta vista http es mediante una peticion POST con
-     * la estructura de atributos de username y password.
-     * 
-     * @param req      El header de la petición HTTP.
-     * @param jsonData El body de la petición HTTP.
-     * @return La respuesta generada por parte de la vista.
-     */
-    @POST
-    @Path("/login")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response loginMethod(@Context final HttpServletRequest req, String jsonData) {
-        return ServerUtils.genericMethod(req, null, jsonData, () -> {
-            ResponseBuilder response = Response.status(Status.BAD_REQUEST);
-
-            // Si la informacion que recibe es nula, no se procesa nada.
-            if(jsonData.length() != 0) {
-                // Convertimos la información JSON recibida en un objeto.
-                final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
-
-                final String username = jsonRequest.getString("username");
-                final String password = jsonRequest.getString("password");
-
-                try {
-                    Users userAux = UsersMgt.getController().getUser(username);
-
-                    // Comprobamos la contraseña si es valida.
-                    if (userAux.getPassword() == password) {
-                        // Inicializamos las variables de retorno al usuario, el token durará un dia.
-                        String token = null;
-                        final long dateExp = System.currentTimeMillis() + 86400000;
-
-                        // Generamos el token de seguridad.
-                        // Comando para generar la key: openssl rand -base64 172 | tr -d '\n'
-                        token = Jwts.builder().setIssuedAt(new Date()).setIssuer(System.getenv("HOSTNAME"))
-                                .setId(Integer.toString(userAux.getId())).setSubject(userAux.getUsername())
-                                .claim("adm", userAux.isAdmin()).setExpiration(new Date(dateExp))
-                                .signWith(ServerUtils.getKey(), SignatureAlgorithm.HS512).compact();
-
-                        // Retornamos al cliente la respuesta con el token.
-                        response = Response.status(Status.OK);
-                        response.header(HttpHeaders.AUTHORIZATION, "Bearer" + " " + token);
-                    } else {
-                        throw new UserNotFoundException("Login invalido para el usuario " + username + " con IP " + req.getRemoteAddr());
-                    }
-                } catch (UserNotFoundException e) {
-                    ServerConfig.getLoggerSystem().severe(e.toString());
-                    response = Response.status(Status.FORBIDDEN);
-                }
-            }
-            return response;
-        });
-    }
-
     /**
      * Controlador que permite a un administrador obtener un listado de usuarios dentro 
      * del servidor, permitiendo asi obtener de manera dinamica los usuarios validos o 
@@ -113,7 +50,6 @@ public class UsersCtrl {
      * @return La respuesta generada por parte de la vista.
      */
     @GET
-    @Path("/users")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUsersMethod(@Context final HttpServletRequest req){
         return ServerUtils.genericAdminMethod(req, null, null, () -> {
@@ -154,7 +90,6 @@ public class UsersCtrl {
      * @return La respuesta generada por parte de la vista.
      */
     @POST
-    @Path("/users")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerMethod(@Context final HttpServletRequest req, String jsonData) {
         return ServerUtils.genericAdminMethod(req, null, jsonData, () -> {
@@ -200,7 +135,7 @@ public class UsersCtrl {
      * @return La respuesta generada por parte de la vista.
      */
     @GET
-    @Path("/users/{param_id}")
+    @Path("{param_id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") String paramId) {
         return ServerUtils.genericAdminMethod(req, paramId, null, () -> {
@@ -242,7 +177,7 @@ public class UsersCtrl {
      * @return La respuesta generada por parte de la vista.
      */
     @PUT
-    @Path("/users/{param_id}")
+    @Path("{param_id}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response modifyUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") String paramId, String jsonData) {
         return ServerUtils.genericAdminMethod(req, paramId, jsonData, () -> {
@@ -289,7 +224,7 @@ public class UsersCtrl {
      * @return La respuesta generada por parte de la vista.
      */
     @DELETE
-    @Path("/users/{param_id}")
+    @Path("{param_id}")
     public Response deleteUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") String paramId) {
         return ServerUtils.genericAdminMethod(req, paramId, null, () -> {
             ResponseBuilder response;
