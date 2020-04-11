@@ -6,11 +6,15 @@ import java.io.StringReader;
 
 // Paquetes relativos a los Json de entrada y salida.
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 // Paquetes relativos a la interfaz web.
 import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -32,7 +36,7 @@ import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.ServerApp;
 import io.Mauzo.Server.Templates.Users;
 import io.Mauzo.Server.Managers.UsersMgt;
-import io.Mauzo.Server.Managers.UsersMgt.UsersException;
+import io.Mauzo.Server.Managers.UsersMgt.UserNotFoundException;
 
 public class UsersCtrl {
     /**
@@ -79,14 +83,54 @@ public class UsersCtrl {
                     response = Response.status(Status.OK);
                     response.header(HttpHeaders.AUTHORIZATION, "Bearer" + " " + token);
                 } else {
-                    throw new UsersException("Contraseña incorrecta para el usuario " + username + " con IP " + req.getRemoteAddr());
+                    throw new UserNotFoundException("Contraseña incorrecta para el usuario " + username + " con IP " + req.getRemoteAddr());
                 }
-            } catch (UsersException e) {
+            } catch (UserNotFoundException e) {
                 ServerApp.getLoggerSystem().severe(e.toString());
                 response = Response.status(Status.FORBIDDEN);
             }
 
             return response;
+        });
+    }
+
+    /**
+     * Controlador que permite a un administrador obtener un listado de usuarios dentro 
+     * del servidor, permitiendo asi obtener de manera dinamica los usuarios validos o 
+     * otros administradores validos dentro del sistema.
+     * 
+     * El contenido que recibirá esta vista http es mediante una peticion GET con
+     * la estructura de atributos de username, email, password, firstname, lastname
+     * y isAdmin.
+     * 
+     * @param req      El header de la petición HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
+    @GET
+    @Path("/users")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUsersMethod(@Context final HttpServletRequest req){
+        return ServerUtils.genericAdminMethod(req, null, null, () -> {
+            JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
+            
+            // Recorremos la lista que nos ha entregado el servidor.
+            for (Users user : UsersMgt.getController().getUsersList()) {
+                // Inicializamos los objetos a usar.
+                JsonObjectBuilder jsonObj = Json.createObjectBuilder();
+
+                // Construimos el objeto Json con los atributo del usuario.
+                jsonObj.add("id", user.getId());
+                jsonObj.add("username", user.getUsername());
+                jsonObj.add("firstname", user.getFirstName());
+                jsonObj.add("lastname", user.getLastName());
+                jsonObj.add("email", user.getEmail());
+                jsonObj.add("isadmin", user.isAdmin());
+
+                // Lo añadimos al Json Array.
+                jsonResponse.add(jsonObj);
+            }
+            
+            return Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
         });
     }
 
@@ -131,6 +175,51 @@ public class UsersCtrl {
     }
 
     /**
+     * Controlador que permite a un administrador obtener un usuario especifico dentro 
+     * del servidor, permitiendo asi obtener de manera dinamica el usuario requerido
+     * como parametro en la interfaz web.
+     * 
+     * El contenido que recibirá esta vista http es mediante una peticion GET con
+     * la estructura de atributos de username, email, password, firstname, lastname
+     * y isAdmin.
+     * 
+     * @param req      El header de la petición HTTP.
+     * @param paramId  El ID de usuario en la peticion HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
+    @GET
+    @Path("/users/{param_id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") String paramId) {
+        return ServerUtils.genericAdminMethod(req, paramId, null, () -> {
+            ResponseBuilder response = null;
+
+            try {
+                // Inicializamos los objetos a usar.
+                JsonObjectBuilder jsonResponse = Json.createObjectBuilder();
+                Users user = UsersMgt.getController().getUser(paramId);
+                
+                // Generamos un JSON con los atributos del usuario.
+                jsonResponse.add("id", user.getId());
+                jsonResponse.add("username", user.getUsername());
+                jsonResponse.add("firstname", user.getFirstName());
+                jsonResponse.add("lastname", user.getLastName());
+                jsonResponse.add("email", user.getEmail());
+                jsonResponse.add("isadmin", user.isAdmin());
+
+                // Lanzamos la respuesta 200 OK si todo ha ido bien.
+                response = Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
+            } catch(UserNotFoundException e) {
+                // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
+                ServerApp.getLoggerSystem().info(e.toString());
+                response = Response.status(Status.NOT_FOUND);
+            }
+
+            return response;
+        });
+    }
+
+    /**
      * Controlador que gestiona las actualizaciones de información de los usuarios
      * cuya informacion se recibe mediante una peticion PUT a la interfaz web
      * http://HOST_URL/api/users/(id)
@@ -143,8 +232,7 @@ public class UsersCtrl {
     @PUT
     @Path("/users/{param_id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response modifyUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") String paramId,
-            String jsonData) {
+    public Response modifyUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") String paramId, String jsonData) {
         return ServerUtils.genericAdminMethod(req, paramId, jsonData, () -> {
             // Convertimos la información JSON recibida en un objeto.
             final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
@@ -166,7 +254,7 @@ public class UsersCtrl {
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                 response = Response.status(Status.OK);
-            } catch (UsersException e) {
+            } catch (UserNotFoundException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                 ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
@@ -199,7 +287,7 @@ public class UsersCtrl {
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                 response = Response.status(Status.OK);
-            } catch (UsersException e) {
+            } catch (UserNotFoundException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                 ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);

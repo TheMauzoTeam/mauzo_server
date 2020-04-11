@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.Mauzo.Server.ServerApp;
 import io.Mauzo.Server.Templates.Users;
@@ -14,10 +16,10 @@ public class UsersMgt {
     /**
      * Excepcion generica para cuando existe algún problema relativo a los usuarios.
      */
-    public static class UsersException extends Exception {
+    public static class UserNotFoundException extends Exception {
         private static final long serialVersionUID = 1L;
 
-        public UsersException(String msg) {
+        public UserNotFoundException(String msg) {
             super(msg);
         }
     }
@@ -30,21 +32,20 @@ public class UsersMgt {
      */
     public void addUser(Users user) throws SQLException {
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection mainSql = ServerApp.getConnection();
+        final Connection conn = ServerApp.getConnection();
 
         // Preparamos la consulta sql.
-        try (PreparedStatement statementSql = mainSql.prepareStatement(
-                "INSERT INTO Users (firstname, lastname, username, email, password, isAdmin) VALUES (?, ?, ?, ?, ?, ?);")) {
+        try (PreparedStatement st = conn.prepareStatement("INSERT INTO Users (firstname, lastname, username, email, password, isAdmin) VALUES (?, ?, ?, ?, ?, ?);")) {
             // Asociamos los valores respecto a la sentencia sql.
-            statementSql.setString(1, user.getFirstName());
-            statementSql.setString(2, user.getLastName());
-            statementSql.setString(3, user.getUsername());
-            statementSql.setString(4, user.getEmail());
-            statementSql.setString(5, user.getPassword());
-            statementSql.setBoolean(6, user.isAdmin());
+            st.setString(1, user.getFirstName());
+            st.setString(2, user.getLastName());
+            st.setString(3, user.getUsername());
+            st.setString(4, user.getEmail());
+            st.setString(5, user.getPassword());
+            st.setBoolean(6, user.isAdmin());
 
             // Ejecutamos la sentencia sql.
-            statementSql.execute();
+            st.execute();
         }
     }
 
@@ -56,19 +57,19 @@ public class UsersMgt {
      * @return El usuario encapsulado en forma de objeto.
      * @throws SQLException Excepcion en la consulta SQL.
      */
-    public Users getUser(int id) throws SQLException, UsersException {
+    public Users getUser(int id) throws SQLException, UserNotFoundException {
         Users user = null;
 
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection mainSql = ServerApp.getConnection();
+        final Connection conn = ServerApp.getConnection();
 
         // Preparamos la consulta sql.
-        try (PreparedStatement statementSql = mainSql.prepareStatement("SELECT * FROM Users WHERE id = ?;")) {
+        try (PreparedStatement st = conn.prepareStatement("SELECT * FROM Users WHERE id = ?;")) {
             // Asociamos los valores respecto a la sentencia sql.
-            statementSql.setInt(1, id);
+            st.setInt(1, id);
 
             // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
-            try (ResultSet rs = statementSql.executeQuery()) {
+            try (ResultSet rs = st.executeQuery()) {
                 if (!(rs.isLast())) {
                     while (rs.next()) {
                         user = new Users();
@@ -82,7 +83,7 @@ public class UsersMgt {
                         user.setUsername(rs.getString("username"));
                     }
                 } else {
-                    throw new UsersException("No se ha encontrado el usuario");
+                    throw new UserNotFoundException("No se ha encontrado el usuario");
                 }
             }
         }
@@ -98,19 +99,19 @@ public class UsersMgt {
      * @return El usuario encapsulado en forma de objeto.
      * @throws SQLException Excepcion en la consulta SQL.
      */
-    public Users getUser(String username) throws SQLException, UsersException {
+    public Users getUser(String username) throws SQLException, UserNotFoundException {
         Users user = null;
 
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection mainSql = ServerApp.getConnection();
+        final Connection conn = ServerApp.getConnection();
 
         // Preparamos la consulta sql.
-        try (PreparedStatement statementSql = mainSql.prepareStatement("SELECT * FROM Users WHERE username = ?;")) {
+        try (PreparedStatement st = conn.prepareStatement("SELECT * FROM Users WHERE username = ?;")) {
             // Asociamos los valores respecto a la sentencia sql.
-            statementSql.setString(1, username);
+            st.setString(1, username);
 
             // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
-            try (ResultSet rs = statementSql.executeQuery()) {
+            try (ResultSet rs = st.executeQuery()) {
                 if (!(rs.isLast())) {
                     while (rs.next()) {
                         user = new Users();
@@ -124,12 +125,41 @@ public class UsersMgt {
                         user.setUsername(rs.getString("username"));
                     }
                 } else {
-                    throw new UsersException("No se ha encontrado el usuario");
+                    throw new UserNotFoundException("No se ha encontrado el usuario");
                 }
             }
         }
 
         return user;
+    }
+
+    public List<Users> getUsersList() throws SQLException {
+        // Guardamos el puntero de conexion con la base de datos.
+        final Connection conn = ServerApp.getConnection();
+        List<Users> usersList = null;
+
+        // Lanzamos la consulta SQL y generamos la lista de usuarios.
+        try(PreparedStatement st = conn.prepareStatement("SELECT * FROM Users")) {
+            try(ResultSet rs = st.executeQuery()) {
+                usersList = new ArrayList<>();
+
+                while (rs.next()) {
+                    Users user = new Users();
+
+                    user.setId(rs.getInt("id"));
+                    user.setAdmin(rs.getBoolean("isAdmin"));
+                    user.setEmail(rs.getString("email"));
+                    user.setFirstName(rs.getString("firstname"));
+                    user.setLastName(rs.getString("lastname"));
+                    user.setPassword(rs.getString("password"));
+                    user.setUsername(rs.getString("username"));
+
+                    usersList.add(user);
+                }
+            }
+        }
+
+        return usersList;
     }
 
     /**
@@ -140,15 +170,15 @@ public class UsersMgt {
      */
     public void removeUser(Users user) throws SQLException {
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection mainSql = ServerApp.getConnection();
+        final Connection conn = ServerApp.getConnection();
 
         // Preparamos la sentencia sql.
         // TODO: Retocar funcion para añadir la excepcion de Usuarios.
-        try (PreparedStatement statementSql = mainSql.prepareStatement("SELECT * FROM Users WHERE id = ?;")) {
-            statementSql.setInt(1, user.getId());
+        try (PreparedStatement st = conn.prepareStatement("SELECT * FROM Users WHERE id = ?;")) {
+            st.setInt(1, user.getId());
 
             // Ejecutamos la sentencia sql.
-            statementSql.execute();
+            st.execute();
         }
     }
 
@@ -160,24 +190,23 @@ public class UsersMgt {
      */
     public void modifyUser(Users user) throws SQLException {
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection mainSql = ServerApp.getConnection();
+        final Connection conn = ServerApp.getConnection();
 
         // Preparamos la sentencia sql.
         // TODO: Retocar funcion para añadir la excepcion de Usuarios.
-        try (PreparedStatement statementSql = mainSql.prepareStatement(
-                "UPDATE Users SET firstname = ?, lastname = ?, username = ?, email = ?, password = ?, isAdmin = ? WHILE id = ?;")) {
+        try (PreparedStatement st = conn.prepareStatement("UPDATE Users SET firstname = ?, lastname = ?, username = ?, email = ?, password = ?, isAdmin = ? WHILE id = ?;")) {
 
             // Asociamos los valores respecto a la sentencia sql.
-            statementSql.setString(1, user.getFirstName());
-            statementSql.setString(2, user.getLastName());
-            statementSql.setString(3, user.getUsername());
-            statementSql.setString(4, user.getEmail());
-            statementSql.setString(5, user.getPassword());
-            statementSql.setBoolean(6, user.isAdmin());
-            statementSql.setInt(7, user.getId());
+            st.setString(1, user.getFirstName());
+            st.setString(2, user.getLastName());
+            st.setString(3, user.getUsername());
+            st.setString(4, user.getEmail());
+            st.setString(5, user.getPassword());
+            st.setBoolean(6, user.isAdmin());
+            st.setInt(7, user.getId());
 
             // Ejecutamos la sentencia sql.
-            statementSql.execute();
+            st.execute();
         }
     }
 
