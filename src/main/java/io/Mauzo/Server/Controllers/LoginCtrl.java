@@ -23,8 +23,8 @@ import javax.ws.rs.core.MediaType;
 // Paquetes relacionados con Spring Boot.
 import org.springframework.stereotype.Component;
 
+import io.Mauzo.Server.ServerApp;
 // Paquetes relacionados con el Proyecto.
-import io.Mauzo.Server.ServerConfig;
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.Managers.UsersMgt;
 import io.Mauzo.Server.Managers.UsersMgt.UserNotFoundException;
@@ -83,7 +83,7 @@ public class LoginCtrl {
                         throw new UserNotFoundException("Login invalido para el usuario " + username + " con IP " + req.getRemoteAddr());
                     }
                 } catch (UserNotFoundException e) {
-                    ServerConfig.getLoggerSystem().severe(e.toString());
+                    ServerApp.getLoggerSystem().severe(e.toString());
                     response = Response.status(Status.FORBIDDEN);
                 }
             }

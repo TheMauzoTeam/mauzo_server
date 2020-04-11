@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 
 // Paquetes propios de la aplicación.
 import io.Mauzo.Server.ServerUtils;
-import io.Mauzo.Server.ServerConfig;
+import io.Mauzo.Server.ServerApp;
 import io.Mauzo.Server.Templates.Users;
 import io.Mauzo.Server.Managers.UsersMgt;
 import io.Mauzo.Server.Managers.UsersMgt.UserNotFoundException;
@@ -158,7 +158,7 @@ public class UsersCtrl {
                 response = Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
             } catch(UserNotFoundException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
-                ServerConfig.getLoggerSystem().info(e.toString());
+                ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
             }
 
@@ -206,7 +206,7 @@ public class UsersCtrl {
                     response = Response.status(Status.OK);
                 } catch (UserNotFoundException e) {
                     // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
-                    ServerConfig.getLoggerSystem().info(e.toString());
+                    ServerApp.getLoggerSystem().info(e.toString());
                     response = Response.status(Status.NOT_FOUND);
                 }
             }
@@ -240,7 +240,7 @@ public class UsersCtrl {
                 response = Response.status(Status.OK);
             } catch (UserNotFoundException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
-                ServerConfig.getLoggerSystem().info(e.toString());
+                ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
             }
 
