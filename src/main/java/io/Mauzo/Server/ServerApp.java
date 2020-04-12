@@ -34,7 +34,7 @@ public class ServerApp {
     }
 
     /**
-     * Método dedicado a la configuración y registro de las vistas usadas en el
+     * Método dedicado a la configuración y mapeo de las vistas usadas en el
      * servidor.
      * 
      * @return Configuración del servidor.
@@ -108,22 +108,15 @@ public class ServerApp {
         // Creamos la estructura de datos de la bbdd, en caso de ser necesario.
         try (Statement st = connection.createStatement()) {
             // Creamos la estructura de la base de datos
-            st.execute(
-                    "CREATE TABLE IF NOT EXISTS Users(id SERIAL PRIMARY KEY, firstname TEXT NOT NULL, lastname TEXT NOT NULL, username TEXT UNIQUE NOT NULL, email TEXT NOT NULL, passwd TEXT NOT NULL, isAdmin BOOLEAN NOT NULL);");
-            st.execute(
-                    "CREATE TABLE IF NOT EXISTS Discounts(id SERIAL PRIMARY KEY, codeDisc VARCHAR(10) NOT NULL, descDisc TEXT NOT NULL, prizePerc FLOAT NOT NULL);");
-            st.execute(
-                    "CREATE TABLE IF NOT EXISTS Refunds(id SERIAL PRIMARY KEY, dateRefund TIMESTAMP, userId INTEGER, FOREIGN KEY (userId) REFERENCES Users(Id));");
-            st.execute(
-                    "CREATE TABLE IF NOT EXISTS Sales(id SERIAL PRIMARY KEY, stampRef TIMESTAMP NOT NULL, prodId INTEGER NOT NULL, discId INTEGER, refundId INTEGER, FOREIGN KEY (refundId) REFERENCES Refunds(Id), FOREIGN KEY (discId) REFERENCES Discounts(Id));");
-            st.execute(
-                    "CREATE TABLE IF NOT EXISTS Products(id SERIAL PRIMARY KEY, prodName VARCHAR(50) NOT NULL, prodDesc TEXT NOT NULL, prodPrize FLOAT NOT NULL, prodImag BYTEA);");
-            st.execute(
-                    "CREATE TABLE IF NOT EXISTS Sales_Products(salesId INTEGER NOT NULL, productId INTEGER NOT NULL, PRIMARY KEY (salesId, productId), FOREIGN KEY (salesId) REFERENCES Sales(Id), FOREIGN KEY (productId) REFERENCES Products(Id));");
+            st.execute("CREATE TABLE IF NOT EXISTS Users(id SERIAL PRIMARY KEY, firstname TEXT NOT NULL, lastname TEXT NOT NULL, username TEXT UNIQUE NOT NULL, email TEXT NOT NULL, password TEXT NOT NULL, isAdmin BOOLEAN NOT NULL);");
+            st.execute("CREATE TABLE IF NOT EXISTS Discounts(id SERIAL PRIMARY KEY, codeDisc VARCHAR(10) NOT NULL, descDisc TEXT NOT NULL, prizePerc FLOAT NOT NULL);");
+            st.execute("CREATE TABLE IF NOT EXISTS Refunds(id SERIAL PRIMARY KEY, dateRefund TIMESTAMP, userId INTEGER, FOREIGN KEY (userId) REFERENCES Users(Id));");
+            st.execute("CREATE TABLE IF NOT EXISTS Sales(id SERIAL PRIMARY KEY, stampRef TIMESTAMP NOT NULL, prodId INTEGER NOT NULL, discId INTEGER, refundId INTEGER, FOREIGN KEY (refundId) REFERENCES Refunds(Id), FOREIGN KEY (discId) REFERENCES Discounts(Id));");
+            st.execute("CREATE TABLE IF NOT EXISTS Products(id SERIAL PRIMARY KEY, prodName VARCHAR(50) NOT NULL, prodDesc TEXT NOT NULL, prodPrize FLOAT NOT NULL, prodImag BYTEA);");
+            st.execute("CREATE TABLE IF NOT EXISTS Sales_Products(salesId INTEGER NOT NULL, productId INTEGER NOT NULL, PRIMARY KEY (salesId, productId), FOREIGN KEY (salesId) REFERENCES Sales(Id), FOREIGN KEY (productId) REFERENCES Products(Id));");
 
             // Agregamos el usuario administrador
-            st.executeQuery(
-                    "INSERT INTO public.Users(id, firstname, lastname, username, email, passwd, isAdmin) VALUES (1, 'Super', 'Administrador' 'admin', 'admin@localhost', '21232f297a57a5a743894a0e4a801fc3', true);");
+            st.executeQuery("INSERT INTO public.Users(id, firstname, lastname, username, email, password, isAdmin) VALUES (1, 'Super', 'Administrador', 'admin', 'admin@localhost', '21232f297a57a5a743894a0e4a801fc3', true) ON CONFLICT DO NOTHING;");
         }
     }
 }

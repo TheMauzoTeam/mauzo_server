@@ -23,14 +23,16 @@ import javax.ws.rs.core.MediaType;
 // Paquetes relacionados con Spring Boot.
 import org.springframework.stereotype.Component;
 
-import io.Mauzo.Server.ServerApp;
-// Paquetes relacionados con el Proyecto.
-import io.Mauzo.Server.ServerUtils;
-import io.Mauzo.Server.Managers.UsersMgt;
-import io.Mauzo.Server.Managers.UsersMgt.UserNotFoundException;
-import io.Mauzo.Server.Templates.Users;
+// Paquetes relacionados con Json Web Token.
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
+// Paquetes relacionados con el Proyecto.
+import io.Mauzo.Server.ServerApp;
+import io.Mauzo.Server.ServerUtils;
+import io.Mauzo.Server.Managers.UsersMgt;
+import io.Mauzo.Server.Managers.UsersMgt.UserErrorException;
+import io.Mauzo.Server.Templates.Users;
 
 @Component
 @Path("/login")
@@ -64,7 +66,7 @@ public class LoginCtrl {
                     Users userAux = UsersMgt.getController().getUser(username);
 
                     // Comprobamos la contraseña si es valida.
-                    if (userAux.getPassword() == password) {
+                    if (userAux.getPassword().equalsIgnoreCase(password)) {
                         // Inicializamos las variables de retorno al usuario, el token durará un dia.
                         String token = null;
                         final long dateExp = System.currentTimeMillis() + 86400000;
@@ -80,9 +82,9 @@ public class LoginCtrl {
                         response = Response.status(Status.OK);
                         response.header(HttpHeaders.AUTHORIZATION, "Bearer" + " " + token);
                     } else {
-                        throw new UserNotFoundException("Login invalido para el usuario " + username + " con IP " + req.getRemoteAddr());
+                        throw new UserErrorException("Login invalido para el usuario " + username + " con IP " + req.getRemoteAddr());
                     }
-                } catch (UserNotFoundException e) {
+                } catch (UserErrorException e) {
                     ServerApp.getLoggerSystem().severe(e.toString());
                     response = Response.status(Status.FORBIDDEN);
                 }

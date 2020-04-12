@@ -16,10 +16,10 @@ public class UsersMgt {
     /**
      * Excepcion generica para cuando existe algún problema relativo a los usuarios.
      */
-    public static class UserNotFoundException extends Exception {
+    public static class UserErrorException extends Exception {
         private static final long serialVersionUID = 1L;
 
-        public UserNotFoundException(String msg) {
+        public UserErrorException(String msg) {
             super(msg);
         }
     }
@@ -56,9 +56,9 @@ public class UsersMgt {
      * @param id El id de usuario.
      * @return El usuario encapsulado en forma de objeto.
      * @throws SQLException Excepcion en la consulta SQL.
-     * @throws UserNotFoundException Excepcion dada al no encontrar el usuario solicitado.
+     * @throws UserErrorException Excepcion dada al no encontrar el usuario solicitado.
      */
-    public Users getUser(int id) throws SQLException, UserNotFoundException {
+    public Users getUser(int id) throws SQLException, UserErrorException {
         Users user = null;
 
         // Guardamos el puntero de conexion con la base de datos.
@@ -84,7 +84,7 @@ public class UsersMgt {
                         user.setUsername(rs.getString("username"));
                     }
                 } else {
-                    throw new UserNotFoundException("No se ha encontrado el usuario");
+                    throw new UserErrorException("No se ha encontrado el usuario");
                 }
             }
         }
@@ -99,9 +99,9 @@ public class UsersMgt {
      * @param username El nombre de usuario.
      * @return El usuario encapsulado en forma de objeto.
      * @throws SQLException Excepcion en la consulta SQL.
-     * @throws UserNotFoundException Excepcion dada al no encontrar el usuario solicitado.
+     * @throws UserErrorException Excepcion dada al no encontrar el usuario solicitado.
      */
-    public Users getUser(String username) throws SQLException, UserNotFoundException {
+    public Users getUser(String username) throws SQLException, UserErrorException {
         Users user = null;
 
         // Guardamos el puntero de conexion con la base de datos.
@@ -127,7 +127,7 @@ public class UsersMgt {
                         user.setUsername(rs.getString("username"));
                     }
                 } else {
-                    throw new UserNotFoundException("No se ha encontrado el usuario");
+                    throw new UserErrorException("No se ha encontrado el usuario");
                 }
             }
         }
@@ -176,9 +176,9 @@ public class UsersMgt {
      * 
      * @param user El usuario encapsulado en un objeto.
      * @throws SQLException Excepcion en la consulta SQL.
-     * @throws UserNotFoundException Excepcion dada al no encontrar el usuario solicitado.
+     * @throws UserErrorException Excepcion dada al no encontrar el usuario solicitado.
      */
-    public void removeUser(Users user) throws SQLException, UserNotFoundException {
+    public void removeUser(Users user) throws SQLException, UserErrorException {
         // Guardamos el puntero de conexion con la base de datos.
         final Connection conn = ServerApp.getConnection();
 
@@ -188,7 +188,7 @@ public class UsersMgt {
 
             // Ejecutamos la sentencia sql.
             if(st.execute() == false) 
-                throw new UserNotFoundException("No se ha encontrado el usuario durante la eliminación del mismo.");
+                throw new UserErrorException("No se ha encontrado el usuario durante la eliminación del mismo.");
         }
     }
 
@@ -197,9 +197,9 @@ public class UsersMgt {
      * 
      * @param user El usuario encapsulado en un objeto.
      * @throws SQLException Excepcion en la consulta SQL.
-     * @throws UserNotFoundException Excepcion dada al no encontrar el usuario solicitado.
+     * @throws UserErrorException Excepcion dada al no encontrar el usuario solicitado.
      */
-    public void modifyUser(Users user) throws SQLException, UserNotFoundException {
+    public void modifyUser(Users user) throws SQLException, UserErrorException {
         // Guardamos el puntero de conexion con la base de datos.
         final Connection conn = ServerApp.getConnection();
 
@@ -217,7 +217,7 @@ public class UsersMgt {
 
             // Ejecutamos la sentencia sql.
             if(st.execute() == false) 
-                throw new UserNotFoundException("No se ha encontrado el usuario durante la actualización del mismo.");
+                throw new UserErrorException("No se ha encontrado el usuario durante la actualización del mismo.");
         }
     }
 

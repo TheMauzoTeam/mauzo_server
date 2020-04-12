@@ -67,11 +67,11 @@ public class ServerUtils {
             response = content.executeContent();
         } catch (SQLException e) {
             // Detectamos errores en la SQL
-            ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL.");
+            ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL:" + e.toString());
             response = Response.serverError();
         } catch (Exception e) {
             // En caso de existir otros errores, devolvemos un error 500 y listo.
-            ServerApp.getLoggerSystem().warning("Error imprevisto, devolviendo error 500... " + e.toString());
+            ServerApp.getLoggerSystem().warning("Error imprevisto: " + e.toString());
             response = Response.serverError();
         }
 
@@ -110,11 +110,11 @@ public class ServerUtils {
                 response = content.executeContent();
             } catch (SQLException e) {
                 // Detectamos errores en la SQL
-                ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL.");
+                ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL:" + e.toString());
                 response = Response.serverError();
             } catch (Exception e) {
                 // En caso de existir otros errores, devolvemos un error 500 y listo.
-                ServerApp.getLoggerSystem().warning("Error imprevisto, devolviendo error 500...");
+                ServerApp.getLoggerSystem().warning("Error imprevisto: " + e.toString());
                 response = Response.serverError();
             }
         } else {
@@ -158,11 +158,11 @@ public class ServerUtils {
                 response = content.executeContent();
             } catch (SQLException e) {
                 // Detectamos errores en la SQL
-                ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL.");
+                ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL:" + e.toString());
                 response = Response.serverError();
             } catch (Exception e) {
                 // En caso de existir otros errores, devolvemos un error 500 y listo.
-                ServerApp.getLoggerSystem().warning("Error imprevisto, devolviendo error 500...");
+                ServerApp.getLoggerSystem().warning("Error imprevisto: " + e.toString());
                 response = Response.serverError();
             }
         } else {

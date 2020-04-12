@@ -22,7 +22,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-
 import javax.ws.rs.core.MediaType;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
@@ -32,7 +31,7 @@ import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.ServerApp;
 import io.Mauzo.Server.Templates.Users;
 import io.Mauzo.Server.Managers.UsersMgt;
-import io.Mauzo.Server.Managers.UsersMgt.UserNotFoundException;
+import io.Mauzo.Server.Managers.UsersMgt.UserErrorException;
 
 @Component
 @Path("/users")
@@ -156,7 +155,7 @@ public class UsersCtrl {
 
                 // Lanzamos la respuesta 200 OK si todo ha ido bien.
                 response = Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
-            } catch(UserNotFoundException e) {
+            } catch(UserErrorException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                 ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
@@ -204,7 +203,7 @@ public class UsersCtrl {
 
                     // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                     response = Response.status(Status.OK);
-                } catch (UserNotFoundException e) {
+                } catch (UserErrorException e) {
                     // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                     ServerApp.getLoggerSystem().info(e.toString());
                     response = Response.status(Status.NOT_FOUND);
@@ -238,7 +237,7 @@ public class UsersCtrl {
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                 response = Response.status(Status.OK);
-            } catch (UserNotFoundException e) {
+            } catch (UserErrorException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                 ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
