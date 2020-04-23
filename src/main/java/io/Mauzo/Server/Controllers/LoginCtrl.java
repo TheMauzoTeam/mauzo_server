@@ -32,7 +32,7 @@ import io.Mauzo.Server.ServerApp;
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.Managers.UsersMgt;
 import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
-import io.Mauzo.Server.Templates.Users;
+import io.Mauzo.Server.Templates.User;
 
 @Component
 @Path("/login")
@@ -63,7 +63,7 @@ public class LoginCtrl {
                 final String password = jsonRequest.getString("password");
 
                 try {
-                    Users userAux = UsersMgt.getController().get(username);
+                    User userAux = UsersMgt.getController().get(username);
 
                     // Comprobamos la contraseña si es valida.
                     if (userAux.getPassword().equalsIgnoreCase(password)) {

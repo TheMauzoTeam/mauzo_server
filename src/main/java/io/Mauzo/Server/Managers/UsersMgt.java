@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.Mauzo.Server.ServerApp;
-import io.Mauzo.Server.Templates.Users;
+import io.Mauzo.Server.Templates.User;
 
-public class UsersMgt implements ManagersIntf<Users> {
+public class UsersMgt implements ManagersIntf<User> {
     private static UsersMgt controller = null;
 
     /**
@@ -19,12 +19,13 @@ public class UsersMgt implements ManagersIntf<Users> {
      * @param user El usuario encapsulado en un objeto.
      * @throws SQLException Excepcion en la consulta SQL.
      */
-    public void add(Users user) throws SQLException {
+    @Override
+    public void add(User user) throws SQLException {
         // Guardamos el puntero de conexion con la base de datos.
         final Connection conn = ServerApp.getConnection();
 
         // Preparamos la consulta sql.
-        try (PreparedStatement st = conn.prepareStatement("INSERT INTO Users (firstname, lastname, username, email, password, isAdmin) VALUES (?, ?, ?, ?, ?, ?);")) {
+        try (PreparedStatement st = conn.prepareStatement("INSERT INTO User (firstname, lastname, username, email, password, isAdmin) VALUES (?, ?, ?, ?, ?, ?);")) {
             // Asociamos los valores respecto a la sentencia sql.
             st.setString(1, user.getFirstName());
             st.setString(2, user.getLastName());
@@ -47,14 +48,16 @@ public class UsersMgt implements ManagersIntf<Users> {
      * @throws SQLException Excepcion en la consulta SQL.
      * @throws ManagerErrorException Excepcion dada al no encontrar el usuario solicitado.
      */
-    public Users get(int id) throws SQLException, ManagerErrorException {
-        Users user = null;
+    @Override
+    public User get(int id) throws SQLException, ManagerErrorException {
+        // Preparamos una instancia del objeto a devolver
+        User user = null;
 
         // Guardamos el puntero de conexion con la base de datos.
         final Connection conn = ServerApp.getConnection();
 
         // Preparamos la consulta sql.
-        try (PreparedStatement st = conn.prepareStatement("SELECT * FROM Users WHERE id = ?;")) {
+        try (PreparedStatement st = conn.prepareStatement("SELECT * FROM User WHERE id = ?;")) {
             // Asociamos los valores respecto a la sentencia sql.
             st.setInt(1, id);
 
@@ -62,7 +65,7 @@ public class UsersMgt implements ManagersIntf<Users> {
             try (ResultSet rs = st.executeQuery()) {
                 if (!(rs.isLast())) {
                     while (rs.next()) {
-                        user = new Users();
+                        user = new User();
 
                         user.setId(rs.getInt("id"));
                         user.setAdmin(rs.getBoolean("isAdmin"));
@@ -90,8 +93,10 @@ public class UsersMgt implements ManagersIntf<Users> {
      * @throws SQLException Excepcion en la consulta SQL.
      * @throws ManagerErrorException Excepcion dada al no encontrar el usuario solicitado.
      */
-    public Users get(String username) throws SQLException, ManagerErrorException {
-        Users user = null;
+    @Override
+    public User get(String username) throws SQLException, ManagerErrorException {
+        // Preparamos una instancia del objeto a devolver
+        User user = null;
 
         // Guardamos el puntero de conexion con la base de datos.
         final Connection conn = ServerApp.getConnection();
@@ -105,7 +110,7 @@ public class UsersMgt implements ManagersIntf<Users> {
             try (ResultSet rs = st.executeQuery()) {
                 if (!(rs.isLast())) {
                     while (rs.next()) {
-                        user = new Users();
+                        user = new User();
 
                         user.setId(rs.getInt("id"));
                         user.setAdmin(rs.getBoolean("isAdmin"));
@@ -131,10 +136,13 @@ public class UsersMgt implements ManagersIntf<Users> {
      * @return El listado de usuarios.
      * @throws SQLException Excepcion en la consulta SQL.
      */
-    public List<Users> getList() throws SQLException {
+    @Override
+    public List<User> getList() throws SQLException {
+        // Preparamos una instancia del objeto a devolver
+        List<User> usersList = null;
+
         // Guardamos el puntero de conexion con la base de datos.
         final Connection conn = ServerApp.getConnection();
-        List<Users> usersList = null;
 
         // Lanzamos la consulta SQL y generamos la lista de usuarios.
         try(PreparedStatement st = conn.prepareStatement("SELECT * FROM Users")) {
@@ -142,7 +150,7 @@ public class UsersMgt implements ManagersIntf<Users> {
                 usersList = new ArrayList<>();
 
                 while (rs.next()) {
-                    Users user = new Users();
+                    User user = new User();
 
                     user.setId(rs.getInt("id"));
                     user.setAdmin(rs.getBoolean("isAdmin"));
@@ -167,7 +175,8 @@ public class UsersMgt implements ManagersIntf<Users> {
      * @throws SQLException Excepcion en la consulta SQL.
      * @throws ManagerErrorException Excepcion dada al no encontrar el usuario solicitado.
      */
-    public void remove(Users user) throws SQLException, ManagerErrorException {
+    @Override
+    public void remove(User user) throws SQLException, ManagerErrorException {
         // Guardamos el puntero de conexion con la base de datos.
         final Connection conn = ServerApp.getConnection();
 
@@ -188,7 +197,8 @@ public class UsersMgt implements ManagersIntf<Users> {
      * @throws SQLException Excepcion en la consulta SQL.
      * @throws ManagerErrorException Excepcion dada al no encontrar el usuario solicitado.
      */
-    public void modify(Users user) throws SQLException, ManagerErrorException {
+    @Override
+    public void modify(User user) throws SQLException, ManagerErrorException {
         // Guardamos el puntero de conexion con la base de datos.
         final Connection conn = ServerApp.getConnection();
 

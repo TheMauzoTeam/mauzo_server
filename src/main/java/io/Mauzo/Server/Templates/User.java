@@ -1,6 +1,8 @@
 package io.Mauzo.Server.Templates;
 
-public class Users {
+import java.awt.image.BufferedImage;
+
+public class User {
     private int Id;
     private String username;
     private String password;
@@ -8,6 +10,7 @@ public class Users {
     private String lastName;
     private String email;
     private boolean isAdmin;
+    private BufferedImage userPic;
 
     public int getId() {
         return Id;
@@ -64,4 +67,18 @@ public class Users {
     public void setEmail(String email) {
         this.email = email;
     }
+
+	/**
+	 * @return the userPic
+	 */
+	public BufferedImage getUserPic() {
+		return userPic;
+	}
+
+	/**
+	 * @param userPic the userPic to set
+	 */
+	public void setUserPic(BufferedImage userPic) {
+		this.userPic = userPic;
+	}
 }
