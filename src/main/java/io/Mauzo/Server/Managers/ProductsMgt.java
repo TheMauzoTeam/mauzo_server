@@ -97,6 +97,8 @@ public class ProductsMgt implements ManagersIntf<Product>{
             try (ResultSet resultSet = statement.executeQuery()){
                 if (!resultSet.isLast()){
                     while (resultSet.next()){
+                        product = new Product();
+                        
                         product.setId(resultSet.getInt("id"));
                         product.setCode(resultSet.getString("code"));
                         product.setDescription(resultSet.getString("prodDesc"));
