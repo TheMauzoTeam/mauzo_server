@@ -22,7 +22,7 @@ public interface ManagersIntf<T> {
      * @param obj   El objeto en cuestión.
      * @throws SQLException
      */
-    public void add(T obj) throws SQLException;
+    public void add(T obj) throws Exception;
 
     /**
      * Método generico para obtener elementos a partir del id.
@@ -32,7 +32,7 @@ public interface ManagersIntf<T> {
      * @throws SQLException Excepción en la base de datos.
      * @throws ManagerErrorException    Excepción de la clase gestora.
      */
-    public T get(int id) throws SQLException, ManagerErrorException;
+    public T get(int id) throws Exception;
 
     /**
      * Método generico para obtener elementos a partir del nombre.
@@ -42,7 +42,7 @@ public interface ManagersIntf<T> {
      * @throws SQLException Excepción en la base de datos.
      * @throws ManagerErrorException    Excepción de la clase gestora.
      */
-    public T get(String name) throws SQLException, ManagerErrorException;
+    public T get(String name) throws Exception;
     
     /**
      * Método generico para obtener un listado de elementos T.
@@ -60,7 +60,7 @@ public interface ManagersIntf<T> {
      * @throws SQLException Excepción en la base de datos.
      * @throws ManagerErrorException    Excepción de la clase gestora.
      */
-    public void modify(T obj) throws SQLException, ManagerErrorException;
+    public void modify(T obj) throws Exception;
     
     /**
      * Método generico para eliminar elementos a partir del nombre.
@@ -70,5 +70,5 @@ public interface ManagersIntf<T> {
      * @throws SQLException Excepción en la base de datos.
      * @throws ManagerErrorException    Excepción de la clase gestora.
      */
-    public void remove(T obj) throws SQLException, ManagerErrorException;
+    public void remove(T obj) throws Exception;
 }
