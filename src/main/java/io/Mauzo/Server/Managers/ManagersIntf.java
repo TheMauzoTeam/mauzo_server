@@ -33,16 +33,6 @@ public interface ManagersIntf<T> {
      * @throws ManagerErrorException    Excepción de la clase gestora.
      */
     public T get(int id) throws Exception;
-
-    /**
-     * Método generico para obtener elementos a partir del nombre.
-     * 
-     * @param name  El nombre del objeto en la base de datos.
-     * @return  El el objeto en cuestión.
-     * @throws SQLException Excepción en la base de datos.
-     * @throws ManagerErrorException    Excepción de la clase gestora.
-     */
-    public T get(String name) throws Exception;
     
     /**
      * Método generico para obtener un listado de elementos T.
