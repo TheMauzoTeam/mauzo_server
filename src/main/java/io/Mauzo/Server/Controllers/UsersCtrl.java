@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 // Paquetes propios de la aplicación.
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.ServerApp;
-import io.Mauzo.Server.Templates.Users;
+import io.Mauzo.Server.Templates.User;
 import io.Mauzo.Server.Managers.UsersMgt;
 import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
 
@@ -55,7 +55,7 @@ public class UsersCtrl {
             JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
             
             // Recorremos la lista que nos ha entregado el servidor.
-            for (Users user : UsersMgt.getController().getList()) {
+            for (User user : UsersMgt.getController().getList()) {
                 // Inicializamos los objetos a usar.
                 JsonObjectBuilder jsonObj = Json.createObjectBuilder();
 
@@ -100,7 +100,7 @@ public class UsersCtrl {
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
                 // Incializamos el objeto.
-                Users userAux = new Users();
+                User userAux = new User();
 
                 // Agregamos la información al usuario.
                 userAux.setUsername(jsonRequest.getString("username"));
@@ -143,7 +143,7 @@ public class UsersCtrl {
             try {
                 // Inicializamos los objetos a usar.
                 JsonObjectBuilder jsonResponse = Json.createObjectBuilder();
-                Users user = UsersMgt.getController().get(paramId);
+                User user = UsersMgt.getController().get(paramId);
                 
                 // Generamos un JSON con los atributos del usuario.
                 jsonResponse.add("id", user.getId());
@@ -189,7 +189,7 @@ public class UsersCtrl {
 
                 try {
                     // Incializamos el objeto.
-                    Users userAux = UsersMgt.getController().get(paramId);
+                    User userAux = UsersMgt.getController().get(paramId);
 
                     // Agregamos la información al usuario.
                     userAux.setFirstName(jsonRequest.isNull("firstname") ? jsonRequest.getString("firstname") : userAux.getFirstName());
@@ -230,7 +230,7 @@ public class UsersCtrl {
 
             try {
                 // Obtenemos el usuario de la base de datos.
-                Users userAux = UsersMgt.getController().get(paramId);
+                User userAux = UsersMgt.getController().get(paramId);
 
                 // Agregamos el usuario a la lista.
                 UsersMgt.getController().remove(userAux);
