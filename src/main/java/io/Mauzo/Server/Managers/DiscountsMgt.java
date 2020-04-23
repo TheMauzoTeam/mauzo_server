@@ -53,8 +53,7 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
         }
         return discount;
     }
-
-    @Override
+    
     public Discount get(String name) throws SQLException, ManagerErrorException {
         throw new UnsupportedOperationException("Esta operación no está soportada.");
     }
