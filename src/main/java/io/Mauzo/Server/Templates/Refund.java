@@ -2,7 +2,7 @@ package io.Mauzo.Server.Templates;
 
 import java.util.Date;
 
-public class Refunds {
+public class Refund {
 
     private int id;
     private Date dateRefund;
