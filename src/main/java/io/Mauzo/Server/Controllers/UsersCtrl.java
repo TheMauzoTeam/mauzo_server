@@ -136,7 +136,7 @@ public class UsersCtrl {
     @GET
     @Path("{param_id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") String paramId) {
+    public Response getUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") int paramId) {
         return ServerUtils.genericAdminMethod(req, paramId, null, () -> {
             ResponseBuilder response = null;
 
@@ -178,7 +178,7 @@ public class UsersCtrl {
     @PUT
     @Path("{param_id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response modifyUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") String paramId, String jsonData) {
+    public Response modifyUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") int paramId, String jsonData) {
         return ServerUtils.genericAdminMethod(req, paramId, jsonData, () -> {
             ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
@@ -224,7 +224,7 @@ public class UsersCtrl {
      */
     @DELETE
     @Path("{param_id}")
-    public Response deleteUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") String paramId) {
+    public Response deleteUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") int paramId) {
         return ServerUtils.genericAdminMethod(req, paramId, null, () -> {
             ResponseBuilder response;
 

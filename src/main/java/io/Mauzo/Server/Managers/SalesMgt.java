@@ -14,6 +14,12 @@ import io.Mauzo.Server.Templates.Sale;
 public class SalesMgt implements ManagersIntf<Sale> {
     private static SalesMgt controller = null;
 
+    /**
+     * Método para añadir una venta a la base de datos.
+     * 
+     * @param sale  El objeto de la venta.
+     * @throws SQLException Excepcion en la consulta SQL.
+     */
     @Override
     public void add(Sale sale) throws SQLException {
         // Guardamos el puntero de conexion con la base de datos.
@@ -33,6 +39,9 @@ public class SalesMgt implements ManagersIntf<Sale> {
         }
     }
 
+    /**
+     * Método para obtener
+     */
     @Override
     public Sale get(int id) throws SQLException, ManagerErrorException {
         // Preparamos una instancia del objeto a devolver
@@ -48,7 +57,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
 
             // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
             try (ResultSet rs = st.executeQuery()) {
-                if (!(rs.isLast())) {
+                if (!(rs.isLast()))
                     while (rs.next()) {
                         sale = new Sale();
 
@@ -59,18 +68,12 @@ public class SalesMgt implements ManagersIntf<Sale> {
                         sale.setDiscId(rs.getInt("discId"));
                         sale.setRefundId(rs.getInt("refundId"));
                     }
-                } else {
+                else
                     throw new ManagerErrorException("No se ha encontrado la venta");
-                }
             }
         }
 
         return null;
-    }
-
-    @Override
-    public Sale get(String name) throws SQLException, ManagerErrorException {
-        throw new UnsupportedOperationException("Esta operacion no está soportado");
     }
 
     @Override

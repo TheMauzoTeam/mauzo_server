@@ -63,7 +63,7 @@ public class UsersMgt implements ManagersIntf<User> {
 
             // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
             try (ResultSet rs = st.executeQuery()) {
-                if (!(rs.isLast())) {
+                if (!(rs.isLast()))
                     while (rs.next()) {
                         user = new User();
 
@@ -75,9 +75,8 @@ public class UsersMgt implements ManagersIntf<User> {
                         user.setPassword(rs.getString("password"));
                         user.setUsername(rs.getString("username"));
                     }
-                } else {
+                else 
                     throw new ManagerErrorException("No se ha encontrado el usuario");
-                }
             }
         }
 
@@ -93,7 +92,6 @@ public class UsersMgt implements ManagersIntf<User> {
      * @throws SQLException Excepcion en la consulta SQL.
      * @throws ManagerErrorException Excepcion dada al no encontrar el usuario solicitado.
      */
-    @Override
     public User get(String username) throws SQLException, ManagerErrorException {
         // Preparamos una instancia del objeto a devolver
         User user = null;
@@ -108,7 +106,7 @@ public class UsersMgt implements ManagersIntf<User> {
 
             // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
             try (ResultSet rs = st.executeQuery()) {
-                if (!(rs.isLast())) {
+                if (!(rs.isLast()))
                     while (rs.next()) {
                         user = new User();
 
@@ -120,9 +118,8 @@ public class UsersMgt implements ManagersIntf<User> {
                         user.setPassword(rs.getString("password"));
                         user.setUsername(rs.getString("username"));
                     }
-                } else {
+                else
                     throw new ManagerErrorException("No se ha encontrado el usuario");
-                }
             }
         }
 

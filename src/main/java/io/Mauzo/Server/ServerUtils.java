@@ -58,7 +58,7 @@ public class ServerUtils {
      * @param content  Funcion lambda con todos los pasos a seguir.
      * @return La respuesta con la cual responderemos al cliente.
      */
-    public static Response genericMethod(HttpServletRequest req, String paramId, String jsonData, Content content) {
+    public static Response genericMethod(HttpServletRequest req, Integer paramId, String jsonData, Content content) {
         // Convertimos la información JSON recibida en un objeto.
         ResponseBuilder response = null;
 
@@ -97,7 +97,7 @@ public class ServerUtils {
      * @param content  Funcion lambda con todos los pasos a seguir.
      * @return La respuesta con la cual responderemos al cliente.
      */
-    public static Response genericUserMethod(HttpServletRequest req, String paramId, String jsonData, Content content) {
+    public static Response genericUserMethod(HttpServletRequest req, Integer paramId, String jsonData, Content content) {
         // Obtenemos el token
         String token = getToken(req);
 
@@ -144,7 +144,7 @@ public class ServerUtils {
      * @param content  Funcion lambda con todos los pasos a seguir.
      * @return La respuesta con la cual responderemos al cliente.
      */
-    public static Response genericAdminMethod(HttpServletRequest req, String paramId, String jsonData,
+    public static Response genericAdminMethod(HttpServletRequest req, Integer paramId, String jsonData,
             Content content) {
         // Obtenemos el token
         String token = getToken(req);
