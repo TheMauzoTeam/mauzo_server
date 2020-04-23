@@ -93,7 +93,8 @@ public class ServerApp {
      */
     private static void setConnection() throws SQLException {
         // Formamos la URL de conexion correspondiente.
-        String url = System.getenv("DATABASE_URL");
+        // URL de Información: https://devcenter.heroku.com/articles/connecting-to-relational-databases-on-heroku-with-java#using-the-jdbc_database_url
+        String url = System.getenv("JDBC_DATABASE_URL");
 
         try {
             // Cargamos las dependencias del driver

@@ -31,7 +31,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.Mauzo.Server.ServerApp;
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.Managers.UsersMgt;
-import io.Mauzo.Server.Managers.UsersMgt.UserErrorException;
+import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
 import io.Mauzo.Server.Templates.Users;
 
 @Component
@@ -63,7 +63,7 @@ public class LoginCtrl {
                 final String password = jsonRequest.getString("password");
 
                 try {
-                    Users userAux = UsersMgt.getController().getUser(username);
+                    Users userAux = UsersMgt.getController().get(username);
 
                     // Comprobamos la contraseña si es valida.
                     if (userAux.getPassword().equalsIgnoreCase(password)) {
@@ -82,9 +82,9 @@ public class LoginCtrl {
                         response = Response.status(Status.OK);
                         response.header(HttpHeaders.AUTHORIZATION, "Bearer" + " " + token);
                     } else {
-                        throw new UserErrorException("Login invalido para el usuario " + username + " con IP " + req.getRemoteAddr());
+                        throw new ManagerErrorException("Login invalido para el usuario " + username + " con IP " + req.getRemoteAddr());
                     }
-                } catch (UserErrorException e) {
+                } catch (ManagerErrorException e) {
                     ServerApp.getLoggerSystem().severe(e.toString());
                     response = Response.status(Status.FORBIDDEN);
                 }

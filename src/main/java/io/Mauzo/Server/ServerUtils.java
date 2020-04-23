@@ -67,7 +67,7 @@ public class ServerUtils {
             response = content.executeContent();
         } catch (SQLException e) {
             // Detectamos errores en la SQL
-            ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL:" + e.toString());
+            ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL: " + e.toString());
             response = Response.serverError();
         } catch (Exception e) {
             // En caso de existir otros errores, devolvemos un error 500 y listo.
@@ -110,7 +110,7 @@ public class ServerUtils {
                 response = content.executeContent();
             } catch (SQLException e) {
                 // Detectamos errores en la SQL
-                ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL:" + e.toString());
+                ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL: " + e.toString());
                 response = Response.serverError();
             } catch (Exception e) {
                 // En caso de existir otros errores, devolvemos un error 500 y listo.
@@ -158,7 +158,7 @@ public class ServerUtils {
                 response = content.executeContent();
             } catch (SQLException e) {
                 // Detectamos errores en la SQL
-                ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL:" + e.toString());
+                ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL: " + e.toString());
                 response = Response.serverError();
             } catch (Exception e) {
                 // En caso de existir otros errores, devolvemos un error 500 y listo.
@@ -212,6 +212,7 @@ public class ServerUtils {
             final JwtParser jwtsParser = Jwts.parser();
 
             // Cargamos la llave y validamos el token
+            // TODO: Comprobar usuario con la base de datos.
             jwtsParser.setSigningKey(ServerUtils.getKey());
             jwtsParser.parseClaimsJws(token);
 
@@ -259,6 +260,7 @@ public class ServerUtils {
             ResultSet rs = st.executeQuery("SELECT * FROM Users WHERE id = " + claims.getId());
 
             // Obtenemos el resultado.
+            // TODO: Añadir next en la comparacion para evitar lanzar consultas innecesarias.
             rs.next();
 
             // Si no ha lanzado una excepción, comprobamos si es admin.

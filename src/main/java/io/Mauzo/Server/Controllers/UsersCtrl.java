@@ -31,7 +31,7 @@ import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.ServerApp;
 import io.Mauzo.Server.Templates.Users;
 import io.Mauzo.Server.Managers.UsersMgt;
-import io.Mauzo.Server.Managers.UsersMgt.UserErrorException;
+import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
 
 @Component
 @Path("/users")
@@ -55,7 +55,7 @@ public class UsersCtrl {
             JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
             
             // Recorremos la lista que nos ha entregado el servidor.
-            for (Users user : UsersMgt.getController().getUsersList()) {
+            for (Users user : UsersMgt.getController().getList()) {
                 // Inicializamos los objetos a usar.
                 JsonObjectBuilder jsonObj = Json.createObjectBuilder();
 
@@ -111,7 +111,7 @@ public class UsersCtrl {
                 userAux.setAdmin(jsonRequest.getBoolean("isadmin"));
 
                 // Agregamos el usuario a la lista.
-                UsersMgt.getController().addUser(userAux);
+                UsersMgt.getController().add(userAux);
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                 response = Response.status(Status.OK);
@@ -143,7 +143,7 @@ public class UsersCtrl {
             try {
                 // Inicializamos los objetos a usar.
                 JsonObjectBuilder jsonResponse = Json.createObjectBuilder();
-                Users user = UsersMgt.getController().getUser(paramId);
+                Users user = UsersMgt.getController().get(paramId);
                 
                 // Generamos un JSON con los atributos del usuario.
                 jsonResponse.add("id", user.getId());
@@ -155,7 +155,7 @@ public class UsersCtrl {
 
                 // Lanzamos la respuesta 200 OK si todo ha ido bien.
                 response = Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
-            } catch(UserErrorException e) {
+            } catch(ManagerErrorException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                 ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
@@ -189,7 +189,7 @@ public class UsersCtrl {
 
                 try {
                     // Incializamos el objeto.
-                    Users userAux = UsersMgt.getController().getUser(paramId);
+                    Users userAux = UsersMgt.getController().get(paramId);
 
                     // Agregamos la información al usuario.
                     userAux.setFirstName(jsonRequest.isNull("firstname") ? jsonRequest.getString("firstname") : userAux.getFirstName());
@@ -199,11 +199,11 @@ public class UsersCtrl {
                     userAux.setAdmin(jsonRequest.isNull("isadmin") ? jsonRequest.getBoolean("isadmin") : userAux.isAdmin());
 
                     // Agregamos el usuario a la lista.
-                    UsersMgt.getController().modifyUser(userAux);
+                    UsersMgt.getController().modify(userAux);
 
                     // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                     response = Response.status(Status.OK);
-                } catch (UserErrorException e) {
+                } catch (ManagerErrorException e) {
                     // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                     ServerApp.getLoggerSystem().info(e.toString());
                     response = Response.status(Status.NOT_FOUND);
@@ -230,14 +230,14 @@ public class UsersCtrl {
 
             try {
                 // Obtenemos el usuario de la base de datos.
-                Users userAux = UsersMgt.getController().getUser(paramId);
+                Users userAux = UsersMgt.getController().get(paramId);
 
                 // Agregamos el usuario a la lista.
-                UsersMgt.getController().removeUser(userAux);
+                UsersMgt.getController().remove(userAux);
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                 response = Response.status(Status.OK);
-            } catch (UserErrorException e) {
+            } catch (ManagerErrorException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                 ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
