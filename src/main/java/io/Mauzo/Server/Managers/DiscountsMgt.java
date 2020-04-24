@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DiscountsMgt implements ManagersIntf<Discount> {
@@ -43,9 +44,9 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
                         discount = new Discount();
 
                         discount.setId(rs.getInt("id"));
-                        discount.setCode(rs.getString("code"));
-                        discount.setDesc(rs.getString("desc"));
-                        discount.setPriceDisc(rs.getFloat("priceDisc"));
+                        discount.setCode(rs.getString("codeDisc"));
+                        discount.setDesc(rs.getString("descDisc"));
+                        discount.setPriceDisc(rs.getFloat("pricePerc"));
                     }
                 else
                     throw new ManagerErrorException("No se ha encontrado el descuento.");
@@ -60,17 +61,51 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
 
     @Override
     public List<Discount> getList() throws SQLException {
-        return null;
+        List<Discount> discountList = null;
+
+        final Connection conn = ServerApp.getConnection();
+
+        try (PreparedStatement st = conn.prepareStatement("SELECT * FROM Discounts")) {
+            try (ResultSet rs = st.executeQuery()) {
+                discountList = new ArrayList<>();
+
+                while (rs.next()) {
+                    Discount discount = new Discount();
+
+                    discount.setId(rs.getInt("id"));
+                    discount.setCode(rs.getString("codeDisc"));
+                    discount.setDesc(rs.getString("descDisc"));
+                    discount.setPriceDisc(rs.getFloat("pricePerc"));
+
+                    discountList.add(discount);
+                }
+            }
+        }
+        return discountList;
     }
 
     @Override
-    public void modify(Discount obj) throws SQLException, ManagerErrorException {
+    public void modify(Discount discount) throws SQLException, ManagerErrorException {
+        final Connection conn = ServerApp.getConnection();
 
+        try (PreparedStatement st = conn.prepareStatement("UPDATE Discounts SET codeDisc = ?, descDisc = ?, pricePerc = ? WHILE id = ?;")) {
+            st.setString(1, discount.getCode());
+            st.setString(2, discount.getDesc());
+            st.setFloat(3, discount.getPrizeDisc());
+            if (st.execute() == false)
+                throw new ManagerErrorException("No se ha encontrado el descuento durante la actualización del mismo.");
+        }
     }
 
     @Override
-    public void remove(Discount obj) throws SQLException, ManagerErrorException {
+    public void remove(Discount discount) throws SQLException, ManagerErrorException {
+        final Connection conn = ServerApp.getConnection();
 
+        try (PreparedStatement st = conn.prepareStatement("DELETE FROM Discounts WHERE id = ?;")) {
+            st.setInt(1, discount.getId());
+            if (st.execute() == false)
+                throw new ManagerErrorException("No se ha encontrado el descuento durante la eliminación del mismo.");
+        }
     }
 
     public static DiscountsMgt getController() {
