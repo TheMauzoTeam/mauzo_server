@@ -40,7 +40,12 @@ public class SalesMgt implements ManagersIntf<Sale> {
     }
 
     /**
-     * Método para obtener
+     * Método para obtener la venta a partir de un id.
+     * 
+     * @param id    El id del objeto de la venta.
+     * @return El objeto de la venta.
+     * @throws SQLException Excepcion en la consulta SQL.
+     * @throws ManagerErrorException Excepcion dada al no encontrar la venta.
      */
     @Override
     public Sale get(int id) throws SQLException, ManagerErrorException {
@@ -76,6 +81,13 @@ public class SalesMgt implements ManagersIntf<Sale> {
         return null;
     }
 
+    /**
+     * Método para obtener en forma de lista de ventas, las ventas presentes
+     * en la base de datos.
+     * 
+     * @return El listado de ventas.
+     * @throws SQLException Excepcion en la consulta SQL.
+     */
     @Override
     public List<Sale> getList() throws SQLException {
         // Preparamos una instancia del objeto a devolver
@@ -84,7 +96,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
         // Guardamos el puntero de conexion con la base de datos.
         final Connection conn = ServerApp.getConnection();
 
-        try(PreparedStatement st = conn.prepareStatement("SELECT * FROM Sale")) {
+        try(PreparedStatement st = conn.prepareStatement("SELECT * FROM Sales")) {
             try(ResultSet rs = st.executeQuery()) {
                 salesList = new ArrayList<>();
 
@@ -106,6 +118,13 @@ public class SalesMgt implements ManagersIntf<Sale> {
         return salesList;
     }
 
+    /**
+     * Método para actualizar la venta en la base de datos.
+     * 
+     * @param user La venta encapsulado en un objeto.
+     * @throws SQLException Excepcion en la consulta SQL.
+     * @throws ManagerErrorException Excepcion dada al no encontrar la venta solicitada.
+     */
     @Override
     public void modify(Sale sale) throws SQLException, ManagerErrorException {
         // Guardamos el puntero de conexion con la base de datos.
@@ -122,9 +141,15 @@ public class SalesMgt implements ManagersIntf<Sale> {
             if(st.execute() == false)
                 throw new ManagerErrorException("No se ha encontrado la venta.");
         }
-
     }
 
+    /**
+     * Método para eliminar la venta en la base de datos.
+     * 
+     * @param sale La venta encapsulado en un objeto.
+     * @throws SQLException Excepcion en la consulta SQL.
+     * @throws ManagerErrorException Excepcion dada al no encontrar la venta solicitado.
+     */
     @Override
     public void remove(Sale sale) throws SQLException, ManagerErrorException {
         // Guardamos el puntero de conexion con la base de datos.
@@ -138,9 +163,13 @@ public class SalesMgt implements ManagersIntf<Sale> {
             if(st.execute() == false) 
                 throw new ManagerErrorException("No se ha encontrado el usuario durante la eliminación del mismo.");
         }
-
     }
 
+    /**
+     * Método para recuperar el controlador de la clase SalesMgt.
+     * 
+     * @return El controlador de la clase SalesMgt.
+     */
     public static SalesMgt getController() {
         if (controller == null)
             controller = new SalesMgt();
