@@ -2,6 +2,10 @@ package io.Mauzo.Server;
 
 // Paquetes del framework estandar de java
 import java.util.List;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.Key;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -15,7 +19,9 @@ import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.DatatypeConverter;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.crypto.spec.SecretKeySpec;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import java.awt.image.BufferedImage;
 
 // Paquetes para la validación del token de inicio de sesión.
 import io.jsonwebtoken.Claims;
@@ -212,12 +218,20 @@ public class ServerUtils {
             final JwtParser jwtsParser = Jwts.parser();
 
             // Cargamos la llave y validamos el token
-            // TODO: Comprobar usuario con la base de datos.
             jwtsParser.setSigningKey(ServerUtils.getKey());
-            jwtsParser.parseClaimsJws(token);
+
+            // Obtenemos los datos del token.
+            final Claims claims = jwtsParser.parseClaimsJws(token).getBody();
+
+            // Ejecutamos la consulta de verificación.
+            Statement st = ServerApp.getConnection().createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM Users WHERE id = " + claims.getId());
+            
+            // Obtenemos el resultado.
+            rs.next();
 
             // Si no ha lanzado una excepción anda okey el token.
-            returnVar = true;
+            returnVar = claims.getId().equals(rs.getString("id"));
         } catch (final SignatureException e) {
             // Si la firma es invalida, anulamos el token.
             returnVar = false;
@@ -248,11 +262,10 @@ public class ServerUtils {
             // Inicializamos el parser del token.
             final JwtParser jwtsParser = Jwts.parser();
 
-            // Cargamos la llave y validamos el token.
+            // Cargamos la llave.
             jwtsParser.setSigningKey(ServerUtils.getKey());
-            jwtsParser.parseClaimsJws(token);
 
-            // Obtenemos los datos del token.
+            // Validamos y obtenemos los datos del token.
             final Claims claims = jwtsParser.parseClaimsJws(token).getBody();
 
             // Ejecutamos la consulta de verificación.
@@ -260,7 +273,6 @@ public class ServerUtils {
             ResultSet rs = st.executeQuery("SELECT * FROM Users WHERE id = " + claims.getId());
 
             // Obtenemos el resultado.
-            // TODO: Añadir next en la comparacion para evitar lanzar consultas innecesarias.
             rs.next();
 
             // Si no ha lanzado una excepción, comprobamos si es admin.
@@ -294,5 +306,57 @@ public class ServerUtils {
         }
 
         return privateKey;
+    }
+
+    /**
+     * Método estatico para convertir una imagen a un array de bytes.
+     * 
+     * Hay componentes en este servidor que trabajan con imagenes, dado
+     * que los productos y los usuarios tienen esta posibilidad de mostrar una imagen.
+     * 
+     * @param imageBuf La imagen en buffer.
+     * @param type  El formato de salida de la image.
+     * @return  La imagen convertida a un array de bytes.
+     */
+    public static byte[] imageToByteArray(BufferedImage imageBuf, String type) {
+        // Declaramos la variable de salida.
+        byte[] imageArr;
+
+        // Abrimos un stream de salida
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()){
+            // Convertimos la imagen a un byte array
+            ImageIO.write(imageBuf, type, out);
+            imageArr = out.toByteArray();
+        } catch (Exception e) {
+            // En caso de problemas, devolvemos un null.
+            imageArr = null;
+        }
+
+        return imageArr;
+    }
+
+    /**
+     * Método estatico para convertir un array de bytes a una imagen.
+     * 
+     * Hay componentes en este servidor que trabajan con imagenes, dado
+     * que los productos y los usuarios tienen esta posibilidad de mostrar una imagen.
+     * 
+     * @param imageArr La imagen en array de bytes.
+     * @return  La imagen convertida a un BufferedImage.
+     */
+    public static BufferedImage imageFromByteArray(byte[] imageArr) {
+        // Declaramos la variable de salida.
+        BufferedImage imageBuf;
+
+        // Abrimos un stream de entrada
+        try (InputStream in = new ByteArrayInputStream(imageArr)) {
+            // Convertimos el bytearray a una imagen.
+            imageBuf = ImageIO.read(in);
+        } catch (IOException e) {
+            // En caso de problemas, devolvemos un null.
+            imageBuf = null;
+        }
+
+        return imageBuf;
     }
 }
