@@ -72,4 +72,10 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
     public void remove(Discount obj) throws SQLException, ManagerErrorException {
 
     }
+
+    public static DiscountsMgt getController() {
+        if (controller == null)
+            controller = new DiscountsMgt();
+        return controller;
+    }
 }
