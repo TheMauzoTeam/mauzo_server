@@ -22,6 +22,7 @@ public class UsersMgt {
         final Connection mainSql = ServerApp.getConnection();
 
         // Preparamos la consulta sql.
+        // Las prepared statement no son de usar y tirar
         try (PreparedStatement statementSql = mainSql.prepareStatement(
                 "INSERT INTO Users (firstname, lastname, username, email, password, isAdmin) VALUES (?, ?, ?, ?, ?, ?);")) {
             // Asociamos los valores respecto a la sentencia sql.
