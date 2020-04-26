@@ -26,6 +26,7 @@ public class UsersMgt implements ManagersIntf<User> {
         final Connection conn = ServerApp.getConnection();
 
         // Preparamos la consulta sql.
+        // Las prepared statement no son de usar y tirar
         try (PreparedStatement st = conn.prepareStatement("INSERT INTO User (firstname, lastname, username, email, password, isAdmin, userPic) VALUES (?, ?, ?, ?, ?, ?, ?);")) {
            
             // Asociamos los valores respecto a la sentencia sql.

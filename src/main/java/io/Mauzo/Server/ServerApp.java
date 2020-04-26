@@ -25,6 +25,9 @@ import io.Mauzo.Server.Controllers.RefundsCtrl;
 
 @Configuration
 @SpringBootApplication
+// Esto que voy a decir, ..., es un poco pro, ..., pero en fin, ... Aquí tienes una limitación muy severa,
+// y es que sólo permites una conxión al mismo tiempo. Para permitir muchas, necesitas algunas cosas que me
+// habréis de preguntar en clase
 public class ServerApp {
     private static Connection connection = null;
     private static Logger loggerSystem = Logger.getLogger("MauzoServer");
