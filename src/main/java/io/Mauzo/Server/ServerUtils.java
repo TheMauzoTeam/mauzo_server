@@ -150,8 +150,7 @@ public class ServerUtils {
      * @param content  Funcion lambda con todos los pasos a seguir.
      * @return La respuesta con la cual responderemos al cliente.
      */
-    public static Response genericAdminMethod(HttpServletRequest req, Integer paramId, String jsonData,
-            Content content) {
+    public static Response genericAdminMethod(HttpServletRequest req, Integer paramId, String jsonData, Content content) {
         // Obtenemos el token
         String token = getToken(req);
 
@@ -320,16 +319,18 @@ public class ServerUtils {
      */
     public static byte[] imageToByteArray(BufferedImage imageBuf, String type) {
         // Declaramos la variable de salida.
-        byte[] imageArr;
+        byte[] imageArr = null;
 
-        // Abrimos un stream de salida
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream()){
-            // Convertimos la imagen a un byte array
-            ImageIO.write(imageBuf, type, out);
-            imageArr = out.toByteArray();
-        } catch (Exception e) {
-            // En caso de problemas, devolvemos un null.
-            imageArr = null;
+        if (imageBuf != null) {
+            // Abrimos un stream de salida
+            try (ByteArrayOutputStream out = new ByteArrayOutputStream()){
+                // Convertimos la imagen a un byte array
+                ImageIO.write(imageBuf, type, out);
+                imageArr = out.toByteArray();
+            } catch (Exception e) {
+                // En caso de problemas, devolvemos un null.
+                imageArr = null;
+            }
         }
 
         return imageArr;
@@ -346,15 +347,17 @@ public class ServerUtils {
      */
     public static BufferedImage imageFromByteArray(byte[] imageArr) {
         // Declaramos la variable de salida.
-        BufferedImage imageBuf;
+        BufferedImage imageBuf = null;
 
-        // Abrimos un stream de entrada
-        try (InputStream in = new ByteArrayInputStream(imageArr)) {
-            // Convertimos el bytearray a una imagen.
-            imageBuf = ImageIO.read(in);
-        } catch (IOException e) {
-            // En caso de problemas, devolvemos un null.
-            imageBuf = null;
+        if (imageArr != null) {
+            // Abrimos un stream de entrada
+            try (InputStream in = new ByteArrayInputStream(imageArr)) {
+                // Convertimos el bytearray a una imagen.
+                imageBuf = ImageIO.read(in);
+            } catch (IOException e) {
+                // En caso de problemas, devolvemos un null.
+                imageBuf = null;
+            }
         }
 
         return imageBuf;

@@ -27,8 +27,11 @@ public class UsersMgt implements ManagersIntf<User> {
 
         // Preparamos la consulta sql.
         // Las prepared statement no son de usar y tirar
+        /* INFO: URLs de interes 
+         *  Interfaces SQL: https://javaconceptoftheday.com/statement-vs-preparedstatement-vs-callablestatement-in-java/
+         *  Ataques SQL y protección frente a ellos: https://javarevisited.blogspot.com/2012/03/why-use-preparedstatement-in-java-jdbc.html
+         */
         try (PreparedStatement st = conn.prepareStatement("INSERT INTO User (firstname, lastname, username, email, password, isAdmin, userPic) VALUES (?, ?, ?, ?, ?, ?, ?);")) {
-           
             // Asociamos los valores respecto a la sentencia sql.
             st.setString(1, user.getFirstName());
             st.setString(2, user.getLastName());
@@ -37,7 +40,7 @@ public class UsersMgt implements ManagersIntf<User> {
             st.setString(5, user.getPassword());
             st.setBoolean(6, user.isAdmin());
             st.setBytes(7, ServerUtils.imageToByteArray(user.getUserPic(), "png"));
-
+ 
             // Ejecutamos la sentencia sql.
             st.execute();
         }
