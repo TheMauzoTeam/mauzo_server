@@ -10,7 +10,6 @@ import java.util.List;
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.Templates.Product;
 import io.Mauzo.Server.ServerApp;
-import org.springframework.objenesis.SpringObjenesis;
 
 public class ProductsMgt implements ManagersIntf<Product>{
     private static ProductsMgt controller = null;
