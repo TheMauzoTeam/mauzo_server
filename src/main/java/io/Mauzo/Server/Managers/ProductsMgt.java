@@ -7,8 +7,10 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.Templates.Product;
 import io.Mauzo.Server.ServerApp;
+import org.springframework.objenesis.SpringObjenesis;
 
 public class ProductsMgt implements ManagersIntf<Product>{
     private static ProductsMgt controller = null;
@@ -26,16 +28,14 @@ public class ProductsMgt implements ManagersIntf<Product>{
     public void add(Product product) throws SQLException{
         final Connection connection = ServerApp.getConnection();
 
-        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO Products (id, code, ProdName, ProdPrice, ProdDesc) VALUES (?, ?, ?, ?, ?);")) {
+        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO Products (id, code, ProdName, ProdPrice, ProdDesc, ProdPic) VALUES (?, ?, ?, ?, ?, ?);")) {
             //Asociamos los valores
             statement.setInt(1, product.getId());
             statement.setString(2, product.getCode());
             statement.setString(3, product.getName());
             statement.setDouble(4,product.getPrice());
             statement.setString(5, product.getDescription());
-
-            // TODO: statement.setBlob(6,product.getPicture());
-
+            statement.setBytes(6, ServerUtils.imageToByteArray(product.getPicture(),"png"));
             //Ejecutamos la sentencia SQl
             statement.execute();
         }
@@ -69,9 +69,13 @@ public class ProductsMgt implements ManagersIntf<Product>{
                          product.setName(resultSet.getString("prodName"));
                          product.setPrice(resultSet.getFloat("prodPrice"));
                          product.setDescription(resultSet.getString("prodDesc"));
-                         product.setDescription(resultSet.getString("prodPic"));
+                         product.setPicture(ServerUtils.imageFromByteArray(resultSet.getBytes("prodPic")));
+
                      }
+
                  }
+                 else
+                     throw new ManagerErrorException("No se ha encontrado el producto");
              }
 
          }
@@ -104,6 +108,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
                         product.setDescription(resultSet.getString("prodDesc"));
                         product.setPrice(resultSet.getFloat("prodPrice"));
                         product.setName(resultSet.getString("prodName"));
+                        product.setPicture(ServerUtils.imageFromByteArray(resultSet.getBytes("prodPic")));
                     }
                 }else {
                     throw new ManagerErrorException("No se ha encontrado el producto");
@@ -136,6 +141,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
                     product.setPrice(resultSet.getFloat("prodPrice"));
                     product.setCode(resultSet.getString("code"));
                     product.setDescription(resultSet.getString("prodDesc"));
+                    product.setPicture(ServerUtils.imageFromByteArray(resultSet.getBytes("prodPic")));
 
                     products.add(product);
                 }
@@ -162,6 +168,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
             statement.setString(2, obj.getName());
             statement.setDouble(3, obj.getPrice());
             statement.setString(4,obj.getDescription());
+            statement.setBytes(7,ServerUtils.imageToByteArray(obj.getPicture(),"png"));
         }
     }
 
