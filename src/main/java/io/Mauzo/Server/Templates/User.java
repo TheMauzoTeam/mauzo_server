@@ -3,7 +3,7 @@ package io.Mauzo.Server.Templates;
 import java.awt.image.BufferedImage;
 
 public class User {
-    private int Id;
+    private int id;
     private String username;
     private String password;
     private String firstName;
@@ -13,11 +13,11 @@ public class User {
     private BufferedImage userPic;
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getUsername() {
@@ -31,9 +31,9 @@ public class User {
     public boolean isAdmin() {
         return isAdmin;
     }
-    
+
     public void setAdmin(boolean admin) {
-        isAdmin = admin;
+        this.isAdmin = admin;
     }
 
     public String getPassword() {
@@ -68,17 +68,11 @@ public class User {
         this.email = email;
     }
 
-	/**
-	 * @return the userPic
-	 */
-	public BufferedImage getUserPic() {
-		return userPic;
-	}
+    public BufferedImage getUserPic() {
+        return userPic;
+    }
 
-	/**
-	 * @param userPic the userPic to set
-	 */
-	public void setUserPic(BufferedImage userPic) {
-		this.userPic = userPic;
-	}
+    public void setUserPic(BufferedImage userPic) {
+        this.userPic = userPic;
+    }
 }

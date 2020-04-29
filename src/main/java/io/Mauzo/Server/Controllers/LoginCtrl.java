@@ -65,25 +65,30 @@ public class LoginCtrl {
                 try {
                     User userAux = UsersMgt.getController().get(username);
 
-                    // Comprobamos la contraseña si es valida.
-                    if (userAux.getPassword().equalsIgnoreCase(password)) {
-                        // Inicializamos las variables de retorno al usuario, el token durará un dia.
-                        String token = null;
-                        final long dateExp = System.currentTimeMillis() + 86400000;
+                    if(userAux != null) {
+                        // Comprobamos la contraseña si es valida.
+                        if (userAux.getPassword().equalsIgnoreCase(password)) {
+                            // Inicializamos las variables de retorno al usuario, el token durará un dia.
+                            String token = null;
+                            final long dateExp = System.currentTimeMillis() + 86400000;
 
-                        // Generamos el token de seguridad.
-                        // Comando para generar la key: openssl rand -base64 172 | tr -d '\n'
-                        token = Jwts.builder().setIssuedAt(new Date()).setIssuer(System.getenv("HOSTNAME"))
-                                .setId(Integer.toString(userAux.getId())).setSubject(userAux.getUsername())
-                                .claim("adm", userAux.isAdmin()).setExpiration(new Date(dateExp))
-                                .signWith(ServerUtils.getKey(), SignatureAlgorithm.HS512).compact();
+                            // Generamos el token de seguridad.
+                            // Comando para generar la key: openssl rand -base64 172 | tr -d '\n'
+                            token = Jwts.builder().setIssuedAt(new Date()).setIssuer(System.getenv("HOSTNAME"))
+                                    .setId(Integer.toString(userAux.getId())).setSubject(userAux.getUsername())
+                                    .claim("adm", userAux.isAdmin()).setExpiration(new Date(dateExp))
+                                    .signWith(ServerUtils.getKey(), SignatureAlgorithm.HS512).compact();
 
-                        // Retornamos al cliente la respuesta con el token.
-                        response = Response.status(Status.OK);
-                        response.header(HttpHeaders.AUTHORIZATION, "Bearer" + " " + token);
+                            // Retornamos al cliente la respuesta con el token.
+                            response = Response.status(Status.OK);
+                            response.header(HttpHeaders.AUTHORIZATION, "Bearer" + " " + token);
+                        } else {
+                            throw new ManagerErrorException("Login invalido para el usuario " + username + " con IP " + req.getRemoteAddr());
+                        }
                     } else {
                         throw new ManagerErrorException("Login invalido para el usuario " + username + " con IP " + req.getRemoteAddr());
                     }
+
                 } catch (ManagerErrorException e) {
                     ServerApp.getLoggerSystem().severe(e.toString());
                     response = Response.status(Status.FORBIDDEN);

@@ -32,6 +32,13 @@ public class ServerApp {
     private static Connection connection = null;
     private static Logger loggerSystem = Logger.getLogger("MauzoServer");
 
+    /**
+     * Método principal que inicializa el servidor Spring Boot,
+     * el cual luego invocará a los métodos y clases que se han
+     * ido desarrollando a lo largo y ancho del proyecto.
+     * 
+     * @param args  Los argumentos que recibe el servidor.
+     */
     public static void main(String[] args) {
         SpringApplication.run(ServerApp.class, args);
     }
@@ -99,8 +106,8 @@ public class ServerApp {
         // URL de Información: https://devcenter.heroku.com/articles/connecting-to-relational-databases-on-heroku-with-java#using-the-jdbc_database_url
         String url = System.getenv("JDBC_DATABASE_URL");
 
+        // Cargamos las dependencias del driver
         try {
-            // Cargamos las dependencias del driver
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             throw new SQLException("No se ha encontrado el driver de PostgreSQL: " + e.toString());
@@ -114,13 +121,13 @@ public class ServerApp {
             // Creamos la estructura de la base de datos
             st.execute("CREATE TABLE IF NOT EXISTS Users(id SERIAL PRIMARY KEY, firstname TEXT NOT NULL, lastname TEXT NOT NULL, username TEXT UNIQUE NOT NULL, email TEXT NOT NULL, password TEXT NOT NULL, isAdmin BOOLEAN NOT NULL, userPic BYTEA);");
             st.execute("CREATE TABLE IF NOT EXISTS Discounts(id SERIAL PRIMARY KEY, codeDisc VARCHAR(10) NOT NULL, descDisc TEXT NOT NULL, pricePerc FLOAT NOT NULL);");
-            st.execute("CREATE TABLE IF NOT EXISTS Refunds(id SERIAL PRIMARY KEY, dateRefund TIMESTAMP, userId INTEGER, FOREIGN KEY (userId) REFERENCES Users(Id));");
+            st.execute("CREATE TABLE IF NOT EXISTS Refunds(id SERIAL PRIMARY KEY, dateRefund TIMESTAMP, userId INTEGER, saleId INTEGER FOREIGN KEY (userId) REFERENCES Users(Id), FOREIGN KEY (saleId) REFERECES Sales(Id));");
             st.execute("CREATE TABLE IF NOT EXISTS Sales(id SERIAL PRIMARY KEY, stampRef TIMESTAMP NOT NULL, prodId INTEGER NOT NULL, discId INTEGER, refundId INTEGER, FOREIGN KEY (refundId) REFERENCES Refunds(Id), FOREIGN KEY (discId) REFERENCES Discounts(Id));");
             st.execute("CREATE TABLE IF NOT EXISTS Products(id SERIAL PRIMARY KEY, prodName VARCHAR(50) NOT NULL, prodDesc TEXT NOT NULL, prodPrice FLOAT NOT NULL, prodPic BYTEA);");
             st.execute("CREATE TABLE IF NOT EXISTS Sales_Products(salesId INTEGER NOT NULL, productId INTEGER NOT NULL, PRIMARY KEY (salesId, productId), FOREIGN KEY (salesId) REFERENCES Sales(Id), FOREIGN KEY (productId) REFERENCES Products(Id));");
 
             // Agregamos el usuario administrador
-            st.executeQuery("INSERT INTO public.Users(id, firstname, lastname, username, email, password, isAdmin) VALUES (1, 'Super', 'Administrador', 'admin', 'admin@localhost', '21232f297a57a5a743894a0e4a801fc3', true) ON CONFLICT DO NOTHING;");
+            st.executeQuery("INSERT INTO public.Users(id, firstname, lastname, username, email, password, isAdmin, userPic) VALUES (1, 'Super', 'Administrador', 'admin', 'admin@localhost', '21232f297a57a5a743894a0e4a801fc3', true, null) ON CONFLICT DO NOTHING;");
         }
     }
 }
