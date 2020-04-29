@@ -1,6 +1,7 @@
 package io.Mauzo.Server;
 
 // Paquetes del framework estandar de java
+import java.util.Base64;
 import java.util.List;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -358,5 +359,25 @@ public class ServerUtils {
         }
 
         return imageBuf;
+    }
+
+    /**
+     * Tranforma una cadena en Base64 a un array de bytes
+     *
+     * @param base64 Cadena de carácteres en Base64
+     * @return Array de Bytes
+     */
+    public static byte[] byteArrayFromBase64(String base64){
+        return Base64.getDecoder().decode(base64);
+    }
+
+    /**
+     * Transforma un array de Bytes a Base64
+     *
+     * @param array array de bytes
+     * @return Cadena de carácteres en Base64
+     */
+    public static String byteArrayToBase64(byte[] array){
+        return Base64.getEncoder().encodeToString(array);
     }
 }
