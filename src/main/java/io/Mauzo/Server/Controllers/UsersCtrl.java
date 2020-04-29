@@ -50,7 +50,7 @@ public class UsersCtrl {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsersMethod(@Context final HttpServletRequest req){
+    public Response getLists(@Context final HttpServletRequest req){
         return ServerUtils.genericAdminMethod(req, null, null, () -> {
             JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
             
@@ -65,7 +65,8 @@ public class UsersCtrl {
                 jsonObj.add("firstname", user.getFirstName());
                 jsonObj.add("lastname", user.getLastName());
                 jsonObj.add("email", user.getEmail());
-                jsonObj.add("isadmin", user.isAdmin());
+                jsonObj.add("isAdmin", user.isAdmin());
+                jsonObj.add("userPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(user.getUserPic(), "png")));
 
                 // Lo añadimos al Json Array.
                 jsonResponse.add(jsonObj);
@@ -90,7 +91,7 @@ public class UsersCtrl {
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerMethod(@Context final HttpServletRequest req, String jsonData) {
+    public Response registerUser(@Context final HttpServletRequest req, String jsonData) {
         return ServerUtils.genericAdminMethod(req, null, jsonData, () -> {
             ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
@@ -108,7 +109,8 @@ public class UsersCtrl {
                 userAux.setLastName(jsonRequest.getString("lastname"));
                 userAux.setEmail(jsonRequest.getString("email"));
                 userAux.setPassword(jsonRequest.getString("password"));
-                userAux.setAdmin(jsonRequest.getBoolean("isadmin"));
+                userAux.setAdmin(jsonRequest.getBoolean("isAdmin"));
+                userAux.setUserPic(ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("userPic"))));
 
                 // Agregamos el usuario a la lista.
                 UsersMgt.getController().add(userAux);
@@ -136,7 +138,7 @@ public class UsersCtrl {
     @GET
     @Path("{param_id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") int paramId) {
+    public Response getUser(@Context final HttpServletRequest req, @PathParam("param_id") int paramId) {
         return ServerUtils.genericAdminMethod(req, paramId, null, () -> {
             ResponseBuilder response = null;
 
@@ -151,7 +153,8 @@ public class UsersCtrl {
                 jsonResponse.add("firstname", user.getFirstName());
                 jsonResponse.add("lastname", user.getLastName());
                 jsonResponse.add("email", user.getEmail());
-                jsonResponse.add("isadmin", user.isAdmin());
+                jsonResponse.add("isAdmin", user.isAdmin());
+                jsonResponse.add("userPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(user.getUserPic(), "png")));
 
                 // Lanzamos la respuesta 200 OK si todo ha ido bien.
                 response = Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
@@ -178,7 +181,7 @@ public class UsersCtrl {
     @PUT
     @Path("{param_id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response modifyUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") int paramId, String jsonData) {
+    public Response modifyUser(@Context final HttpServletRequest req, @PathParam("param_id") int paramId, String jsonData) {
         return ServerUtils.genericAdminMethod(req, paramId, jsonData, () -> {
             ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
@@ -192,12 +195,13 @@ public class UsersCtrl {
                     User userAux = UsersMgt.getController().get(paramId);
 
                     // Agregamos la información al usuario.
-                    userAux.setFirstName(jsonRequest.isNull("firstname") ? jsonRequest.getString("firstname") : userAux.getFirstName());
-                    userAux.setLastName(jsonRequest.isNull("lastname") ? jsonRequest.getString("lastname") : userAux.getLastName());
-                    userAux.setEmail(jsonRequest.isNull("email") ? jsonRequest.getString("email") : userAux.getEmail());
-                    userAux.setPassword(jsonRequest.isNull("password") ? jsonRequest.getString("password") : userAux.getPassword());
-                    userAux.setAdmin(jsonRequest.isNull("isadmin") ? jsonRequest.getBoolean("isadmin") : userAux.isAdmin());
-
+                    userAux.setFirstName(jsonRequest.isNull("firstname") ? userAux.getFirstName() : jsonRequest.getString("firstname"));
+                    userAux.setLastName(jsonRequest.isNull("lastname") ? userAux.getLastName() : jsonRequest.getString("lastname"));
+                    userAux.setEmail(jsonRequest.isNull("email") ? userAux.getEmail() : jsonRequest.getString("email"));
+                    userAux.setPassword(jsonRequest.isNull("password") ? userAux.getPassword() : jsonRequest.getString("password"));
+                    userAux.setAdmin(jsonRequest.isNull("isAdmin") ?  userAux.isAdmin() : jsonRequest.getBoolean("isAdmin"));
+                    userAux.setUserPic(jsonRequest.isNull("userpic") ? userAux.getUserPic() : ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("userPic"))));
+                    
                     // Agregamos el usuario a la lista.
                     UsersMgt.getController().modify(userAux);
 
@@ -224,7 +228,7 @@ public class UsersCtrl {
      */
     @DELETE
     @Path("{param_id}")
-    public Response deleteUserMethod(@Context final HttpServletRequest req, @PathParam("param_id") int paramId) {
+    public Response deleteUser(@Context final HttpServletRequest req, @PathParam("param_id") int paramId) {
         return ServerUtils.genericAdminMethod(req, paramId, null, () -> {
             ResponseBuilder response;
 
