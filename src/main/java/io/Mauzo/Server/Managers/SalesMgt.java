@@ -23,7 +23,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
     @Override
     public void add(Sale sale) throws SQLException {
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection conn = ServerApp.getConnection();
+        Connection conn = Connections.getController().acquireConnection();
 
         // Preparamos la consulta SQL.
         try(PreparedStatement st = conn.prepareStatement("INSERT INTO Sales (stampRef, userId, prodId, discId, refundId) VALUES (?, ?, ?, ?, ?)")) {
@@ -37,6 +37,8 @@ public class SalesMgt implements ManagersIntf<Sale> {
             // Ejecutamos la sentencia sql.
             st.execute();
         }
+
+        Connections.getController().releaseConnection(conn);
     }
 
     /**
@@ -53,7 +55,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
         Sale sale = null;
 
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection conn = ServerApp.getConnection();
+        Connection conn = Connections.getController().acquireConnection();
 
         // Preparamos la consulta sql.
         try (PreparedStatement st = conn.prepareStatement("SELECT * FROM Sales WHERE id = ?;")) {
@@ -78,7 +80,9 @@ public class SalesMgt implements ManagersIntf<Sale> {
             }
         }
 
-        return null;
+        Connections.getController().releaseConnection(conn);
+
+        return sale;
     }
 
     /**
@@ -94,7 +98,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
         List<Sale> salesList = null;
 
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection conn = ServerApp.getConnection();
+        Connection conn = Connections.getController().acquireConnection();
 
         try(PreparedStatement st = conn.prepareStatement("SELECT * FROM Sales")) {
             try(ResultSet rs = st.executeQuery()) {
@@ -115,6 +119,8 @@ public class SalesMgt implements ManagersIntf<Sale> {
             }
         }
 
+        Connections.getController().releaseConnection(conn);
+
         return salesList;
     }
 
@@ -128,7 +134,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
     @Override
     public void modify(Sale sale) throws SQLException, ManagerErrorException {
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection conn = ServerApp.getConnection();
+        Connection conn = Connections.getController().acquireConnection();
 
         try (PreparedStatement st = conn.prepareStatement("UPDATE Sales SET stampRef = ?, userId = ?, prodId = ?, discId = ?, refundId = ? WHERE id = ?")) {
             st.setLong(1, sale.getStampRef().getTime());
@@ -141,6 +147,8 @@ public class SalesMgt implements ManagersIntf<Sale> {
             if(st.execute() == false)
                 throw new ManagerErrorException("No se ha encontrado la venta.");
         }
+
+        Connections.getController().releaseConnection(conn);
     }
 
     /**
@@ -153,7 +161,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
     @Override
     public void remove(Sale sale) throws SQLException, ManagerErrorException {
         // Guardamos el puntero de conexion con la base de datos.
-        final Connection conn = ServerApp.getConnection();
+        Connection conn = Connections.getController().acquireConnection();
 
         // Preparamos la sentencia sql.
         try (PreparedStatement st = conn.prepareStatement("DELETE FROM Sales WHERE id = ?;")) {
@@ -163,6 +171,8 @@ public class SalesMgt implements ManagersIntf<Sale> {
             if(st.execute() == false) 
                 throw new ManagerErrorException("No se ha encontrado el usuario durante la eliminación del mismo.");
         }
+        
+        Connections.getController().releaseConnection(conn);
     }
 
     /**
