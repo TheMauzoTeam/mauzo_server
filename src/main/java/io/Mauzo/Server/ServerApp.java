@@ -1,18 +1,12 @@
 package io.Mauzo.Server;
 
-// Core basico para inicializar las conexiones SQL.
-import java.sql.Statement;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.DriverManager;
-import java.util.logging.Logger;
-
 // Paquetes relativos a la inicialización del servidor
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import java.util.logging.Logger;
 
 // Clases controladoras de las interfaces web expuestas.
 import io.Mauzo.Server.Controllers.DiscountsCtrl;

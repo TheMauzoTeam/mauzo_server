@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Key;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Collections;
@@ -223,10 +224,14 @@ public class ServerUtils {
             // Obtenemos los datos del token.
             final Claims claims = jwtsParser.parseClaimsJws(token).getBody();
 
+            Connection conn = Connections.getController().acquireConnection();
+            
             // Ejecutamos la consulta de verificación.
-            Statement st = ServerApp.getConnection().createStatement();
+            Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM Users WHERE id = " + claims.getId());
             
+            Connections.getController().releaseConnection(conn);
+
             // Obtenemos el resultado.
             rs.next();
 
@@ -268,10 +273,14 @@ public class ServerUtils {
             // Validamos y obtenemos los datos del token.
             final Claims claims = jwtsParser.parseClaimsJws(token).getBody();
 
+            Connection conn = Connections.getController().acquireConnection();
+            
             // Ejecutamos la consulta de verificación.
-            Statement st = ServerApp.getConnection().createStatement();
+            Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM Users WHERE id = " + claims.getId());
 
+            Connections.getController().releaseConnection(conn);
+            
             // Obtenemos el resultado.
             rs.next();
 

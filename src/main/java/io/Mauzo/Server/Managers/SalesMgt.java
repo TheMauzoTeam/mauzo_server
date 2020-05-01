@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import io.Mauzo.Server.ServerApp;
+import io.Mauzo.Server.Connections;
 import io.Mauzo.Server.Templates.Sale;
 
 public class SalesMgt implements ManagersIntf<Sale> {
