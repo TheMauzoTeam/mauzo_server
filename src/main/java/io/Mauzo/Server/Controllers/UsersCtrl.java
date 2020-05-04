@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 // Paquetes propios de la aplicación.
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.ServerApp;
+import io.Mauzo.Server.ServerPools;
 import io.Mauzo.Server.Templates.User;
 import io.Mauzo.Server.Managers.UsersMgt;
 import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
@@ -54,8 +55,10 @@ public class UsersCtrl {
         return ServerUtils.genericAdminMethod(req, null, null, () -> {
             JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
             
+            UsersMgt userMgt = ServerPools.getController().acquireUsers();
+
             // Recorremos la lista que nos ha entregado el servidor.
-            for (User user : UsersMgt.getController().getList()) {
+            for (User user : userMgt.getList()) {
                 // Inicializamos los objetos a usar.
                 JsonObjectBuilder jsonObj = Json.createObjectBuilder();
 
@@ -113,7 +116,9 @@ public class UsersCtrl {
                 userAux.setUserPic(ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("userPic"))));
 
                 // Agregamos el usuario a la lista.
-                UsersMgt.getController().add(userAux);
+                UsersMgt userMgt = ServerPools.getController().acquireUsers();
+
+                userMgt.add(userAux);
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                 response = Response.status(Status.OK);
@@ -142,10 +147,12 @@ public class UsersCtrl {
         return ServerUtils.genericAdminMethod(req, paramId, null, () -> {
             ResponseBuilder response = null;
 
+            UsersMgt userMgt = ServerPools.getController().acquireUsers();
+
             try {
                 // Inicializamos los objetos a usar.
                 JsonObjectBuilder jsonResponse = Json.createObjectBuilder();
-                User user = UsersMgt.getController().get(paramId);
+                User user = userMgt.get(paramId);
                 
                 // Generamos un JSON con los atributos del usuario.
                 jsonResponse.add("id", user.getId());
@@ -190,9 +197,11 @@ public class UsersCtrl {
                 // Convertimos la información JSON recibida en un objeto.
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
+                UsersMgt userMgt = ServerPools.getController().acquireUsers();
+
                 try {
                     // Incializamos el objeto.
-                    User userAux = UsersMgt.getController().get(paramId);
+                    User userAux = userMgt.get(paramId);
 
                     // Agregamos la información al usuario.
                     userAux.setFirstName(jsonRequest.isNull("firstname") ? userAux.getFirstName() : jsonRequest.getString("firstname"));
@@ -203,7 +212,7 @@ public class UsersCtrl {
                     userAux.setUserPic(jsonRequest.isNull("userpic") ? userAux.getUserPic() : ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("userPic"))));
                     
                     // Agregamos el usuario a la lista.
-                    UsersMgt.getController().modify(userAux);
+                    userMgt.modify(userAux);
 
                     // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                     response = Response.status(Status.OK);
@@ -232,12 +241,14 @@ public class UsersCtrl {
         return ServerUtils.genericAdminMethod(req, paramId, null, () -> {
             ResponseBuilder response;
 
+            UsersMgt userMgt = ServerPools.getController().acquireUsers();
+
             try {
                 // Obtenemos el usuario de la base de datos.
-                User userAux = UsersMgt.getController().get(paramId);
+                User userAux = userMgt.get(paramId);
 
                 // Agregamos el usuario a la lista.
-                UsersMgt.getController().remove(userAux);
+                userMgt.remove(userAux);
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                 response = Response.status(Status.OK);

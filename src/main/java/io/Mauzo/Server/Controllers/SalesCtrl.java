@@ -72,6 +72,8 @@ public class SalesCtrl {
         return ServerUtils.genericUserMethod(req, null, jsonData, () -> {
             ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
+            SalesMgt salesMgt = ServerPools.getController().acquireSales();
+
             // Si la informacion que recibe es nula, no se procesa nada
             if (jsonData.length() != 0) {
                 // Convertimos la información JSON recibida en un objeto.
@@ -88,7 +90,7 @@ public class SalesCtrl {
                 saleAux.setStampRef(new Date(Long.valueOf(jsonRequest.getString("stampRef"))));
             
                 // Agregamos la venta a la lista.
-                SalesMgt.getController().add(saleAux);
+                salesMgt.add(saleAux);
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                 response = Response.status(Status.OK);
@@ -104,10 +106,12 @@ public class SalesCtrl {
         return ServerUtils.genericUserMethod(req, paramId, null, () -> {
             ResponseBuilder response = null;
 
+            SalesMgt salesMgt = ServerPools.getController().acquireSales();
+
             try {
                 // Inicializamos los objetos a usar.
                 JsonObjectBuilder jsonResponse = Json.createObjectBuilder();
-                Sale saleAux = SalesMgt.getController().get(paramId);
+                Sale saleAux = salesMgt.get(paramId);
 
                 // Generamos un JSON con los atributos de la venta.
                 jsonResponse.add("id", saleAux.getId());
@@ -139,9 +143,11 @@ public class SalesCtrl {
                 // Convertimos la información JSON recibida en un objeto.
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
+                SalesMgt salesMgt = ServerPools.getController().acquireSales();
+
                 try  {
                     // Incializamos el objeto.
-                    Sale saleAux = SalesMgt.getController().get(paramId);
+                    Sale saleAux = salesMgt.get(paramId);
 
                     // Agregamos la información al usuario.
                     saleAux.setStampRef(new Date(jsonRequest.isNull("stampRef") ? Long.valueOf(jsonRequest.getString("stampRef")) : saleAux.getStampRef().getTime()));
@@ -151,7 +157,7 @@ public class SalesCtrl {
                     saleAux.setRefundId(jsonRequest.isNull("refundId") ? jsonRequest.getInt("refundId") : saleAux.getRefundId());
   
                     // Agregamos el usuario a la lista.
-                    SalesMgt.getController().modify(saleAux);
+                    salesMgt.modify(saleAux);
 
                     // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                     response = Response.status(Status.OK);
@@ -172,12 +178,14 @@ public class SalesCtrl {
         return ServerUtils.genericUserMethod(req, paramId, null, () -> {
             ResponseBuilder response;
 
+            SalesMgt salesMgt = ServerPools.getController().acquireSales();
+
             try {
                 // Obtenemos la venta de la base de datos.
-                Sale saleAux = SalesMgt.getController().get(paramId);
+                Sale saleAux = salesMgt.get(paramId);
 
                 // Agregamos la venta a la lista.
-                SalesMgt.getController().remove(saleAux);
+                salesMgt.remove(saleAux);
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                 response = Response.status(Status.OK);

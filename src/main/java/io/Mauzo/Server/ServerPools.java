@@ -24,7 +24,7 @@ public class ServerPools {
     private final List<SalesMgt> salesConnList = new ArrayList<>();
     private final List<RefundsMgt> refundsConnList = new ArrayList<>();
     private final List<ProductsMgt> productsConnList = new ArrayList<>();
-    private final List<InformsMgt> informsConnLists = new ArrayList<>();
+    //private final List<InformsMgt> informsConnList = new ArrayList<>();
     private final List<DiscountsMgt> discountsConnList = new ArrayList<>();
 
     public ServerPools() throws SQLException {
@@ -33,7 +33,7 @@ public class ServerPools {
             salesConnList.add(new SalesMgt(ServerApp.setConnection()));
             refundsConnList.add(new RefundsMgt(ServerApp.setConnection()));
             productsConnList.add(new ProductsMgt(ServerApp.setConnection()));
-            informsConnList.add(new InformsMgt(ServerApp.setConnection()));
+            //informsConnList.add(new InformsMgt(ServerApp.setConnection()));
             discountsConnList.add(new DiscountsMgt(ServerApp.setConnection()));
         }
     }
@@ -54,9 +54,11 @@ public class ServerPools {
         return productsConnList.get(getIndexRandom());
     }
 
+    /*
     public InformsMgt acquireInforms() {
-        return informsConnLists.get(getIndexRandom());
+        return informsConnList.get(getIndexRandom());
     }
+    */
 
     public DiscountsMgt acquireDiscounts() {
         return discountsConnList.get(getIndexRandom());

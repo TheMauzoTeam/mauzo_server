@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.Mauzo.Server.Connections;
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.Templates.User;
 
