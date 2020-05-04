@@ -29,14 +29,12 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public void add(Refund obj) throws SQLException {
-        synchronized (addQuery) {
-            addQuery.setInt(1, obj.getId());
-            addQuery.setDate(2, (Date) obj.getDateRefund());
-            addQuery.setInt(3, obj.getUserId());
-            addQuery.setInt(4, obj.getSaleId());
+        addQuery.setInt(1, obj.getId());
+        addQuery.setDate(2, (Date) obj.getDateRefund());
+        addQuery.setInt(3, obj.getUserId());
+        addQuery.setInt(4, obj.getSaleId());
 
-            addQuery.execute();
-        }
+        addQuery.execute();
     }
 
     /**
@@ -49,7 +47,6 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public Refund get(int id) throws SQLException, ManagerErrorException {
-        synchronized (getIdQuery) {
             Refund refund = null;
 
             getIdQuery.setInt(1, id);
@@ -68,7 +65,6 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
             }
 
             return refund;
-        }
     }
 
     /**
@@ -79,7 +75,6 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public List<Refund> getList() throws SQLException {
-        synchronized (getListQuery) {
             List<Refund> refundList = null;
 
             try (ResultSet resultSet = getListQuery.executeQuery()) {
@@ -98,8 +93,6 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
             }
 
             return refundList;
-        }
-
     }
 
     /**
@@ -111,15 +104,13 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public void modify(Refund obj) throws SQLException, ManagerErrorException {
-        synchronized (modifyQuery) {
-            modifyQuery.setInt(1, obj.getId());
-            modifyQuery.setDate(2, (Date) obj.getDateRefund());
-            modifyQuery.setInt(3, obj.getUserId());
-            modifyQuery.setInt(4, obj.getSaleId());
+        modifyQuery.setInt(1, obj.getId());
+        modifyQuery.setDate(2, (Date) obj.getDateRefund());
+        modifyQuery.setInt(3, obj.getUserId());
+        modifyQuery.setInt(4, obj.getSaleId());
 
-            if (modifyQuery.execute() == false)
-                throw new ManagerErrorException("No se ha encontrado la devolución");
-        }
+        if (modifyQuery.execute() == false)
+            throw new ManagerErrorException("No se ha encontrado la devolución");
     }
 
     /**
@@ -131,11 +122,9 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public void remove(Refund obj) throws SQLException, ManagerErrorException {
-        synchronized (removeQuery) {
-            removeQuery.setInt(1, obj.getId());
-
-            if (removeQuery.execute() == false)
-                throw new ManagerErrorException("No se ha encontrado la devolución");
-        }
+        removeQuery.setInt(1, obj.getId());
+ 
+        if (removeQuery.execute() == false)
+            throw new ManagerErrorException("No se ha encontrado la devolución");
     }
 }
