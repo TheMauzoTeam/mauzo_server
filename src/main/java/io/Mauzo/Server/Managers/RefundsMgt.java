@@ -1,6 +1,5 @@
 package io.Mauzo.Server.Managers;
 
-import io.Mauzo.Server.Connections;
 import io.Mauzo.Server.Templates.Refund;
 
 import java.sql.*;
