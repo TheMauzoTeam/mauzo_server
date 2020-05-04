@@ -3,7 +3,6 @@ package io.Mauzo.Server;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.Semaphore;
 
 import io.Mauzo.Server.Managers.UsersMgt;
@@ -48,33 +47,57 @@ public class ServerPools {
 
     public UsersMgt acquireUsers() throws InterruptedException {
         uSemaphore.acquire();
-        return usersConnList.get(getIndexRandom());
+
+        UsersMgt aux = usersConnList.get(0);
+        usersConnList.remove(0);
+
+        return aux;
     }
 
     public SalesMgt acquireSales() throws InterruptedException {
         sSemaphore.acquire();
-        return salesConnList.get(getIndexRandom());
+
+        SalesMgt aux = salesConnList.get(0);
+        salesConnList.remove(0);
+
+        return aux;
     }
 
     public RefundsMgt acquireRefunds() throws InterruptedException {
         rSemaphore.acquire();
-        return refundsConnList.get(getIndexRandom());
+
+        RefundsMgt aux = refundsConnList.get(0);
+        refundsConnList.remove(0);
+
+        return aux;
     }
 
     public ProductsMgt acquireProducts() throws InterruptedException {
         pSemaphore.acquire();
-        return productsConnList.get(getIndexRandom());
+        
+        ProductsMgt aux = productsConnList.get(0);
+        refundsConnList.remove(0);
+
+        return aux;
     }
 
     /*
     public InformsMgt acquireInforms() throws InterruptedException {
         iSemaphore.acquire();
-        return informsConnList.get(getIndexRandom());
+
+        InformsMgt aux = informsConnList.get(0);
+        informsConnList.remove(0);
+
+        return aux;
     }
 
     public DiscountsMgt acquireDiscounts() throws InterruptedException {
         dSemaphore.acquire();
-        return discountsConnList.get(getIndexRandom());
+
+        DiscountsMgt aux = discountsConnList.get(0);
+        discountsConnList.remove(0);
+
+        return aux;
     }
     */
 
@@ -109,10 +132,6 @@ public class ServerPools {
         dSemaphore.release();
     }
     */
-
-    private int getIndexRandom() {
-        return (new Random().nextInt(maxConnections));
-    }
 
     public static ServerPools getController() throws SQLException {
         if (controller == null)
