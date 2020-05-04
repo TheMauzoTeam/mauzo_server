@@ -8,11 +8,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import io.Mauzo.Server.Connections;
 import io.Mauzo.Server.Templates.Sale;
 
 public class SalesMgt implements ManagersIntf<Sale> {
-    private static SalesMgt controller = null;
+    // Dejamos preparadas las consultas
+    private final PreparedStatement addQuery;
+    private final PreparedStatement getIdQuery;
+    private final PreparedStatement getListQuery;
+    private final PreparedStatement modifyQuery;
+    private final PreparedStatement deleteQuery;
+
+    public SalesMgt(Connection conn) throws SQLException {
+        this.addQuery = conn.prepareStatement("INSERT INTO Sales (stampRef, userId, prodId, discId, refundId) VALUES (?, ?, ?, ?, ?)");
+        this.getIdQuery = conn.prepareStatement("SELECT * FROM Sales WHERE id = ?;");
+        this.getListQuery = conn.prepareStatement("SELECT * FROM Sales");
+        this.modifyQuery = conn.prepareStatement("UPDATE Sales SET stampRef = ?, userId = ?, prodId = ?, discId = ?, refundId = ? WHERE id = ?");
+        this.deleteQuery = conn.prepareStatement("DELETE FROM Sales WHERE id = ?;");
+    }
 
     /**
      * Método para añadir una venta a la base de datos.
@@ -22,23 +34,17 @@ public class SalesMgt implements ManagersIntf<Sale> {
      */
     @Override
     public void add(Sale sale) throws SQLException {
-        // Guardamos el puntero de conexion con la base de datos.
-        Connection conn = Connections.getController().acquireConnection();
-
-        // Preparamos la consulta SQL.
-        try(PreparedStatement st = conn.prepareStatement("INSERT INTO Sales (stampRef, userId, prodId, discId, refundId) VALUES (?, ?, ?, ?, ?)")) {
+        synchronized(addQuery) {
             // Asociamos los valores respecto a la sentencia sql.
-            st.setLong(1, sale.getStampRef().getTime());
-            st.setInt(2, sale.getUserId());
-            st.setInt(3, sale.getProdId());
-            st.setInt(4, sale.getDiscId());
-            st.setInt(4, sale.getProdId());
+            addQuery.setLong(1, sale.getStampRef().getTime());
+            addQuery.setInt(2, sale.getUserId());
+            addQuery.setInt(3, sale.getProdId());
+            addQuery.setInt(4, sale.getDiscId());
+            addQuery.setInt(4, sale.getProdId());
 
             // Ejecutamos la sentencia sql.
-            st.execute();
+            addQuery.execute();
         }
-
-        Connections.getController().releaseConnection(conn);
     }
 
     /**
@@ -51,22 +57,17 @@ public class SalesMgt implements ManagersIntf<Sale> {
      */
     @Override
     public Sale get(int id) throws SQLException, ManagerErrorException {
-        // Preparamos una instancia del objeto a devolver
-        Sale sale = null;
-
-        // Guardamos el puntero de conexion con la base de datos.
-        Connection conn = Connections.getController().acquireConnection();
-
-        // Preparamos la consulta sql.
-        try (PreparedStatement st = conn.prepareStatement("SELECT * FROM Sales WHERE id = ?;")) {
+        synchronized(getIdQuery) {
             // Asociamos los valores respecto a la sentencia sql.
-            st.setInt(1, id);
+            getIdQuery.setInt(1, id);
+            
+            Sale sale = new Sale();
 
             // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
-            try (ResultSet rs = st.executeQuery()) {
+            try (ResultSet rs = getIdQuery.executeQuery()) {
                 if (!(rs.isLast()))
                     while (rs.next()) {
-                        sale = new Sale();
+                        
 
                         sale.setId(rs.getInt("id"));
                         sale.setStampRef(new Date(rs.getLong("stampRef")));
@@ -78,11 +79,9 @@ public class SalesMgt implements ManagersIntf<Sale> {
                 else
                     throw new ManagerErrorException("No se ha encontrado la venta");
             }
+
+            return sale;
         }
-
-        Connections.getController().releaseConnection(conn);
-
-        return sale;
     }
 
     /**
@@ -94,16 +93,10 @@ public class SalesMgt implements ManagersIntf<Sale> {
      */
     @Override
     public List<Sale> getList() throws SQLException {
-        // Preparamos una instancia del objeto a devolver
-        List<Sale> salesList = null;
+        synchronized(getListQuery) {
+            List<Sale> salesList = new ArrayList<>();
 
-        // Guardamos el puntero de conexion con la base de datos.
-        Connection conn = Connections.getController().acquireConnection();
-
-        try(PreparedStatement st = conn.prepareStatement("SELECT * FROM Sales")) {
-            try(ResultSet rs = st.executeQuery()) {
-                salesList = new ArrayList<>();
-
+            try(ResultSet rs = getListQuery.executeQuery()) {
                 while (rs.next()) {
                     Sale sale = new Sale();
 
@@ -117,11 +110,9 @@ public class SalesMgt implements ManagersIntf<Sale> {
                     salesList.add(sale);
                 }
             }
+
+            return salesList;
         }
-
-        Connections.getController().releaseConnection(conn);
-
-        return salesList;
     }
 
     /**
@@ -133,22 +124,17 @@ public class SalesMgt implements ManagersIntf<Sale> {
      */
     @Override
     public void modify(Sale sale) throws SQLException, ManagerErrorException {
-        // Guardamos el puntero de conexion con la base de datos.
-        Connection conn = Connections.getController().acquireConnection();
+        synchronized(modifyQuery) {
+            modifyQuery.setLong(1, sale.getStampRef().getTime());
+            modifyQuery.setInt(2, sale.getUserId());
+            modifyQuery.setInt(3, sale.getProdId());
+            modifyQuery.setInt(4, sale.getDiscId());
+            modifyQuery.setInt(5, sale.getRefundId());
+            modifyQuery.setInt(6, sale.getId());
 
-        try (PreparedStatement st = conn.prepareStatement("UPDATE Sales SET stampRef = ?, userId = ?, prodId = ?, discId = ?, refundId = ? WHERE id = ?")) {
-            st.setLong(1, sale.getStampRef().getTime());
-            st.setInt(2, sale.getUserId());
-            st.setInt(3, sale.getProdId());
-            st.setInt(4, sale.getDiscId());
-            st.setInt(5, sale.getRefundId());
-            st.setInt(6, sale.getId());
-
-            if(st.execute() == false)
+            if(modifyQuery.execute() == false)
                 throw new ManagerErrorException("No se ha encontrado la venta.");
         }
-
-        Connections.getController().releaseConnection(conn);
     }
 
     /**
@@ -160,30 +146,12 @@ public class SalesMgt implements ManagersIntf<Sale> {
      */
     @Override
     public void remove(Sale sale) throws SQLException, ManagerErrorException {
-        // Guardamos el puntero de conexion con la base de datos.
-        Connection conn = Connections.getController().acquireConnection();
-
-        // Preparamos la sentencia sql.
-        try (PreparedStatement st = conn.prepareStatement("DELETE FROM Sales WHERE id = ?;")) {
-            st.setInt(1, sale.getId());
+        synchronized(deleteQuery) {
+            deleteQuery.setInt(1, sale.getId());
 
             // Ejecutamos la sentencia sql.
-            if(st.execute() == false) 
+            if(deleteQuery.execute() == false) 
                 throw new ManagerErrorException("No se ha encontrado el usuario durante la eliminación del mismo.");
         }
-        
-        Connections.getController().releaseConnection(conn);
-    }
-
-    /**
-     * Método para recuperar el controlador de la clase SalesMgt.
-     * 
-     * @return El controlador de la clase SalesMgt.
-     */
-    public static SalesMgt getController() {
-        if (controller == null)
-            controller = new SalesMgt();
-
-        return controller;
     }
 }
