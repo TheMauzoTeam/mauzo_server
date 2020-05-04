@@ -1,6 +1,6 @@
 package io.Mauzo.Server.Managers;
 
-import io.Mauzo.Server.ServerApp;
+import io.Mauzo.Server.Connections;
 import io.Mauzo.Server.Templates.Refund;
 
 import java.sql.*;
@@ -8,7 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RefundsMgt implements  ManagersIntf<Refund>{
-    private static RefundsMgt controller = null;
+    private final PreparedStatement addQuery;
+    private final PreparedStatement getIdQuery;
+    private final PreparedStatement getListQuery;
+    private final PreparedStatement modifyQuery;
+    private final PreparedStatement removeQuery;
+
+    public RefundsMgt(Connection connection) throws SQLException{
+        addQuery = connection.prepareStatement("INSERT INTO Refunds (id, dateRefund, userId, saleId) VALUES (?, ?, ?, ?);");
+        getIdQuery = connection.prepareStatement("SELECT * FROM User WHERE id = ?;");
+        getListQuery = connection.prepareStatement("SELECT * FROM Refunds");
+        modifyQuery = connection.prepareStatement("UPDATE Refunds SET id = ?, dateRefund = ?, userId = ?, SaleId = ? WHILE id = ?;");
+        removeQuery = connection.prepareStatement("DELETE FROM Refunds WHERE id = ?;");
+    }
 
     /**
      *Método para añadir devoluciones a la base de datos
@@ -18,15 +30,13 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public void add(Refund obj) throws SQLException {
-        final Connection connection = ServerApp.getConnection();
+        synchronized (addQuery) {
+            addQuery.setInt(1, obj.getId());
+            addQuery.setDate(2, (Date) obj.getDateRefund());
+            addQuery.setInt(3, obj.getUserId());
+            addQuery.setInt(4, obj.getSaleId());
 
-        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO Refunds (id, dateRefund, userId, saleId) VALUES (?, ?, ?, ?);")){
-            statement.setInt(1, obj.getId());
-            statement.setDate(2, (Date) obj.getDateRefund());
-            statement.setInt(3, obj.getUserId());
-            statement.setInt(4, obj.getSaleId());
-
-            statement.execute();
+            addQuery.execute();
         }
     }
 
@@ -40,18 +50,15 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public Refund get(int id) throws SQLException, ManagerErrorException {
-        Refund refund = null;
+        synchronized (getIdQuery) {
+            Refund refund = null;
 
-        final Connection connection = ServerApp.getConnection();
+            getIdQuery.setInt(1, id);
 
-        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM User WHERE id = ?;")){
-            statement.setInt(1, id);
-
-            try (ResultSet resultSet = statement.executeQuery()){
+            try (ResultSet resultSet = getIdQuery.executeQuery()){
                 if (!(resultSet.isLast()))
                     while (resultSet.next()) {
                         refund = new Refund();
-
                         refund.setId(resultSet.getInt("id"));
                         refund.setDateRefund(resultSet.getDate("dateRefund"));
                         refund.setUserId(resultSet.getInt("userId"));
@@ -60,8 +67,9 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
                 else
                     throw new ManagerErrorException("No se ha encontrado la devolución");
             }
+
+            return refund;
         }
-        return refund;
     }
 
     /**
@@ -72,12 +80,10 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public List<Refund> getList() throws SQLException {
-        List<Refund> refundList = null;
+        synchronized (getListQuery) {
+            List<Refund> refundList = null;
 
-        final Connection connection = ServerApp.getConnection();
-
-        try(PreparedStatement statement = connection.prepareStatement("SELECT * FROM Refunds")) {
-            try (ResultSet resultSet = statement.executeQuery()) {
+            try (ResultSet resultSet = getListQuery.executeQuery()) {
                 refundList = new ArrayList<>();
 
                 while (resultSet.next()) {
@@ -91,8 +97,9 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
                     refundList.add(refund);
                 }
             }
+
+            return refundList;
         }
-        return refundList;
 
     }
 
@@ -105,15 +112,13 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public void modify(Refund obj) throws SQLException, ManagerErrorException {
-        final Connection connection = ServerApp.getConnection();
+        synchronized (modifyQuery) {
+            modifyQuery.setInt(1, obj.getId());
+            modifyQuery.setDate(2, (Date) obj.getDateRefund());
+            modifyQuery.setInt(3, obj.getUserId());
+            modifyQuery.setInt(4, obj.getSaleId());
 
-        try (PreparedStatement statement = connection.prepareStatement("UPDATE Refunds SET id = ?, dateRefund = ?, userId = ?, SaleId = ? WHILE id = ?;")){
-            statement.setInt(1, obj.getId());
-            statement.setDate(2, (Date) obj.getDateRefund());
-            statement.setInt(3, obj.getUserId());
-            statement.setInt(4, obj.getSaleId());
-
-            if (statement.execute() == false)
+            if (modifyQuery.execute() == false)
                 throw new ManagerErrorException("No se ha encontrado la devolución");
         }
     }
@@ -127,26 +132,11 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public void remove(Refund obj) throws SQLException, ManagerErrorException {
-        final Connection connection = ServerApp.getConnection();
+        synchronized (removeQuery) {
+            removeQuery.setInt(1, obj.getId());
 
-        try (PreparedStatement statement = connection.prepareStatement("DELETE FROM Refunds WHERE id = ?;")) {
-            statement.setInt(1, obj.getId());
-
-            if (statement.execute() == false)
+            if (removeQuery.execute() == false)
                 throw new ManagerErrorException("No se ha encontrado la devolución");
-
         }
-    }
-
-    /**
-     * Método para recuperar el controlador de la clase RefundsMgt.
-     *
-     * @return El controlador de la clase RefundMgt.
-     */
-    public static RefundsMgt getController() {
-        if (controller == null)
-            controller = new RefundsMgt();
-
-        return controller;
     }
 }

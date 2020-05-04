@@ -9,12 +9,23 @@ import java.util.List;
 
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.Templates.Product;
-import io.Mauzo.Server.ServerApp;
 
 public class ProductsMgt implements ManagersIntf<Product>{
-    private static ProductsMgt controller = null;
+    private final PreparedStatement addQuery;
+    private final PreparedStatement getIdQuery;
+    private final PreparedStatement getNameQuery;
+    private final PreparedStatement getListQuery;
+    private final PreparedStatement modifyQuery;
+    private final PreparedStatement removeQuery;
 
-
+    public ProductsMgt(Connection connection) throws SQLException {
+        addQuery = connection.prepareStatement("INSERT INTO Products (id, code, ProdName, ProdPrice, ProdDesc, ProdPic) VALUES (?, ?, ?, ?, ?, ?);");
+        getIdQuery = connection.prepareStatement("SELECT * FROM Products WHERE id = ?;");
+        getNameQuery = connection.prepareStatement("SELECT * FROM Products WHERE prodName = ?;");
+        getListQuery = connection.prepareStatement("SELECT * FROM Products");
+        modifyQuery = connection.prepareStatement("UPDATE Users SET code = ?, prodName = ?, prodPrice = ?, prodDesc = ? WHILE id = ?");
+        removeQuery = connection.prepareStatement("DELETE FROM Products WHERE id = ?;");
+    }
     //remove, modify, get, add, getProductsList
 
     /**
@@ -25,18 +36,16 @@ public class ProductsMgt implements ManagersIntf<Product>{
      */
     @Override
     public void add(Product product) throws SQLException{
-        final Connection connection = ServerApp.getConnection();
-
-        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO Products (id, code, ProdName, ProdPrice, ProdDesc, ProdPic) VALUES (?, ?, ?, ?, ?, ?);")) {
+        synchronized (addQuery) {
             //Asociamos los valores
-            statement.setInt(1, product.getId());
-            statement.setString(2, product.getCode());
-            statement.setString(3, product.getName());
-            statement.setDouble(4,product.getPrice());
-            statement.setString(5, product.getDescription());
-            statement.setBytes(6, ServerUtils.imageToByteArray(product.getPicture(),"png"));
+            addQuery.setInt(1, product.getId());
+            addQuery.setString(2, product.getCode());
+            addQuery.setString(3, product.getName());
+            addQuery.setDouble(4,product.getPrice());
+            addQuery.setString(5, product.getDescription());
+            addQuery.setBytes(6, ServerUtils.imageToByteArray(product.getPicture(),"png"));
             //Ejecutamos la sentencia SQl
-            statement.execute();
+            addQuery.execute();
         }
     }
 
@@ -50,15 +59,15 @@ public class ProductsMgt implements ManagersIntf<Product>{
      */
     @Override
     public Product get(int id) throws SQLException, ManagerErrorException {
-        Product product = null;
-         final Connection connection = ServerApp.getConnection();
 
-         try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM Products WHERE id = ?;")){
-             //Asociamos los valores
-             statement.setInt(1, id);
+        synchronized (getIdQuery) {
+            Product product = null;
+
+            //Asociamos los valores
+             getIdQuery.setInt(1, id);
 
              //Ejecutamos la sentencia y conseguimos el resto de datos relacionados
-             try (ResultSet resultSet = statement.executeQuery()){
+             try (ResultSet resultSet = getIdQuery.executeQuery()){
                  if (!(resultSet.isLast())) {
                      while (resultSet.next()) {
                          product = new Product();
@@ -71,14 +80,13 @@ public class ProductsMgt implements ManagersIntf<Product>{
                          product.setPicture(ServerUtils.imageFromByteArray(resultSet.getBytes("prodPic")));
 
                      }
-
                  }
                  else
                      throw new ManagerErrorException("No se ha encontrado el producto");
              }
 
-         }
-        return product;
+             return product;
+        }
     }
 
     /**
@@ -90,14 +98,12 @@ public class ProductsMgt implements ManagersIntf<Product>{
      * @throws ManagerErrorException Excepción dada en caso de no encontrar el producto
      */
     public Product get(String name) throws SQLException, ManagerErrorException {
-       Product product = null;
+       synchronized (getNameQuery) {
+           Product product = null;
 
-       final Connection connection = ServerApp.getConnection();
+           getNameQuery.setString(1, name);
 
-       try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM Products WHERE prodName = ?;")){
-            statement.setString(1, name);
-
-            try (ResultSet resultSet = statement.executeQuery()){
+            try (ResultSet resultSet = getNameQuery.executeQuery()){
                 if (!resultSet.isLast()){
                     while (resultSet.next()){
                         product = new Product();
@@ -108,13 +114,15 @@ public class ProductsMgt implements ManagersIntf<Product>{
                         product.setPrice(resultSet.getFloat("prodPrice"));
                         product.setName(resultSet.getString("prodName"));
                         product.setPicture(ServerUtils.imageFromByteArray(resultSet.getBytes("prodPic")));
+
                     }
                 }else {
                     throw new ManagerErrorException("No se ha encontrado el producto");
                 }
             }
+           return product;
+
        }
-        return product;
     }
 
     /**
@@ -125,11 +133,10 @@ public class ProductsMgt implements ManagersIntf<Product>{
      */
     @Override
     public List<Product> getList() throws SQLException {
-        final Connection connection = ServerApp.getConnection();
-        List<Product> products = null;
+        synchronized (getListQuery) {
+            List<Product> products = null;
 
-        try(PreparedStatement statement = connection.prepareStatement("SELECT * FROM Products")){
-            try(ResultSet resultSet = statement.executeQuery()) {
+            try(ResultSet resultSet = getListQuery.executeQuery()) {
                 products = new ArrayList<>();
 
                 while (resultSet.next()) {
@@ -145,8 +152,9 @@ public class ProductsMgt implements ManagersIntf<Product>{
                     products.add(product);
                 }
             }
+
+            return products;
         }
-        return products;
     }
 
     /**
@@ -158,16 +166,12 @@ public class ProductsMgt implements ManagersIntf<Product>{
      */
     @Override
     public void modify(Product obj) throws SQLException, ManagerErrorException {
-        final Connection connection = ServerApp.getConnection();
-
-        //Preparamos la sentencia sql
-        try (PreparedStatement statement = connection.prepareStatement("UPDATE Users SET code = ?, prodName = ?, prodPrice = ?, prodDesc = ? WHILE id = ?")){
-
-            statement.setString(1, obj.getCode());
-            statement.setString(2, obj.getName());
-            statement.setDouble(3, obj.getPrice());
-            statement.setString(4,obj.getDescription());
-            statement.setBytes(7,ServerUtils.imageToByteArray(obj.getPicture(),"png"));
+        synchronized (modifyQuery) {
+            modifyQuery.setString(1, obj.getCode());
+            modifyQuery.setString(2, obj.getName());
+            modifyQuery.setDouble(3, obj.getPrice());
+            modifyQuery.setString(4,obj.getDescription());
+            modifyQuery.setBytes(7,ServerUtils.imageToByteArray(obj.getPicture(),"png"));
         }
     }
 
@@ -179,26 +183,12 @@ public class ProductsMgt implements ManagersIntf<Product>{
      */
     @Override
     public void remove(Product obj) throws SQLException, ManagerErrorException {
-        final Connection connection = ServerApp.getConnection();
-
-        try (PreparedStatement st = connection.prepareStatement("DELETE FROM Products WHERE id = ?;")) {
-            st.setInt(1, obj.getId());
+        synchronized (removeQuery) {
+            removeQuery.setInt(1, obj.getId());
 
             // Ejecutamos la sentencia sql.
-            if(st.execute() == false)
+            if(removeQuery.execute() == false)
                 throw new ManagerErrorException("No se ha encontrado el producto");
         }
-    }
-
-    /**
-     * Método para recuperar el controlador de la clase ProductsMgt.
-     *
-     * @return El controlador de la clase ProductsMgt
-     */
-    public static ProductsMgt getController() {
-        if (controller == null)
-            controller = new ProductsMgt();
-
-        return controller;
     }
 }
