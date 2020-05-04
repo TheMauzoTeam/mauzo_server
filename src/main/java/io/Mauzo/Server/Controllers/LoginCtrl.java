@@ -29,6 +29,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 // Paquetes relacionados con el Proyecto.
 import io.Mauzo.Server.ServerApp;
+import io.Mauzo.Server.ServerPools;
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.Managers.UsersMgt;
 import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
@@ -62,8 +63,10 @@ public class LoginCtrl {
                 final String username = jsonRequest.getString("username");
                 final String password = jsonRequest.getString("password");
 
+                UsersMgt userMgt = ServerPools.getController().acquireUsers();
+                
                 try {
-                    User userAux = UsersMgt.getController().get(username);
+                    User userAux = userMgt.get(username);
 
                     if(userAux != null) {
                         // Comprobamos la contraseña si es valida.

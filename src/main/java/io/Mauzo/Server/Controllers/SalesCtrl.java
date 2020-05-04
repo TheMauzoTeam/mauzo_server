@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 // Paquetes propios de la aplicación.
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.ServerApp;
+import io.Mauzo.Server.ServerPools;
 import io.Mauzo.Server.Templates.Sale;
 import io.Mauzo.Server.Managers.SalesMgt;
 import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
@@ -43,7 +44,9 @@ public class SalesCtrl {
         return ServerUtils.genericUserMethod(req, null, null, () -> {
             JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
 
-            for (Sale sale : SalesMgt.getController().getList()) {
+            SalesMgt salesMgt = ServerPools.getController().acquireSales();
+
+            for (Sale sale : salesMgt.getList()) {
                 // Inicializamos los objetos a usar.
                 JsonObjectBuilder jsonObj = Json.createObjectBuilder();
 
