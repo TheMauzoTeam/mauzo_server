@@ -1,6 +1,5 @@
 package io.Mauzo.Server.Managers;
 
-import io.Mauzo.Server.Connections;
 import io.Mauzo.Server.ServerApp;
 import io.Mauzo.Server.Templates.Discount;
 
@@ -134,7 +133,7 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
     @Override
     public void remove(Discount discount) throws SQLException, ManagerErrorException {
         deleteQuery.setInt(1, discount.getId());
-        
+
         // Ejecutamos la setencia sql.
         if (deleteQuery.execute() == false)
             throw new ManagerErrorException("No se ha encontrado el descuento durante la eliminación del mismo.");
