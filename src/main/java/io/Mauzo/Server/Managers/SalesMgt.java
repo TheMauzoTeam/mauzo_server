@@ -34,17 +34,15 @@ public class SalesMgt implements ManagersIntf<Sale> {
      */
     @Override
     public void add(Sale sale) throws SQLException {
-        synchronized(addQuery) {
-            // Asociamos los valores respecto a la sentencia sql.
-            addQuery.setLong(1, sale.getStampRef().getTime());
-            addQuery.setInt(2, sale.getUserId());
-            addQuery.setInt(3, sale.getProdId());
-            addQuery.setInt(4, sale.getDiscId());
-            addQuery.setInt(4, sale.getProdId());
+        // Asociamos los valores respecto a la sentencia sql.
+        addQuery.setLong(1, sale.getStampRef().getTime());
+        addQuery.setInt(2, sale.getUserId());
+        addQuery.setInt(3, sale.getProdId());
+        addQuery.setInt(4, sale.getDiscId());
+        addQuery.setInt(4, sale.getProdId());
 
-            // Ejecutamos la sentencia sql.
-            addQuery.execute();
-        }
+        // Ejecutamos la sentencia sql.
+        addQuery.execute();
     }
 
     /**
@@ -57,31 +55,29 @@ public class SalesMgt implements ManagersIntf<Sale> {
      */
     @Override
     public Sale get(int id) throws SQLException, ManagerErrorException {
-        synchronized(getIdQuery) {
-            // Asociamos los valores respecto a la sentencia sql.
-            getIdQuery.setInt(1, id);
-            
-            Sale sale = new Sale();
+        // Asociamos los valores respecto a la sentencia sql.
+        getIdQuery.setInt(1, id);
+        
+        Sale sale = new Sale();
 
-            // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
-            try (ResultSet rs = getIdQuery.executeQuery()) {
-                if (!(rs.isLast()))
-                    while (rs.next()) {
-                        
+        // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
+        try (ResultSet rs = getIdQuery.executeQuery()) {
+            if (!(rs.isLast()))
+                while (rs.next()) {
+                    
 
-                        sale.setId(rs.getInt("id"));
-                        sale.setStampRef(new Date(rs.getLong("stampRef")));
-                        sale.setUserId(rs.getInt("userId"));
-                        sale.setProdId(rs.getInt("prodId"));
-                        sale.setDiscId(rs.getInt("discId"));
-                        sale.setRefundId(rs.getInt("refundId"));
-                    }
-                else
-                    throw new ManagerErrorException("No se ha encontrado la venta");
-            }
-
-            return sale;
+                    sale.setId(rs.getInt("id"));
+                    sale.setStampRef(new Date(rs.getLong("stampRef")));
+                    sale.setUserId(rs.getInt("userId"));
+                    sale.setProdId(rs.getInt("prodId"));
+                    sale.setDiscId(rs.getInt("discId"));
+                    sale.setRefundId(rs.getInt("refundId"));
+                }
+            else
+                throw new ManagerErrorException("No se ha encontrado la venta");
         }
+
+        return sale;
     }
 
     /**
@@ -93,26 +89,24 @@ public class SalesMgt implements ManagersIntf<Sale> {
      */
     @Override
     public List<Sale> getList() throws SQLException {
-        synchronized(getListQuery) {
-            List<Sale> salesList = new ArrayList<>();
+        List<Sale> salesList = new ArrayList<>();
 
-            try(ResultSet rs = getListQuery.executeQuery()) {
-                while (rs.next()) {
-                    Sale sale = new Sale();
+        try(ResultSet rs = getListQuery.executeQuery()) {
+            while (rs.next()) {
+                Sale sale = new Sale();
 
-                    sale.setId(rs.getInt("id"));
-                    sale.setStampRef(new Date(rs.getLong("stampRef")));
-                    sale.setUserId(rs.getInt("userId"));
-                    sale.setProdId(rs.getInt("prodId"));
-                    sale.setDiscId(rs.getInt("discId"));
-                    sale.setRefundId(rs.getInt("refundId"));
+                sale.setId(rs.getInt("id"));
+                sale.setStampRef(new Date(rs.getLong("stampRef")));
+                sale.setUserId(rs.getInt("userId"));
+                sale.setProdId(rs.getInt("prodId"));
+                sale.setDiscId(rs.getInt("discId"));
+                sale.setRefundId(rs.getInt("refundId"));
 
-                    salesList.add(sale);
-                }
+                salesList.add(sale);
             }
-
-            return salesList;
         }
+
+        return salesList;
     }
 
     /**
@@ -124,17 +118,15 @@ public class SalesMgt implements ManagersIntf<Sale> {
      */
     @Override
     public void modify(Sale sale) throws SQLException, ManagerErrorException {
-        synchronized(modifyQuery) {
-            modifyQuery.setLong(1, sale.getStampRef().getTime());
-            modifyQuery.setInt(2, sale.getUserId());
-            modifyQuery.setInt(3, sale.getProdId());
-            modifyQuery.setInt(4, sale.getDiscId());
-            modifyQuery.setInt(5, sale.getRefundId());
-            modifyQuery.setInt(6, sale.getId());
+        modifyQuery.setLong(1, sale.getStampRef().getTime());
+        modifyQuery.setInt(2, sale.getUserId());
+        modifyQuery.setInt(3, sale.getProdId());
+        modifyQuery.setInt(4, sale.getDiscId());
+        modifyQuery.setInt(5, sale.getRefundId());
+        modifyQuery.setInt(6, sale.getId());
 
-            if(modifyQuery.execute() == false)
-                throw new ManagerErrorException("No se ha encontrado la venta.");
-        }
+        if(modifyQuery.execute() == false)
+            throw new ManagerErrorException("No se ha encontrado la venta.");
     }
 
     /**
@@ -146,12 +138,10 @@ public class SalesMgt implements ManagersIntf<Sale> {
      */
     @Override
     public void remove(Sale sale) throws SQLException, ManagerErrorException {
-        synchronized(deleteQuery) {
-            deleteQuery.setInt(1, sale.getId());
+        deleteQuery.setInt(1, sale.getId());
 
-            // Ejecutamos la sentencia sql.
-            if(deleteQuery.execute() == false) 
-                throw new ManagerErrorException("No se ha encontrado el usuario durante la eliminación del mismo.");
-        }
+        // Ejecutamos la sentencia sql.
+        if(deleteQuery.execute() == false) 
+            throw new ManagerErrorException("No se ha encontrado el usuario durante la eliminación del mismo.");
     }
 }
