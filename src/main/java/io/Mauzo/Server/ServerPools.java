@@ -21,15 +21,15 @@ public class ServerPools {
     private final Semaphore sSemaphore = new Semaphore(maxConnections);
     private final Semaphore rSemaphore = new Semaphore(maxConnections);
     private final Semaphore pSemaphore = new Semaphore(maxConnections);
+    private final Semaphore dSemaphore = new Semaphore(maxConnections);
     // private final Semaphore iSemaphore = new Semaphore(maxConnections);
-    // private final Semaphore dSemaphore = new Semaphore(maxConnections);
 
     private final List<UsersMgt> uConnectionList = new ArrayList<>();
     private final List<SalesMgt> sConnectionList = new ArrayList<>();
     private final List<RefundsMgt> rConnectionList = new ArrayList<>();
     private final List<ProductsMgt> pConnectionList = new ArrayList<>();
+    private final List<DiscountsMgt> dConnectionList = new ArrayList<>();
     // private final List<InformsMgt> iConnectionList = new ArrayList<>();
-    // private final List<DiscountsMgt> dConnectionList = new ArrayList<>();
 
     /**
      * Constructor privado del cual inicializa los objetos que manejarán las
@@ -44,8 +44,8 @@ public class ServerPools {
             sConnectionList.add(new SalesMgt(ServerApp.setConnection()));
             rConnectionList.add(new RefundsMgt(ServerApp.setConnection()));
             pConnectionList.add(new ProductsMgt(ServerApp.setConnection()));
+            dConnectionList.add(new DiscountsMgt(ServerApp.setConnection()));
             // iConnectionList.add(new InformsMgt(ServerApp.setConnection()));
-            // dConnectionList.add(new DiscountsMgt(ServerApp.setConnection()));
         }
     }
 
@@ -94,14 +94,14 @@ public class ServerPools {
     //     return aux;
     // }
 
-    // public DiscountsMgt acquireDiscounts() throws InterruptedException {
-    //     dSemaphore.acquire();
+    public DiscountsMgt acquireDiscounts() throws InterruptedException {
+        dSemaphore.acquire();
 
-    //     DiscountsMgt aux = dConnectionList.get(0);
-    //     dConnectionList.remove(0);
+        DiscountsMgt aux = dConnectionList.get(0);
+        dConnectionList.remove(0);
 
-    //     return aux;
-    // }
+        return aux;
+    }
 
     public void releaseUsers(UsersMgt users) {
         uConnectionList.add(users);
@@ -122,6 +122,16 @@ public class ServerPools {
         pConnectionList.add(products);
         pSemaphore.release();
     }
+
+    public void releaseDiscounts(DiscountsMgt discounts) {
+        dConnectionList.add(discounts);
+        dSemaphore.release();
+    }
+
+    // public void releaseInforms(InformsMgt informs) {
+    //     iConnectionList.add(informs);
+    //     iSemaphore.release();
+    // }
 
     public static ServerPools getController() throws SQLException {
         if (controller == null)
