@@ -62,6 +62,8 @@ public class SalesCtrl {
                 jsonResponse.add(jsonObj);
             }
 
+            ServerPools.getController().releaseSales(salesMgt);
+
             return Response.ok(jsonResponse.build().toString());
         });
     }
@@ -96,6 +98,8 @@ public class SalesCtrl {
                 response = Response.status(Status.OK);
             }
 
+            ServerPools.getController().releaseSales(salesMgt);
+
             return response;
         });
     }
@@ -122,11 +126,13 @@ public class SalesCtrl {
                 jsonResponse.add("refundId", saleAux.getRefundId());
 
                 response = Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
-            } catch(ManagerErrorException e) {
+            } catch (ManagerErrorException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                 ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
             }
+
+            ServerPools.getController().releaseSales(salesMgt);
 
             return response;
         });
@@ -139,7 +145,7 @@ public class SalesCtrl {
             ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
             // Si la informacion que recibe es nula, no se procesa nada.
-            if(jsonData.length() != 0) {
+            if (jsonData.length() != 0) {
                 // Convertimos la información JSON recibida en un objeto.
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
@@ -166,6 +172,8 @@ public class SalesCtrl {
                     ServerApp.getLoggerSystem().info(e.toString());
                     response = Response.status(Status.NOT_FOUND);
                 }
+
+                ServerPools.getController().releaseSales(salesMgt);
             }
 
             return response;
@@ -195,6 +203,8 @@ public class SalesCtrl {
                 ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
             }
+
+            ServerPools.getController().releaseSales(salesMgt);
 
             return response;
         });

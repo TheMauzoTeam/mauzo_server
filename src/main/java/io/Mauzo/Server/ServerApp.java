@@ -113,14 +113,12 @@ public class ServerApp {
         // Creamos la estructura de datos de la bbdd, en caso de ser necesario.
         try (Statement st = connection.createStatement()) {
             // Creamos la estructura de la base de datos
-            st.execute("CREATE TABLE IF NOT EXISTS Users(id SERIAL PRIMARY KEY, firstname TEXT NOT NULL, lastname TEXT NOT NULL, username TEXT UNIQUE NOT NULL, email TEXT NOT NULL, password TEXT NOT NULL, isAdmin BOOLEAN NOT NULL, userPic BYTEA);");
-            st.execute("CREATE TABLE IF NOT EXISTS Discounts(id SERIAL PRIMARY KEY, codeDisc VARCHAR(10) NOT NULL, descDisc TEXT NOT NULL, pricePerc FLOAT NOT NULL);");
-            // TODO: Avisar a lidia que quite el SaleID en Refunds.
-            st.execute("CREATE TABLE IF NOT EXISTS Refunds(id SERIAL PRIMARY KEY, dateRefund TIMESTAMP, userId INTEGER, FOREIGN KEY (userId) REFERENCES Users(Id));");
-            st.execute("CREATE TABLE IF NOT EXISTS Sales(id SERIAL PRIMARY KEY, stampRef TIMESTAMP NOT NULL, prodId INTEGER NOT NULL, discId INTEGER, refundId INTEGER, FOREIGN KEY (refundId) REFERENCES Refunds(Id), FOREIGN KEY (discId) REFERENCES Discounts(Id));");
-            st.execute("CREATE TABLE IF NOT EXISTS Products(id SERIAL PRIMARY KEY, prodName VARCHAR(50) NOT NULL, prodDesc TEXT NOT NULL, prodPrice FLOAT NOT NULL, prodPic BYTEA);");
-            st.execute("CREATE TABLE IF NOT EXISTS Sales_Products(salesId INTEGER NOT NULL, productId INTEGER NOT NULL, PRIMARY KEY (salesId, productId), FOREIGN KEY (salesId) REFERENCES Sales(Id), FOREIGN KEY (productId) REFERENCES Products(Id));");
-
+            st.execute("CREATE TABLE IF NOT EXISTS Discounts (id INT SERIAL, codeDisc VARCHAR(10) NOT NULL, descDisc TEXT NOT NULL, pricePerc FLOAT NOT NULL, PRIMARY KEY (id), UNIQUE (codeDisc ASC) VISIBLE);");
+            st.execute("CREATE TABLE IF NOT EXISTS Products (id INT SERIAL, prodName VARCHAR(45) NULL, prodDescription TEXT NULL, prodPic BYTEA NULL, PRIMARY KEY (id));");
+            st.execute("CREATE TABLE IF NOT EXISTS Refunds (id INT SERIAL, dateRefund VARCHAR(45) NOT NULL, userId INT NULL, PRIMARY KEY (id), FOREIGN KEY (userId) REFERENCES 'Users' (id) ON DELETE CASCADE ON UPDATE CASCADE);");
+            st.execute("CREATE TABLE IF NOT EXISTS Sales (id INT SERIAL, stampRef TIMESTAMP NOT NULL, userId INT NOT NULL, prodId INT NOT NULL, discId INT NULL, refundId INT NULL, PRIMARY KEY (id), FOREIGN KEY (discId) REFERENCES 'Discounts' (id), FOREIGN KEY (refundId) REFERENCES 'Refunds' (id), FOREIGN KEY (prodId) REFERENCES 'Products' (id), FOREIGN KEY (userId) REFERENCES 'Users' (id));");
+            st.execute("CREATE TABLE IF NOT EXISTS Users (id INT SERIAL, firstname VARCHAR(45) NOT NULL, lastname VARCHAR(45) NOT NULL, username VARCHAR(45) NOT NULL, password TEXT NOT NULL, isAdmin BOOLEAN NULL, userPic BYTEA NULL, PRIMARY KEY (id));");
+            
             // Agregamos el usuario administrador
             st.execute("INSERT INTO public.Users(id, firstname, lastname, username, email, password, isAdmin, userPic) VALUES (1, 'Super', 'Administrador', 'admin', 'admin@localhost', '21232f297a57a5a743894a0e4a801fc3', true, null) ON CONFLICT DO NOTHING;");
         }

@@ -91,7 +91,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
     public List<Sale> getList() throws SQLException {
         List<Sale> salesList = new ArrayList<>();
 
-        try(ResultSet rs = getListQuery.executeQuery()) {
+        try (ResultSet rs = getListQuery.executeQuery()) {
             while (rs.next()) {
                 Sale sale = new Sale();
 
@@ -112,7 +112,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
     /**
      * Método para actualizar la venta en la base de datos.
      * 
-     * @param user La venta encapsulado en un objeto.
+     * @param sale La venta encapsulado en un objeto.
      * @throws SQLException Excepcion en la consulta SQL.
      * @throws ManagerErrorException Excepcion dada al no encontrar la venta solicitada.
      */
@@ -125,7 +125,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
         modifyQuery.setInt(5, sale.getRefundId());
         modifyQuery.setInt(6, sale.getId());
 
-        if(modifyQuery.execute() == false)
+        if (modifyQuery.execute() == false)
             throw new ManagerErrorException("No se ha encontrado la venta.");
     }
 
@@ -141,7 +141,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
         deleteQuery.setInt(1, sale.getId());
 
         // Ejecutamos la sentencia sql.
-        if(deleteQuery.execute() == false) 
+        if (deleteQuery.execute() == false) 
             throw new ManagerErrorException("No se ha encontrado el usuario durante la eliminación del mismo.");
     }
 }

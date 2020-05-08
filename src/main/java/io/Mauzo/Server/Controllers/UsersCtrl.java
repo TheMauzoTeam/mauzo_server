@@ -75,6 +75,8 @@ public class UsersCtrl {
                 jsonResponse.add(jsonObj);
             }
             
+            ServerPools.getController().releaseUsers(userMgt);
+
             return Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
         });
     }
@@ -99,9 +101,11 @@ public class UsersCtrl {
             ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
             // Si la informacion que recibe es nula, no se procesa nada.
-            if(jsonData.length() != 0) {
+            if (jsonData.length() != 0) {
                 // Convertimos la información JSON recibida en un objeto.
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
+
+                UsersMgt userMgt = ServerPools.getController().acquireUsers();
 
                 // Incializamos el objeto.
                 User userAux = new User();
@@ -116,13 +120,14 @@ public class UsersCtrl {
                 userAux.setUserPic(ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("userPic"))));
 
                 // Agregamos el usuario a la lista.
-                UsersMgt userMgt = ServerPools.getController().acquireUsers();
-
                 userMgt.add(userAux);
+
+                ServerPools.getController().releaseUsers(userMgt);
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                 response = Response.status(Status.OK);
             }
+
             return response;
         });
     }
@@ -165,11 +170,13 @@ public class UsersCtrl {
 
                 // Lanzamos la respuesta 200 OK si todo ha ido bien.
                 response = Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
-            } catch(ManagerErrorException e) {
+            } catch (ManagerErrorException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                 ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
             }
+
+            ServerPools.getController().releaseUsers(userMgt);
 
             return response;
         });
@@ -193,7 +200,7 @@ public class UsersCtrl {
             ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
             // Si la informacion que recibe es nula, no se procesa nada.
-            if(jsonData.length() != 0) {
+            if (jsonData.length() != 0) {
                 // Convertimos la información JSON recibida en un objeto.
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
@@ -221,6 +228,8 @@ public class UsersCtrl {
                     ServerApp.getLoggerSystem().info(e.toString());
                     response = Response.status(Status.NOT_FOUND);
                 }
+
+                ServerPools.getController().releaseUsers(userMgt);
             }
 
             return response;
@@ -257,6 +266,8 @@ public class UsersCtrl {
                 ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
             }
+
+            ServerPools.getController().releaseUsers(userMgt);
 
             return response;
         });
