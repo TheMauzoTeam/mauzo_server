@@ -12,13 +12,10 @@ import io.Mauzo.Server.Managers.ProductsMgt;
 import io.Mauzo.Server.Managers.InformsMgt;
 import io.Mauzo.Server.Managers.DiscountsMgt;
 
-import org.springframework.beans.factory.annotation.Value;
-
 public class ServerPools {
     private static ServerPools controller = null;
 
-    // @Value("${mauzo.max_parallel_type_connections}")
-    private int maxConnections = 3;
+    private final int maxConnections = 3;
 
     private final Semaphore uSemaphore = new Semaphore(maxConnections);
     private final Semaphore sSemaphore = new Semaphore(maxConnections);
@@ -41,7 +38,7 @@ public class ServerPools {
      * @throws SQLException Puede lanzar alguna excepción si ocurre algún problema
      *                      con la base de datos.
      */
-    private ServerPools() throws SQLException {
+    private ServerPools() throws SQLException {       
         for (int i = 0; i < maxConnections; i++) {
             uConnectionList.add(new UsersMgt(ServerApp.setConnection()));
             sConnectionList.add(new SalesMgt(ServerApp.setConnection()));

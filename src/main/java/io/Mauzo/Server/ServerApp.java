@@ -31,11 +31,11 @@ public class ServerApp {
     private static String url = System.getenv("JDBC_DATABASE_URL");
 
     /**
-     * Método principal que inicializa el servidor Spring Boot,
-     * el cual luego invocará a los métodos y clases que se han
-     * ido desarrollando a lo largo y ancho del proyecto.
+     * Método principal que inicializa el servidor Spring Boot, el cual luego
+     * invocará a los métodos y clases que se han ido desarrollando a lo largo y
+     * ancho del proyecto.
      * 
-     * @param args  Los argumentos que recibe el servidor.
+     * @param args Los argumentos que recibe el servidor.
      */
     public static void main(String[] args) {
         SpringApplication.run(ServerApp.class, args);
@@ -93,9 +93,9 @@ public class ServerApp {
      * Método para inicializar la conexión con la base de datos usado por el
      * servidor.
      * 
-     * Este obtendrá una variable de entorno llamada DATABASE_URL, procedente de la
-     * infraestructura de Heroku usado para albergar el servidor, este tendrá la URL
-     * con los parametros de conexión.
+     * Este obtendrá una variable de entorno llamada JDBC_DATABASE_URL, procedente
+     * de la infraestructura de Heroku usado para albergar el servidor, este tendrá
+     * la URL con los parametros de conexión.
      * 
      * @throws SQLException Execepcion en caso de no poder conectar con la BBDD.
      */
@@ -129,12 +129,12 @@ public class ServerApp {
     }
 
     /**
-     * Setter para indicar una JBDC URL modificado,
-     * util sobretodo para el caso de los test.
+     * Setter para indicar una JDBC URL modificado, util sobretodo para el caso de
+     * los test.
      * 
-     * @param url   La URL JBDC respecto a la BBDD.
+     * @param url La URL JDBC respecto a la BBDD.
      */
-	public static void setUrl(String url) {
-		ServerApp.url = url;
-	}
+    public static void setUrl(String url) {
+        ServerApp.url = url;
+    }
 }

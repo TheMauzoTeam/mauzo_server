@@ -1,15 +1,11 @@
 package io.Mauzo.Server;
 
-import org.junit.Test;
-
 import java.sql.Connection;
+import java.sql.SQLException;
 
+import org.junit.Test;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
-
-import io.Mauzo.Server.ServerApp;
-import io.Mauzo.Server.ServerPools;
 
 public class ConnectionTest {
     /**
@@ -17,9 +13,24 @@ public class ConnectionTest {
      * de pruebas donde se ejecutarán todos los test de 
      * validación respecto a los métodos a probar.
      */
-    @BeforeClass
-    public static void prepareDatabase() {
+    @Before
+    public void prepareDatabase() {
         ServerApp.setUrl("jdbc:postgresql://ec2-46-137-84-173.eu-west-1.compute.amazonaws.com:5432/dctftmid36ou55?user=rmhzzizdqrajgj&password=b97cce549242c156238562ef5850dbd35f5cb77a4779129cf2d59ed3f2054528");
+    }
+
+    /**
+     * Test que comprueba el momento de conectarse a la base de datos
+     * con una URL null lance una excepción esperada para nosotros.
+     * 
+     * @throws Exception    Puede arrojar cualquier tipo de Excepción.
+     */
+    @Test(expected = SQLException.class)
+    public void checkErrorConnection() throws Exception {
+        // Establecemos la URL a nulo, el cual deberia de provocar errores.
+        ServerApp.setUrl(null);
+       
+        // Establecemos conexion, el cual no deberia de poder.
+        Connection conn = ServerApp.setConnection();
     }
 
     /**
