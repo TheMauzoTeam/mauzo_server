@@ -1,6 +1,5 @@
 package io.Mauzo.Server.Managers;
 
-import io.Mauzo.Server.ServerApp;
 import io.Mauzo.Server.Templates.Discount;
 
 import java.sql.*;
