@@ -32,7 +32,6 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
         addQuery.setInt(1, obj.getId());
         addQuery.setDate(2, (Date) obj.getDateRefund());
         addQuery.setInt(3, obj.getUserId());
-        addQuery.setInt(4, obj.getSaleId());
 
         addQuery.execute();
     }
@@ -58,7 +57,6 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
                         refund.setId(resultSet.getInt("id"));
                         refund.setDateRefund(resultSet.getDate("dateRefund"));
                         refund.setUserId(resultSet.getInt("userId"));
-                        refund.setSaleId(resultSet.getInt("saleId"));
                     }
                 else
                     throw new ManagerErrorException("No se ha encontrado la devolución");
@@ -86,7 +84,6 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
                     refund.setId(resultSet.getInt("id"));
                     refund.setDateRefund(resultSet.getDate("dateRefund"));
                     refund.setUserId(resultSet.getInt("userId"));
-                    refund.setSaleId(resultSet.getInt("saleId"));
 
                     refundList.add(refund);
                 }
@@ -107,7 +104,6 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
         modifyQuery.setInt(1, obj.getId());
         modifyQuery.setDate(2, (Date) obj.getDateRefund());
         modifyQuery.setInt(3, obj.getUserId());
-        modifyQuery.setInt(4, obj.getSaleId());
 
         if (modifyQuery.execute() == false)
             throw new ManagerErrorException("No se ha encontrado la devolución");
