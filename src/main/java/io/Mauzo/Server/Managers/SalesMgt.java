@@ -32,6 +32,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
      * @param sale  El objeto de la venta.
      * @throws SQLException Excepcion en la consulta SQL.
      */
+    // FIXME: Esto peta como un demonio porque pueden haber valores nulos, hay que revisar todos los metodos.
     @Override
     public void add(Sale sale) throws SQLException {
         // Asociamos los valores respecto a la sentencia sql.
@@ -64,8 +65,6 @@ public class SalesMgt implements ManagersIntf<Sale> {
         try (ResultSet rs = getIdQuery.executeQuery()) {
             if (!(rs.isLast()))
                 while (rs.next()) {
-                    
-
                     sale.setId(rs.getInt("id"));
                     sale.setStampRef(new Date(rs.getLong("stampRef")));
                     sale.setUserId(rs.getInt("userId"));

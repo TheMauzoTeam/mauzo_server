@@ -15,7 +15,7 @@ import io.Mauzo.Server.Managers.DiscountsMgt;
 public class ServerPools {
     private static ServerPools controller = null;
 
-    private final int maxConnections = 3;
+    private final int maxConnections = Integer.valueOf(ServerUtils.loadProperties().getProperty("mauzo.maxParallel.typeConnections"));
 
     private final Semaphore uSemaphore = new Semaphore(maxConnections);
     private final Semaphore sSemaphore = new Semaphore(maxConnections);
@@ -38,7 +38,8 @@ public class ServerPools {
      * @throws SQLException Puede lanzar alguna excepción si ocurre algún problema
      *                      con la base de datos.
      */
-    private ServerPools() throws SQLException {       
+    private ServerPools() throws SQLException {
+        // private final Semaphore iSemaphore = new Semaphore(maxConnections); 
         for (int i = 0; i < maxConnections; i++) {
             uConnectionList.add(new UsersMgt(ServerApp.setConnection()));
             sConnectionList.add(new SalesMgt(ServerApp.setConnection()));

@@ -5,7 +5,10 @@ import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.DriverManager;
-import java.util.logging.Logger;
+
+// Paquetes relacionados con el registro en la consola de salida.
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 // Paquetes relativos a la inicialización del servidor.
 import org.glassfish.jersey.server.ResourceConfig;
@@ -27,7 +30,7 @@ import io.Mauzo.Server.Controllers.RefundsCtrl;
 @SpringBootApplication
 public class ServerApp {
     private static Connection connection = null;
-    private static Logger loggerSystem = Logger.getLogger("MauzoServer");
+    private static Logger loggerSystem = LogManager.getLogger(ServerApp.class);
     private static String url = System.getenv("JDBC_DATABASE_URL");
 
     /**
@@ -38,7 +41,39 @@ public class ServerApp {
      * @param args Los argumentos que recibe el servidor.
      */
     public static void main(String[] args) {
-        SpringApplication.run(ServerApp.class, args);
+        SpringApplication app = new SpringApplication(ServerApp.class);
+
+        /*
+         * Aqui cargamos las conexiones de nuestra base de datos antes de que sea
+         * requerido por ningún cliente, dado que está clase durante su instaciación
+         * hace muchas operaciones relacionadas con base de datos y multithread y tarda
+         * muchos segundos en completarse.
+         */
+        app.addInitializers((context) -> {
+            try {
+                loggerSystem.info("Loading the database connections...");
+
+                ServerPools test1 = ServerPools.getController();
+                Connection test2 = ServerApp.getConnection();
+
+                // TODO: Preguntar a javi que si los conections simples, sin usarlos con
+                //       Statements ni PreparedStatements establece la conexion directamente.
+                loggerSystem.info("Loaded the database connections!");
+            } catch (Exception e) {
+                loggerSystem.error("The server couldn't be loaded, please check the debug info...");
+                loggerSystem.debug(e.getMessage());
+
+                System.exit(-1);
+            }
+        });
+
+        /*
+         * Ya despues de haber integrado los inicializadores de la base de datos,
+         * arrancamos la aplicacion de spring boot, empezando al principio por estos
+         * incializadores de las lineas anteriores que dejarán preparas las conexiones
+         * con la base de datos.
+         */
+        app.run(args);
     }
 
     /**
@@ -63,6 +98,16 @@ public class ServerApp {
         // config.register(DiscountsCtrl.class);
 
         return config;
+    }
+
+    /**
+     * Setter para indicar una JDBC URL modificado, util sobretodo para el caso de
+     * los test.
+     * 
+     * @param url La URL JDBC respecto a la BBDD.
+     */
+    public static void setUrl(String url) {
+        ServerApp.url = url;
     }
 
     /**
@@ -113,26 +158,16 @@ public class ServerApp {
         // Creamos la estructura de datos de la bbdd, en caso de ser necesario.
         try (Statement st = connection.createStatement()) {
             // Creamos la estructura de la base de datos
-            st.execute("CREATE TABLE IF NOT EXISTS Discounts (id INT SERIAL, codeDisc VARCHAR(10) NOT NULL, descDisc TEXT NOT NULL, pricePerc FLOAT NOT NULL, PRIMARY KEY (id), UNIQUE (codeDisc ASC) VISIBLE);");
-            st.execute("CREATE TABLE IF NOT EXISTS Products (id INT SERIAL, prodName VARCHAR(45) NULL, prodDescription TEXT NULL, prodPic BYTEA NULL, PRIMARY KEY (id));");
-            st.execute("CREATE TABLE IF NOT EXISTS Refunds (id INT SERIAL, dateRefund VARCHAR(45) NOT NULL, userId INT NULL, PRIMARY KEY (id), FOREIGN KEY (userId) REFERENCES 'Users' (id) ON DELETE CASCADE ON UPDATE CASCADE);");
-            st.execute("CREATE TABLE IF NOT EXISTS Sales (id INT SERIAL, stampRef TIMESTAMP NOT NULL, userId INT NOT NULL, prodId INT NOT NULL, discId INT NULL, refundId INT NULL, PRIMARY KEY (id), FOREIGN KEY (discId) REFERENCES 'Discounts' (id), FOREIGN KEY (refundId) REFERENCES 'Refunds' (id), FOREIGN KEY (prodId) REFERENCES 'Products' (id), FOREIGN KEY (userId) REFERENCES 'Users' (id));");
-            st.execute("CREATE TABLE IF NOT EXISTS Users (id INT SERIAL, firstname VARCHAR(45) NOT NULL, lastname VARCHAR(45) NOT NULL, username VARCHAR(45) NOT NULL, password TEXT NOT NULL, isAdmin BOOLEAN NULL, userPic BYTEA NULL, PRIMARY KEY (id));");
-            
+            st.execute("CREATE TABLE IF NOT EXISTS Discounts (id SERIAL, codeDisc VARCHAR(10) NOT NULL, descDisc TEXT NOT NULL, pricePerc FLOAT NOT NULL, PRIMARY KEY (id), UNIQUE (codeDisc));");
+            st.execute("CREATE TABLE IF NOT EXISTS Products (id SERIAL, prodName VARCHAR(45) NULL, prodDescription TEXT NULL, prodPic BYTEA NULL, PRIMARY KEY (id));");
+            st.execute("CREATE TABLE IF NOT EXISTS Users (id SERIAL, firstname VARCHAR(45) NOT NULL, lastname VARCHAR(45) NOT NULL, username VARCHAR(45) NOT NULL, password TEXT NOT NULL, email TEXT NOT NULL, isAdmin BOOLEAN NULL, userPic BYTEA NULL, PRIMARY KEY (id));");
+            st.execute("CREATE TABLE IF NOT EXISTS Refunds (id SERIAL, dateRefund VARCHAR(45) NOT NULL, userId INT NULL, PRIMARY KEY (id), FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE ON UPDATE CASCADE);");
+            st.execute("CREATE TABLE IF NOT EXISTS Sales (id SERIAL, stampRef TIMESTAMP NOT NULL, userId INT NOT NULL, prodId INT NOT NULL, discId INT NULL, refundId INT NULL, PRIMARY KEY (id), FOREIGN KEY (discId) REFERENCES Discounts(id), FOREIGN KEY (refundId) REFERENCES Refunds(id), FOREIGN KEY (prodId) REFERENCES Products(id), FOREIGN KEY (userId) REFERENCES Users(id));");
+
             // Agregamos el usuario administrador
             st.execute("INSERT INTO public.Users(id, firstname, lastname, username, email, password, isAdmin, userPic) VALUES (1, 'Super', 'Administrador', 'admin', 'admin@localhost', '21232f297a57a5a743894a0e4a801fc3', true, null) ON CONFLICT DO NOTHING;");
         }
 
         return connection;
-    }
-
-    /**
-     * Setter para indicar una JDBC URL modificado, util sobretodo para el caso de
-     * los test.
-     * 
-     * @param url La URL JDBC respecto a la BBDD.
-     */
-    public static void setUrl(String url) {
-        ServerApp.url = url;
     }
 }

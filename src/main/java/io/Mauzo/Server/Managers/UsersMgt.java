@@ -27,8 +27,8 @@ public class UsersMgt implements ManagersIntf<User> {
      */
     public UsersMgt(Connection conn) throws SQLException {  
         // Dejamos las consultas preparadas
-        addQuery = conn.prepareStatement("INSERT INTO User (firstname, lastname, username, email, password, isAdmin, userPic) VALUES (?, ?, ?, ?, ?, ?, ?);");
-        getIdQuery = conn.prepareStatement("SELECT * FROM User WHERE id = ?;");
+        addQuery = conn.prepareStatement("INSERT INTO Users (firstname, lastname, username, email, password, isAdmin, userPic) VALUES (?, ?, ?, ?, ?, ?, ?);");
+        getIdQuery = conn.prepareStatement("SELECT * FROM Users WHERE id = ?;");
         getNameQuery = conn.prepareStatement("SELECT * FROM Users WHERE username = ?;");
         getListQuery = conn.prepareStatement("SELECT * FROM Users;");
         modifyQuery = conn.prepareStatement("UPDATE Users SET firstname = ?, lastname = ?, username = ?, email = ?, password = ?, isAdmin = ?, userPic = ? WHILE id = ?;");

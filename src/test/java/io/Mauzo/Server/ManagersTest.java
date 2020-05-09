@@ -17,8 +17,10 @@ public class ManagersTest {
      */
     @BeforeClass
     public static void prepareDatabase() throws Exception {
-        String url = "jdbc:postgresql://ec2-46-137-84-173.eu-west-1.compute.amazonaws.com:5432/dctftmid36ou55?user=rmhzzizdqrajgj&password=b97cce549242c156238562ef5850dbd35f5cb77a4779129cf2d59ed3f2054528";
+        String url = ServerUtils.loadProperties().getProperty("mauzo.debugDatabase.url");
+        
         ServerApp.setUrl(url);
+
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -26,9 +28,9 @@ public class ManagersTest {
             throw new SQLException("No se ha encontrado el driver de PostgreSQL: " + e.toString());
         }
 
-        Connection connection = DriverManager.getConnection(url);
-
-        connection.createStatement().execute("DROP TABLE IF EXISTS Discounts; DROP TABLE IF EXISTS Products; DROP TABLE IF EXISTS Refunds; DROP TABLE IF EXISTS Sales; DROP TABLE IF EXISTS Users;");
+        try (Connection connection = DriverManager.getConnection(url)) {
+            connection.createStatement().execute("DROP TABLE IF EXISTS Sales; DROP TABLE IF EXISTS Refunds; DROP TABLE IF EXISTS Users; DROP TABLE IF EXISTS Products; DROP TABLE IF EXISTS Discounts;"); 
+        }
     }
 
     /**

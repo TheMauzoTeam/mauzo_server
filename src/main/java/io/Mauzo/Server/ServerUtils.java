@@ -3,6 +3,7 @@ package io.Mauzo.Server;
 // Paquetes del framework estandar de java
 import java.util.Base64;
 import java.util.List;
+import java.util.Properties;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -75,11 +76,17 @@ public class ServerUtils {
             response = content.executeContent();
         } catch (SQLException e) {
             // Detectamos errores en la SQL
-            ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL: " + e.toString());
+            ServerApp.getLoggerSystem().warn("Error en procesar la consulta SQL: " + e.toString());
+            ServerApp.getLoggerSystem().debug(e.getMessage());
+            ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
+
             response = Response.serverError();
         } catch (Exception e) {
             // En caso de existir otros errores, devolvemos un error 500 y listo.
-            ServerApp.getLoggerSystem().warning("Error imprevisto: " + e.toString());
+            ServerApp.getLoggerSystem().warn("Error imprevisto: " + e.toString());
+            ServerApp.getLoggerSystem().debug(e.getMessage());
+            ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
+
             response = Response.serverError();
         }
 
@@ -118,11 +125,17 @@ public class ServerUtils {
                 response = content.executeContent();
             } catch (SQLException e) {
                 // Detectamos errores en la SQL
-                ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL: " + e.toString());
+                ServerApp.getLoggerSystem().warn("Error en procesar la consulta SQL: " + e.toString());
+                ServerApp.getLoggerSystem().debug(e.getMessage());
+                ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
+
                 response = Response.serverError();
             } catch (Exception e) {
                 // En caso de existir otros errores, devolvemos un error 500 y listo.
-                ServerApp.getLoggerSystem().warning("Error imprevisto: " + e.toString());
+                ServerApp.getLoggerSystem().warn("Error imprevisto: " + e.toString());
+                ServerApp.getLoggerSystem().debug(e.getMessage());
+                ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
+
                 response = Response.serverError();
             }
         } else {
@@ -165,11 +178,17 @@ public class ServerUtils {
                 response = content.executeContent();
             } catch (SQLException e) {
                 // Detectamos errores en la SQL
-                ServerApp.getLoggerSystem().warning("Error en procesar la consulta SQL: " + e.toString());
+                ServerApp.getLoggerSystem().warn("Error en procesar la consulta SQL: " + e.toString());
+                ServerApp.getLoggerSystem().debug(e.getMessage());
+                ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
+
                 response = Response.serverError();
             } catch (Exception e) {
                 // En caso de existir otros errores, devolvemos un error 500 y listo.
-                ServerApp.getLoggerSystem().warning("Error imprevisto: " + e.toString());
+                ServerApp.getLoggerSystem().warn("Error imprevisto: " + e.toString());
+                ServerApp.getLoggerSystem().debug(e.getMessage());
+                ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
+
                 response = Response.serverError();
             }
         } else {
@@ -383,5 +402,31 @@ public class ServerUtils {
      */
     public static String byteArrayToBase64(byte[] array){
         return Base64.getEncoder().encodeToString(array);
+    }
+
+    /**
+     * Obtiene el fichero application.properties, lo mapea a una nueva instancia 
+     * Properties y la devuelve para su uso.
+     * 
+     * @return  El objeto de properties.
+     */
+    public static Properties loadProperties() {
+        //Obtenemos el contexto actual
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+        // Creamos un objeto properties
+        Properties properties = new Properties();
+
+        // Obtenemos el fichero application.properties y lo cargamos en el objeto
+        try (InputStream resourceStream = loader.getResourceAsStream("application.properties")) {
+            properties.load(resourceStream);
+        } catch (IOException e) {
+            ServerApp.getLoggerSystem().error("Error obtaining application.properties");
+            ServerApp.getLoggerSystem().debug(e.getMessage());
+            ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
+        }
+
+        // Devolvemos el objeto
+        return properties;
     }
 }

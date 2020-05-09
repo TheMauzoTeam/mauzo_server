@@ -93,7 +93,7 @@ public class LoginCtrl {
                     }
 
                 } catch (ManagerErrorException e) {
-                    ServerApp.getLoggerSystem().severe(e.toString());
+                    ServerApp.getLoggerSystem().error(e.toString());
                     response = Response.status(Status.FORBIDDEN);
                 }
             }
