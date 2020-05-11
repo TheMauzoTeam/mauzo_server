@@ -14,10 +14,10 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
     private final PreparedStatement deleteQuery;
 
     public DiscountsMgt(Connection conn) throws SQLException {
-        addQuery = conn.prepareStatement("INSERT INTO Discounts (id, codeDisc, descDisc, pricePrec)");
+        addQuery = conn.prepareStatement("INSERT INTO Discounts (codeDisc, descDisc, pricePrec) VALUES(?, ?, ?)");
         getIdQuery = conn.prepareStatement("SELECT * FROM Discounts WHERE id = ?;");
         getListQuery = conn.prepareStatement("SELECT * FROM Discounts");
-        modifyQuery = conn.prepareStatement("UPDATE Discounts SET codeDisc = ?, descDisc = ?, pricePerc = ? WHILE id = ?;");
+        modifyQuery = conn.prepareStatement("UPDATE Discounts SET codeDisc = ?, descDisc = ?, pricePerc = ? WHERE id = ?;");
         deleteQuery = conn.prepareStatement("DELETE FROM Discounts WHERE id = ?;");
     }
 
@@ -30,10 +30,9 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
     @Override
     public void add(Discount discount) throws SQLException {
         // Asociamos los valores respecto a la sentencia sql.
-        addQuery.setInt(1, discount.getId());
-        addQuery.setString(2, discount.getCode());
-        addQuery.setString(3, discount.getDesc());
-        addQuery.setFloat(4, discount.getPrizeDisc());
+        addQuery.setString(1, discount.getCode());
+        addQuery.setString(2, discount.getDesc());
+        addQuery.setFloat(3, discount.getPrizeDisc());
 
         // Ejecutamos la sentencia sql.
         addQuery.execute();
