@@ -81,7 +81,7 @@ public class ServerPools {
         pSemaphore.acquire();
 
         ProductsMgt aux = pConnectionList.get(0);
-        rConnectionList.remove(0);
+        pConnectionList.remove(0);
 
         return aux;
     }
