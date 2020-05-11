@@ -14,7 +14,7 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
     private final PreparedStatement deleteQuery;
 
     public DiscountsMgt(Connection conn) throws SQLException {
-        addQuery = conn.prepareStatement("INSERT INTO Discounts (codeDisc, descDisc, pricePrec) VALUES(?, ?, ?)");
+        addQuery = conn.prepareStatement("INSERT INTO Discounts (codeDisc, descDisc, pricePerc) VALUES(?, ?, ?)");
         getIdQuery = conn.prepareStatement("SELECT * FROM Discounts WHERE id = ?;");
         getListQuery = conn.prepareStatement("SELECT * FROM Discounts");
         modifyQuery = conn.prepareStatement("UPDATE Discounts SET codeDisc = ?, descDisc = ?, pricePerc = ? WHERE id = ?;");
