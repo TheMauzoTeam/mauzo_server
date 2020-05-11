@@ -3,6 +3,7 @@ package io.Mauzo.Server;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.junit.Test;
 import org.junit.Assert;
@@ -31,8 +32,8 @@ public class ConnectionTest {
             throw new SQLException("No se ha encontrado el driver de PostgreSQL: " + e.toString());
         }
 
-        try (Connection connection = DriverManager.getConnection(url)) {
-            connection.createStatement().execute("DROP TABLE IF EXISTS Sales; DROP TABLE IF EXISTS Refunds; DROP TABLE IF EXISTS Users; DROP TABLE IF EXISTS Products; DROP TABLE IF EXISTS Discounts;");
+        try (Statement st = DriverManager.getConnection(url).createStatement()) {
+            st.execute("DROP TABLE IF EXISTS Sales; DROP TABLE IF EXISTS Refunds; DROP TABLE IF EXISTS Users; DROP TABLE IF EXISTS Products; DROP TABLE IF EXISTS Discounts;");
         }
     }
 
