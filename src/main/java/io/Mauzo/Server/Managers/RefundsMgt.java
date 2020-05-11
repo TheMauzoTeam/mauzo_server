@@ -30,7 +30,7 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
     @Override
     public void add(Refund obj) throws SQLException {
         addQuery.setInt(1, obj.getId());
-        addQuery.setDate(2, (Date) obj.getDateRefund());
+        addQuery.setDate(2, new Date(obj.getDateRefund().getTime()));
         addQuery.setInt(3, obj.getUserId());
 
         addQuery.execute();

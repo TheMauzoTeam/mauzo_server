@@ -5,9 +5,12 @@ import io.Mauzo.Server.Templates.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.Statement;
+
+import java.util.Date;
 
 public class ManagersTest {
     /**
@@ -21,15 +24,14 @@ public class ManagersTest {
         
         ServerApp.setUrl(url);
 
-
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             throw new SQLException("No se ha encontrado el driver de PostgreSQL: " + e.toString());
         }
 
-        try (Connection connection = DriverManager.getConnection(url)) {
-            connection.createStatement().execute("DROP TABLE IF EXISTS Sales; DROP TABLE IF EXISTS Refunds; DROP TABLE IF EXISTS Users; DROP TABLE IF EXISTS Products; DROP TABLE IF EXISTS Discounts;"); 
+        try (Statement st = DriverManager.getConnection(url).createStatement()) {
+            st.execute("DROP TABLE IF EXISTS Sales; DROP TABLE IF EXISTS Refunds; DROP TABLE IF EXISTS Users; DROP TABLE IF EXISTS Products; DROP TABLE IF EXISTS Discounts;");
         }
     }
 
@@ -42,6 +44,9 @@ public class ManagersTest {
     @Test(expected = SQLException.class)
     public void testRefunds() throws Exception {
         Refund refund = new Refund();
+
+        refund.setDateRefund(new Date());
+        refund.setUserId(1);
 
         RefundsMgt refundsMgt = ServerPools.getController().acquireRefunds();
 
@@ -65,6 +70,11 @@ public class ManagersTest {
     public void testProducts() throws Exception {
         Product product = new Product();
 
+        product.setCode("1878");
+        product.setDescription("redondo");
+        product.setName("balón");
+        product.setPrice(10.0f);
+
         ProductsMgt productsMgt = ServerPools.getController().acquireProducts();
 
         productsMgt.add(product);
@@ -87,6 +97,12 @@ public class ManagersTest {
     public void testSales() throws Exception {
         Sale sale = new Sale();
 
+        sale.setDiscId(1);
+        sale.setProdId(1);
+        sale.setRefundId(1);
+        sale.setUserId(1);
+        sale.setStampRef(new Date());
+
         SalesMgt salesMgt = ServerPools.getController().acquireSales();
 
         salesMgt.add(sale);
@@ -108,11 +124,16 @@ public class ManagersTest {
     public void testUsers() throws Exception {
         User user = new User();
 
+        user.setUsername("brrrr");
+        user.setFirstName("brrrrr");
+        user.setLastName("brrrrrrrrr");
+        user.setPassword("brrrrrrrrrrrr");
+        user.setEmail("brrrrrrr@BRRRRRRRRRRR.br");
+
         UsersMgt usersMgt = ServerPools.getController().acquireUsers();
 
         usersMgt.add(user);
         usersMgt.get(0);
-        usersMgt.get("Estefania");
         usersMgt.getList();
         usersMgt.modify(user);
         usersMgt.remove(user);
@@ -129,6 +150,10 @@ public class ManagersTest {
     @Test
     public void testDiscounts() throws Exception {
         Discount discount = new Discount();
+
+        discount.setCode("151");
+        discount.setDesc("753");
+        discount.setPriceDisc(15.9f);
 
         DiscountsMgt discountsMgt = ServerPools.getController().acquireDiscounts();
 
