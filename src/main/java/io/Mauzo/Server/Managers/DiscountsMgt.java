@@ -115,6 +115,7 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
         modifyQuery.setString(1, discount.getCode());
         modifyQuery.setString(2, discount.getDesc());
         modifyQuery.setFloat(3, discount.getPrizeDisc());
+        modifyQuery.setInt(4, discount.getId());
 
         // Ejecutamos la sentencia sql.
         if (modifyQuery.execute() == false)
