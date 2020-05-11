@@ -159,13 +159,13 @@ public class ServerApp {
         try (Statement st = connection.createStatement()) {
             // Creamos la estructura de la base de datos
             st.execute("CREATE TABLE IF NOT EXISTS Discounts (id SERIAL, codeDisc VARCHAR(10) NOT NULL, descDisc TEXT NOT NULL, pricePerc FLOAT NOT NULL, PRIMARY KEY (id), UNIQUE (codeDisc));");
-            st.execute("CREATE TABLE IF NOT EXISTS Products (id SERIAL, prodName VARCHAR(45) NULL, prodDescription TEXT NULL, prodPic BYTEA NULL, PRIMARY KEY (id));");
+            st.execute("CREATE TABLE IF NOT EXISTS Products (id SERIAL, prodName VARCHAR(45) NOT NULL, prodCode VARCHAR(45) NOT NULL, prodPrice FLOAT NOT NULL, prodDescription TEXT NULL, prodPic BYTEA NULL, PRIMARY KEY (id));");
             st.execute("CREATE TABLE IF NOT EXISTS Users (id SERIAL, firstname VARCHAR(45) NOT NULL, lastname VARCHAR(45) NOT NULL, username VARCHAR(45) NOT NULL, password TEXT NOT NULL, email TEXT NOT NULL, isAdmin BOOLEAN NULL, userPic BYTEA NULL, PRIMARY KEY (id));");
             st.execute("CREATE TABLE IF NOT EXISTS Refunds (id SERIAL, dateRefund VARCHAR(45) NOT NULL, userId INT NULL, PRIMARY KEY (id), FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE ON UPDATE CASCADE);");
             st.execute("CREATE TABLE IF NOT EXISTS Sales (id SERIAL, stampRef TIMESTAMP NOT NULL, userId INT NOT NULL, prodId INT NOT NULL, discId INT NULL, refundId INT NULL, PRIMARY KEY (id), FOREIGN KEY (discId) REFERENCES Discounts(id), FOREIGN KEY (refundId) REFERENCES Refunds(id), FOREIGN KEY (prodId) REFERENCES Products(id), FOREIGN KEY (userId) REFERENCES Users(id));");
 
             // Agregamos el usuario administrador
-            st.execute("INSERT INTO public.Users(id, firstname, lastname, username, email, password, isAdmin, userPic) VALUES (1, 'Super', 'Administrador', 'admin', 'admin@localhost', '21232f297a57a5a743894a0e4a801fc3', true, null) ON CONFLICT DO NOTHING;");
+            st.execute("INSERT INTO public.Users(firstname, lastname, username, email, password, isAdmin, userPic) VALUES ('Super', 'Administrador', 'admin', 'admin@localhost', '21232f297a57a5a743894a0e4a801fc3', true, null) ON CONFLICT DO NOTHING;");
         }
 
         return connection;

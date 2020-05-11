@@ -31,7 +31,7 @@ public class UsersMgt implements ManagersIntf<User> {
         getIdQuery = conn.prepareStatement("SELECT * FROM Users WHERE id = ?;");
         getNameQuery = conn.prepareStatement("SELECT * FROM Users WHERE username = ?;");
         getListQuery = conn.prepareStatement("SELECT * FROM Users;");
-        modifyQuery = conn.prepareStatement("UPDATE Users SET firstname = ?, lastname = ?, username = ?, email = ?, password = ?, isAdmin = ?, userPic = ? WHILE id = ?;");
+        modifyQuery = conn.prepareStatement("UPDATE Users SET firstname = ?, lastname = ?, username = ?, email = ?, password = ?, isAdmin = ?, userPic = ? WHERE id = ?;");
         deleteQuery = conn.prepareStatement("DELETE FROM Users WHERE id = ?;");
     }
 
