@@ -19,11 +19,11 @@ public class ProductsMgt implements ManagersIntf<Product>{
     private final PreparedStatement removeQuery;
 
     public ProductsMgt(Connection connection) throws SQLException {
-        addQuery = connection.prepareStatement("INSERT INTO Products (id, code, ProdName, ProdPrice, ProdDesc, ProdPic) VALUES (?, ?, ?, ?, ?, ?);");
+        addQuery = connection.prepareStatement("INSERT INTO Products ( ProdCode, ProdName, ProdPrice, ProdDesc, ProdPic) VALUES ( ?, ?, ?, ?, ?);");
         getIdQuery = connection.prepareStatement("SELECT * FROM Products WHERE id = ?;");
         getNameQuery = connection.prepareStatement("SELECT * FROM Products WHERE prodName = ?;");
         getListQuery = connection.prepareStatement("SELECT * FROM Products");
-        modifyQuery = connection.prepareStatement("UPDATE Users SET code = ?, prodName = ?, prodPrice = ?, prodDesc = ? WHILE id = ?");
+        modifyQuery = connection.prepareStatement("UPDATE Products SET ProdCode = ?, prodName = ?, prodPrice = ?, prodDesc = ? WHERE id = ?");
         removeQuery = connection.prepareStatement("DELETE FROM Products WHERE id = ?;");
     }
 
@@ -36,12 +36,11 @@ public class ProductsMgt implements ManagersIntf<Product>{
     @Override
     public void add(Product product) throws SQLException{
             //Asociamos los valores
-            addQuery.setInt(1, product.getId());
-            addQuery.setString(2, product.getCode());
-            addQuery.setString(3, product.getName());
-            addQuery.setDouble(4,product.getPrice());
-            addQuery.setString(5, product.getDescription());
-            addQuery.setBytes(6, ServerUtils.imageToByteArray(product.getPicture(),"png"));
+            addQuery.setString(1, product.getCode());
+            addQuery.setString(2, product.getName());
+            addQuery.setDouble(3,product.getPrice());
+            addQuery.setString(4, product.getDescription());
+            addQuery.setBytes(5, ServerUtils.imageToByteArray(product.getPicture(),"png"));
             //Ejecutamos la sentencia SQl
             addQuery.execute();
     }
@@ -68,7 +67,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
                          product = new Product();
 
                          product.setId(resultSet.getInt("id"));
-                         product.setCode(resultSet.getString("code"));
+                         product.setCode(resultSet.getString("ProdCode"));
                          product.setName(resultSet.getString("prodName"));
                          product.setPrice(resultSet.getFloat("prodPrice"));
                          product.setDescription(resultSet.getString("prodDesc"));
@@ -101,7 +100,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
                         product = new Product();
 
                         product.setId(resultSet.getInt("id"));
-                        product.setCode(resultSet.getString("code"));
+                        product.setCode(resultSet.getString("ProdCode"));
                         product.setDescription(resultSet.getString("prodDesc"));
                         product.setPrice(resultSet.getFloat("prodPrice"));
                         product.setName(resultSet.getString("prodName"));
@@ -135,7 +134,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
                     product.setId(resultSet.getInt("id"));
                     product.setName(resultSet.getString("prodName"));
                     product.setPrice(resultSet.getFloat("prodPrice"));
-                    product.setCode(resultSet.getString("code"));
+                    product.setCode(resultSet.getString("ProdCode"));
                     product.setDescription(resultSet.getString("prodDesc"));
                     product.setPicture(ServerUtils.imageFromByteArray(resultSet.getBytes("prodPic")));
 

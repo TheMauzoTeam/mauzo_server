@@ -41,7 +41,7 @@ public class ManagersTest {
      * @throws Exception Se indica que se espera que lance una excepción SQL
      */
     //TEST REFUNDS
-    @Test(expected = SQLException.class)
+    @Test
     public void testRefunds() throws Exception {
         Refund refund = new Refund();
 
@@ -66,7 +66,7 @@ public class ManagersTest {
      *
      * @throws Exception Se indica que se espera que lance una excepción SQL
      */
-    @Test(expected = SQLException.class)
+    @Test
     public void testProducts() throws Exception {
         Product product = new Product();
 
@@ -93,7 +93,7 @@ public class ManagersTest {
      * @throws Exception Se indica que se espera que lance una excepción SQL
      */
     //TEST SALES
-    @Test(expected = SQLException.class)
+    @Test
     public void testSales() throws Exception {
         Sale sale = new Sale();
 
@@ -133,10 +133,10 @@ public class ManagersTest {
         UsersMgt usersMgt = ServerPools.getController().acquireUsers();
 
         usersMgt.add(user);
-        usersMgt.get(0);
+        User user1 = usersMgt.get(1);
         usersMgt.getList();
-        usersMgt.modify(user);
-        usersMgt.remove(user);
+        usersMgt.modify(user1);
+        usersMgt.remove(user1);
 
         ServerPools.getController().releaseUsers(usersMgt);
     }
@@ -158,10 +158,10 @@ public class ManagersTest {
         DiscountsMgt discountsMgt = ServerPools.getController().acquireDiscounts();
 
         discountsMgt.add(discount);
-        discountsMgt.get(0);
+        Discount discount1 = discountsMgt.get(1);
         discountsMgt.getList();
-        discountsMgt.modify(discount);
-        discountsMgt.remove(discount);
+        discountsMgt.modify(discount1);
+        discountsMgt.remove(discount1);
 
         ServerPools.getController().releaseDiscounts(discountsMgt);
     }
