@@ -14,10 +14,10 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
     private final PreparedStatement removeQuery;
 
     public RefundsMgt(Connection connection) throws SQLException{
-        addQuery = connection.prepareStatement("INSERT INTO Refunds ( dateRefund, userId, saleId) VALUES (?, ?, ?, ?);");
+        addQuery = connection.prepareStatement("INSERT INTO Refunds ( dateRefund, userId) VALUES (?, ?);");
         getIdQuery = connection.prepareStatement("SELECT * FROM User WHERE id = ?;");
         getListQuery = connection.prepareStatement("SELECT * FROM Refunds");
-        modifyQuery = connection.prepareStatement("UPDATE Refunds SET id = ?, dateRefund = ?, userId = ?, SaleId = ? WHILE id = ?;");
+        modifyQuery = connection.prepareStatement("UPDATE Refunds SET dateRefund = ?, userId = ? WHERE id = ?;");
         removeQuery = connection.prepareStatement("DELETE FROM Refunds WHERE id = ?;");
     }
 
@@ -29,8 +29,8 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public void add(Refund obj) throws SQLException {
-        addQuery.setDate(2, new Date(obj.getDateRefund().getTime()));
-        addQuery.setInt(3, obj.getUserId());
+        addQuery.setDate(1, new Date(obj.getDateRefund().getTime()));
+        addQuery.setInt(2, obj.getUserId());
 
         addQuery.execute();
     }
@@ -100,9 +100,9 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public void modify(Refund obj) throws SQLException, ManagerErrorException {
-        modifyQuery.setInt(1, obj.getId());
-        modifyQuery.setDate(2, (Date) obj.getDateRefund());
-        modifyQuery.setInt(3, obj.getUserId());
+        modifyQuery.setDate(1, (Date) obj.getDateRefund());
+        modifyQuery.setInt(2, obj.getUserId());
+        modifyQuery.setInt(3, obj.getId());
 
         if (modifyQuery.execute() == false)
             throw new ManagerErrorException("No se ha encontrado la devolución");

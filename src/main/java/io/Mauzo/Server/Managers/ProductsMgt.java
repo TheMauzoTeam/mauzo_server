@@ -158,7 +158,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
             modifyQuery.setString(2, obj.getName());
             modifyQuery.setDouble(3, obj.getPrice());
             modifyQuery.setString(4,obj.getDescription());
-            modifyQuery.setBytes(7,ServerUtils.imageToByteArray(obj.getPicture(),"png"));
+            modifyQuery.setBytes(5,ServerUtils.imageToByteArray(obj.getPicture(),"png"));
     }
 
     /**
