@@ -56,7 +56,6 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
 
         // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
         try (ResultSet rs = getIdQuery.executeQuery()) {
-            discount = new Discount();
             if (!(rs.isLast()))
                 while (rs.next()) {
                     discount = new Discount();
