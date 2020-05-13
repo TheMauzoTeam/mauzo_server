@@ -1,11 +1,7 @@
 package io.Mauzo.Server.Managers;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.Mauzo.Server.Templates.Sale;
@@ -32,15 +28,14 @@ public class SalesMgt implements ManagersIntf<Sale> {
      * @param sale  El objeto de la venta.
      * @throws SQLException Excepcion en la consulta SQL.
      */
-    // FIXME: Esto peta como un demonio porque pueden haber valores nulos, hay que revisar todos los metodos.
     @Override
     public void add(Sale sale) throws SQLException {
         // Asociamos los valores respecto a la sentencia sql.
-        addQuery.setLong(1, sale.getStampRef().getTime());
+        addQuery.setDate(1, new Date(sale.getStampRef().getTime()));
         addQuery.setInt(2, sale.getUserId());
         addQuery.setInt(3, sale.getProdId());
         addQuery.setInt(4, sale.getDiscId());
-        addQuery.setInt(4, sale.getProdId());
+        addQuery.setInt(5, sale.getProdId());
 
         // Ejecutamos la sentencia sql.
         addQuery.execute();
@@ -63,17 +58,16 @@ public class SalesMgt implements ManagersIntf<Sale> {
 
         // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
         try (ResultSet rs = getIdQuery.executeQuery()) {
-            if (!(rs.isLast()))
-                while (rs.next()) {
-                    sale.setId(rs.getInt("id"));
-                    sale.setStampRef(new Date(rs.getLong("stampRef")));
-                    sale.setUserId(rs.getInt("userId"));
-                    sale.setProdId(rs.getInt("prodId"));
-                    sale.setDiscId(rs.getInt("discId"));
-                    sale.setRefundId(rs.getInt("refundId"));
-                }
-            else
+            if (rs.next()) {
+                sale.setId(rs.getInt("id"));
+                sale.setStampRef(new Date(rs.getDate("stampRef").getTime()));
+                sale.setUserId(rs.getInt("userId"));
+                sale.setProdId(rs.getInt("prodId"));
+                sale.setDiscId(rs.getInt("discId"));
+                sale.setRefundId(rs.getInt("refundId"));
+            } else {
                 throw new ManagerErrorException("No se ha encontrado la venta");
+            }
         }
 
         return sale;
@@ -95,7 +89,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
                 Sale sale = new Sale();
 
                 sale.setId(rs.getInt("id"));
-                sale.setStampRef(new Date(rs.getLong("stampRef")));
+                sale.setStampRef(rs.getDate("stampRef"));
                 sale.setUserId(rs.getInt("userId"));
                 sale.setProdId(rs.getInt("prodId"));
                 sale.setDiscId(rs.getInt("discId"));
@@ -117,7 +111,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
      */
     @Override
     public void modify(Sale sale) throws SQLException, ManagerErrorException {
-        modifyQuery.setLong(1, sale.getStampRef().getTime());
+        modifyQuery.setDate(1, (Date) sale.getStampRef());
         modifyQuery.setInt(2, sale.getUserId());
         modifyQuery.setInt(3, sale.getProdId());
         modifyQuery.setInt(4, sale.getDiscId());

@@ -44,25 +44,29 @@ public class SalesCtrl {
         return ServerUtils.genericUserMethod(req, null, null, () -> {
             JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
 
+            // Adquirimos una conexión de ventas
             SalesMgt salesMgt = ServerPools.getController().acquireSales();
 
-            for (Sale sale : salesMgt.getList()) {
-                // Inicializamos los objetos a usar.
-                JsonObjectBuilder jsonObj = Json.createObjectBuilder();
-
-                // Construimos el objeto Json con los atributo de la venta.
-                jsonObj.add("id", sale.getId());
-                jsonObj.add("stampRef", sale.getStampRef().getTime());
-                jsonObj.add("userId", sale.getUserId());
-                jsonObj.add("prodId", sale.getProdId());
-                jsonObj.add("discId", sale.getDiscId());
-                jsonObj.add("refundId", sale.getRefundId());
-
-                // Lo añadimos al Json Array.
-                jsonResponse.add(jsonObj);
+            try {
+                for (Sale sale : salesMgt.getList()) {
+                    // Inicializamos los objetos a usar.
+                    JsonObjectBuilder jsonObj = Json.createObjectBuilder();
+    
+                    // Construimos el objeto Json con los atributo de la venta.
+                    jsonObj.add("id", sale.getId());
+                    jsonObj.add("stampRef", sale.getStampRef().getTime());
+                    jsonObj.add("userId", sale.getUserId());
+                    jsonObj.add("prodId", sale.getProdId());
+                    jsonObj.add("discId", sale.getDiscId());
+                    jsonObj.add("refundId", sale.getRefundId());
+    
+                    // Lo añadimos al Json Array.
+                    jsonResponse.add(jsonObj);
+                }
+            } finally {
+                // Devolvemos la conexión de ventas
+                ServerPools.getController().releaseSales(salesMgt);
             }
-
-            ServerPools.getController().releaseSales(salesMgt);
 
             return Response.ok(jsonResponse.build().toString());
         });
@@ -74,31 +78,35 @@ public class SalesCtrl {
         return ServerUtils.genericUserMethod(req, null, jsonData, () -> {
             ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
+            // Adquirimos una conexión de ventas
             SalesMgt salesMgt = ServerPools.getController().acquireSales();
 
-            // Si la informacion que recibe es nula, no se procesa nada
-            if (jsonData.length() != 0) {
-                // Convertimos la información JSON recibida en un objeto.
-                final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
-            
-                // Incializamos el objeto.
-                Sale saleAux = new Sale();
+            try {
+                // Si la informacion que recibe es nula, no se procesa nada
+                if (jsonData.length() != 0) {
+                    // Convertimos la información JSON recibida en un objeto.
+                    final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
+                
+                    // Incializamos el objeto.
+                    Sale saleAux = new Sale();
 
-                // Agregamos la información de la venta.
-                saleAux.setUserId(jsonRequest.getInt("userId"));
-                saleAux.setDiscId(jsonRequest.getInt("discId"));
-                saleAux.setProdId(jsonRequest.getInt("prodId"));
-                saleAux.setRefundId(jsonRequest.getInt("refundId"));
-                saleAux.setStampRef(new Date(Long.valueOf(jsonRequest.getString("stampRef"))));
-            
-                // Agregamos la venta a la lista.
-                salesMgt.add(saleAux);
+                    // Agregamos la información de la venta.
+                    saleAux.setUserId(jsonRequest.getInt("userId"));
+                    saleAux.setDiscId(jsonRequest.getInt("discId"));
+                    saleAux.setProdId(jsonRequest.getInt("prodId"));
+                    saleAux.setRefundId(jsonRequest.getInt("refundId"));
+                    saleAux.setStampRef(new Date(Long.valueOf(jsonRequest.getString("stampRef"))));
+                
+                    // Agregamos la venta a la lista.
+                    salesMgt.add(saleAux);
 
-                // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
-                response = Response.status(Status.OK);
-            }
-
-            ServerPools.getController().releaseSales(salesMgt);
+                    // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
+                    response = Response.status(Status.OK);
+                }
+            } finally {
+                // Devolvemos la conexión de ventas
+                ServerPools.getController().releaseSales(salesMgt);
+            }           
 
             return response;
         });
@@ -110,6 +118,7 @@ public class SalesCtrl {
         return ServerUtils.genericUserMethod(req, paramId, null, () -> {
             ResponseBuilder response = null;
 
+            // Adquirimos una conexión de ventas
             SalesMgt salesMgt = ServerPools.getController().acquireSales();
 
             try {
@@ -130,9 +139,10 @@ public class SalesCtrl {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                 ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
+            } finally {
+                // Devolvemos la conexión de ventas
+                ServerPools.getController().releaseSales(salesMgt);
             }
-
-            ServerPools.getController().releaseSales(salesMgt);
 
             return response;
         });
@@ -149,6 +159,7 @@ public class SalesCtrl {
                 // Convertimos la información JSON recibida en un objeto.
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
+                // Adquirimos una conexión de ventas
                 SalesMgt salesMgt = ServerPools.getController().acquireSales();
 
                 try  {
@@ -171,9 +182,10 @@ public class SalesCtrl {
                     // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                     ServerApp.getLoggerSystem().info(e.toString());
                     response = Response.status(Status.NOT_FOUND);
-                }
-
-                ServerPools.getController().releaseSales(salesMgt);
+                } finally {
+                    // Devolvemos la conexión de ventas
+                    ServerPools.getController().releaseSales(salesMgt);
+                }                
             }
 
             return response;
@@ -186,6 +198,7 @@ public class SalesCtrl {
         return ServerUtils.genericUserMethod(req, paramId, null, () -> {
             ResponseBuilder response;
 
+            // Adquirimos una conexión de ventas
             SalesMgt salesMgt = ServerPools.getController().acquireSales();
 
             try {
@@ -202,9 +215,10 @@ public class SalesCtrl {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                 ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
+            } finally {
+                // Devolvemos la conexión de ventas
+                ServerPools.getController().releaseSales(salesMgt);
             }
-
-            ServerPools.getController().releaseSales(salesMgt);
 
             return response;
         });

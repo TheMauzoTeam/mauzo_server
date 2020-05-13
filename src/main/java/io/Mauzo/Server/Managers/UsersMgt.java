@@ -75,21 +75,20 @@ public class UsersMgt implements ManagersIntf<User> {
 
         // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
         try (ResultSet rs = getIdQuery.executeQuery()) {
-            if (!(rs.isLast()))
-                while (rs.next()) {
-                    user = new User();
+            if (rs.next()) {
+                user = new User();
 
-                    user.setId(rs.getInt("id"));
-                    user.setAdmin(rs.getBoolean("isAdmin"));
-                    user.setEmail(rs.getString("email"));
-                    user.setFirstName(rs.getString("firstname"));
-                    user.setLastName(rs.getString("lastname"));
-                    user.setPassword(rs.getString("password"));
-                    user.setUsername(rs.getString("username"));
-                    user.setUserPic(ServerUtils.imageFromByteArray(rs.getBytes("userPic")));
-                }
-            else 
+                user.setId(rs.getInt("id"));
+                user.setAdmin(rs.getBoolean("isAdmin"));
+                user.setEmail(rs.getString("email"));
+                user.setFirstName(rs.getString("firstname"));
+                user.setLastName(rs.getString("lastname"));
+                user.setPassword(rs.getString("password"));
+                user.setUsername(rs.getString("username"));
+                user.setUserPic(ServerUtils.imageFromByteArray(rs.getBytes("userPic")));
+            } else { 
                 throw new ManagerErrorException("No se ha encontrado el usuario");
+            }
         }
 
         return user;
@@ -113,21 +112,20 @@ public class UsersMgt implements ManagersIntf<User> {
 
         // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
         try (ResultSet rs = getNameQuery.executeQuery()) {
-            if (!(rs.isLast()))
-                while (rs.next()) {
-                    user = new User();
+            if (rs.next()) {
+                user = new User();
 
-                    user.setId(rs.getInt("id"));
-                    user.setAdmin(rs.getBoolean("isAdmin"));
-                    user.setEmail(rs.getString("email"));
-                    user.setFirstName(rs.getString("firstname"));
-                    user.setLastName(rs.getString("lastname"));
-                    user.setPassword(rs.getString("password"));
-                    user.setUsername(rs.getString("username"));
-                    user.setUserPic(ServerUtils.imageFromByteArray(rs.getBytes("userPic")));
-                }
-            else
+                user.setId(rs.getInt("id"));
+                user.setAdmin(rs.getBoolean("isAdmin"));
+                user.setEmail(rs.getString("email"));
+                user.setFirstName(rs.getString("firstname"));
+                user.setLastName(rs.getString("lastname"));
+                user.setPassword(rs.getString("password"));
+                user.setUsername(rs.getString("username"));
+                user.setUserPic(ServerUtils.imageFromByteArray(rs.getBytes("userPic")));
+            } else {
                 throw new ManagerErrorException("No se ha encontrado el usuario");
+            }
         }
 
         return user;

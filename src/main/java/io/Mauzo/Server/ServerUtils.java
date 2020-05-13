@@ -77,6 +77,8 @@ public class ServerUtils {
         } catch (SQLException e) {
             // Detectamos errores en la SQL
             ServerApp.getLoggerSystem().warn("Error en procesar la consulta SQL: " + e.toString());
+
+            // Informacion necesaria en procesos de debug.
             ServerApp.getLoggerSystem().debug(e.getMessage());
             ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
 
@@ -84,6 +86,8 @@ public class ServerUtils {
         } catch (Exception e) {
             // En caso de existir otros errores, devolvemos un error 500 y listo.
             ServerApp.getLoggerSystem().warn("Error imprevisto: " + e.toString());
+
+            // Informacion necesaria en procesos de debug.
             ServerApp.getLoggerSystem().debug(e.getMessage());
             ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
 
@@ -401,7 +405,7 @@ public class ServerUtils {
      * @return Cadena de carácteres en Base64
      */
     public static String byteArrayToBase64(byte[] array){
-        return Base64.getEncoder().encodeToString(array);
+        return (array == null) ? "" : Base64.getEncoder().encodeToString(array);
     }
 
     /**
@@ -422,6 +426,7 @@ public class ServerUtils {
             properties.load(resourceStream);
         } catch (IOException e) {
             ServerApp.getLoggerSystem().error("Error obtaining application.properties");
+            
             ServerApp.getLoggerSystem().debug(e.getMessage());
             ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
         }

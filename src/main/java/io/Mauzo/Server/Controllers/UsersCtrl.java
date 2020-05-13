@@ -51,31 +51,35 @@ public class UsersCtrl {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getLists(@Context final HttpServletRequest req){
+    public Response getLists(@Context final HttpServletRequest req) {
         return ServerUtils.genericAdminMethod(req, null, null, () -> {
             JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
             
+            // Adquirimos una conexión de usuarios
             UsersMgt userMgt = ServerPools.getController().acquireUsers();
 
-            // Recorremos la lista que nos ha entregado el servidor.
-            for (User user : userMgt.getList()) {
-                // Inicializamos los objetos a usar.
-                JsonObjectBuilder jsonObj = Json.createObjectBuilder();
+            try {
+                // Recorremos la lista que nos ha entregado el servidor.
+                for (User user : userMgt.getList()) {
+                    // Inicializamos los objetos a usar.
+                    JsonObjectBuilder jsonObj = Json.createObjectBuilder();
 
-                // Construimos el objeto Json con los atributo del usuario.
-                jsonObj.add("id", user.getId());
-                jsonObj.add("username", user.getUsername());
-                jsonObj.add("firstname", user.getFirstName());
-                jsonObj.add("lastname", user.getLastName());
-                jsonObj.add("email", user.getEmail());
-                jsonObj.add("isAdmin", user.isAdmin());
-                jsonObj.add("userPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(user.getUserPic(), "png")));
+                    // Construimos el objeto Json con los atributo del usuario.
+                    jsonObj.add("id", user.getId());
+                    jsonObj.add("username", user.getUsername());
+                    jsonObj.add("firstname", user.getFirstName());
+                    jsonObj.add("lastname", user.getLastName());
+                    jsonObj.add("email", user.getEmail());
+                    jsonObj.add("isAdmin", user.isAdmin());
+                    jsonObj.add("userPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(user.getUserPic(), "png")));
 
-                // Lo añadimos al Json Array.
-                jsonResponse.add(jsonObj);
+                    // Lo añadimos al Json Array.
+                    jsonResponse.add(jsonObj);
+                }
+            } finally {
+                // Devolvemos la conexión de usuarios
+                ServerPools.getController().releaseUsers(userMgt);
             }
-            
-            ServerPools.getController().releaseUsers(userMgt);
 
             return Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
         });
@@ -105,24 +109,28 @@ public class UsersCtrl {
                 // Convertimos la información JSON recibida en un objeto.
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
+                // Adquirimos una conexión de usuarios
                 UsersMgt userMgt = ServerPools.getController().acquireUsers();
 
-                // Incializamos el objeto.
-                User userAux = new User();
+                try {
+                    // Incializamos el objeto.
+                    User userAux = new User();
 
-                // Agregamos la información al usuario.
-                userAux.setUsername(jsonRequest.getString("username"));
-                userAux.setFirstName(jsonRequest.getString("firstname"));
-                userAux.setLastName(jsonRequest.getString("lastname"));
-                userAux.setEmail(jsonRequest.getString("email"));
-                userAux.setPassword(jsonRequest.getString("password"));
-                userAux.setAdmin(jsonRequest.getBoolean("isAdmin"));
-                userAux.setUserPic(ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("userPic"))));
+                    // Agregamos la información al usuario.
+                    userAux.setUsername(jsonRequest.getString("username"));
+                    userAux.setFirstName(jsonRequest.getString("firstname"));
+                    userAux.setLastName(jsonRequest.getString("lastname"));
+                    userAux.setEmail(jsonRequest.getString("email"));
+                    userAux.setPassword(jsonRequest.getString("password"));
+                    userAux.setAdmin(jsonRequest.getBoolean("isAdmin"));
+                    userAux.setUserPic(ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("userPic"))));
 
-                // Agregamos el usuario a la lista.
-                userMgt.add(userAux);
-
-                ServerPools.getController().releaseUsers(userMgt);
+                    // Agregamos el usuario a la lista.
+                    userMgt.add(userAux);
+                } finally {
+                    // Devolvemos la conexión de usuarios
+                    ServerPools.getController().releaseUsers(userMgt);
+                }
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                 response = Response.status(Status.OK);
@@ -152,6 +160,7 @@ public class UsersCtrl {
         return ServerUtils.genericAdminMethod(req, paramId, null, () -> {
             ResponseBuilder response = null;
 
+            // Adquirimos una conexión de usuarios
             UsersMgt userMgt = ServerPools.getController().acquireUsers();
 
             try {
@@ -174,9 +183,10 @@ public class UsersCtrl {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                 ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
+            } finally {
+                // Devolvemos la conexión de usuarios
+                ServerPools.getController().releaseUsers(userMgt);
             }
-
-            ServerPools.getController().releaseUsers(userMgt);
 
             return response;
         });
@@ -204,6 +214,7 @@ public class UsersCtrl {
                 // Convertimos la información JSON recibida en un objeto.
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
+                // Adquirimos una conexión de usuarios
                 UsersMgt userMgt = ServerPools.getController().acquireUsers();
 
                 try {
@@ -227,9 +238,10 @@ public class UsersCtrl {
                     // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                     ServerApp.getLoggerSystem().info(e.toString());
                     response = Response.status(Status.NOT_FOUND);
+                } finally {
+                    // Devolvemos la conexión de usuarios
+                    ServerPools.getController().releaseUsers(userMgt);
                 }
-
-                ServerPools.getController().releaseUsers(userMgt);
             }
 
             return response;
@@ -250,6 +262,7 @@ public class UsersCtrl {
         return ServerUtils.genericAdminMethod(req, paramId, null, () -> {
             ResponseBuilder response;
 
+            // Adquirimos una conexión de usuarios
             UsersMgt userMgt = ServerPools.getController().acquireUsers();
 
             try {
@@ -265,9 +278,10 @@ public class UsersCtrl {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
                 ServerApp.getLoggerSystem().info(e.toString());
                 response = Response.status(Status.NOT_FOUND);
+            } finally {
+                // Devolvemos la conexión de usuarios
+                ServerPools.getController().releaseUsers(userMgt);
             }
-
-            ServerPools.getController().releaseUsers(userMgt);
 
             return response;
         });
