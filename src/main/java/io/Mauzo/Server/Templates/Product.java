@@ -6,7 +6,7 @@ public class Product {
     private String name;
     private String code;
     private Float price;
-    private int id;
+    private Integer id;
     private String description;
     private BufferedImage picture;
 
@@ -54,7 +54,7 @@ public class Product {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 }
