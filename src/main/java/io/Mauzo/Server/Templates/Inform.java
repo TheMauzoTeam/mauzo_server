@@ -1,5 +1,69 @@
 package io.Mauzo.Server.Templates;
 
+
+import java.sql.Date;
+import java.util.HashMap;
+
 public class Inform {
 
+    private Integer id;
+    private Integer nSales;
+    private Integer nRefunds;
+    private HashMap<User, Integer> userSales = new HashMap<>();
+
+    private Date dStart;
+    private Date dEnd;
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public int getnSales() {
+        return nSales;
+    }
+
+    public void setnSales(Integer nSales) {
+        this.nSales = nSales;
+    }
+
+    public int getnRefunds() {
+        return nRefunds;
+    }
+
+    public void setnRefunds(Integer nRefunds) {
+        this.nRefunds = nRefunds;
+    }
+
+    public HashMap<User, Integer> getUserSales() {
+        return userSales;
+    }
+
+    public void addUserSales(User user, Integer salesCount) {
+        userSales.put(user, salesCount);
+    }
+
+    public void deleteUserSales(User user) {
+        userSales.remove(user);
+    }
+
+    public Date getdStart() {
+        return dStart;
+    }
+
+    public void setdStart(Date dStart) {
+        this.dStart = dStart;
+    }
+
+    public Date getdEnd() {
+        return dEnd;
+    }
+
+    public void setdEnd(Date dEnd) {
+        this.dEnd = dEnd;
+    }
 }
