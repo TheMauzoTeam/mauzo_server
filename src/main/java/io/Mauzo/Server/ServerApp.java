@@ -155,7 +155,7 @@ public class ServerApp {
             st.execute("CREATE TABLE IF NOT EXISTS Discounts (id SERIAL, codeDisc VARCHAR(10) NOT NULL, descDisc TEXT NOT NULL, pricePerc FLOAT NOT NULL, PRIMARY KEY (id), UNIQUE (codeDisc));");
             st.execute("CREATE TABLE IF NOT EXISTS Products (id SERIAL, prodName VARCHAR(45) NOT NULL, prodCode VARCHAR(45) NOT NULL, prodPrice FLOAT NOT NULL, prodDesc TEXT NULL, prodPic BYTEA NULL, PRIMARY KEY (id));");
             st.execute("CREATE TABLE IF NOT EXISTS Users (id SERIAL, firstname VARCHAR(45) NOT NULL, lastname VARCHAR(45) NOT NULL, username VARCHAR(45) NOT NULL, password TEXT NOT NULL, email TEXT NOT NULL, isAdmin BOOLEAN NULL, userPic BYTEA NULL, PRIMARY KEY (id), UNIQUE (username));");
-            st.execute("CREATE TABLE IF NOT EXISTS Refunds (id SERIAL, dateRefund DATE NOT NULL, userId INT NULL, refundId INT NULL, PRIMARY KEY (id), FOREIGN KEY (userId) REFERENCES Users(id), FOREIGN KEY (refundId) REFERENCES Refunds(id) ON DELETE CASCADE ON UPDATE CASCADE);");
+            st.execute("CREATE TABLE IF NOT EXISTS Refunds (id SERIAL, dateRefund DATE NOT NULL, userId INT NULL, saleId INT NULL, PRIMARY KEY (id), FOREIGN KEY (userId) REFERENCES Users(id), FOREIGN KEY (saleId) REFERENCES Sale(id) ON DELETE CASCADE ON UPDATE CASCADE);");
             st.execute("CREATE TABLE IF NOT EXISTS Sales (id SERIAL, stampRef DATE NOT NULL, userId INT NOT NULL, prodId INT NOT NULL, discId INT NULL, PRIMARY KEY (id), FOREIGN KEY (discId) REFERENCES Discounts(id), FOREIGN KEY (prodId) REFERENCES Products(id), FOREIGN KEY (userId) REFERENCES Users(id));");
 
             // Agregamos el usuario administrador

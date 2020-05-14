@@ -8,7 +8,6 @@ public class Sale {
     private int userId;
     private int prodId;
     private int discId;
-    private int refundId;
 
     public int getId() {
         return id;
@@ -48,13 +47,5 @@ public class Sale {
 
     public void setDiscId(int discId) {
         this.discId = discId;
-    }
-
-    public int getRefundId() {
-        return refundId;
-    }
-
-    public void setRefundId(int refundId) {
-        this.refundId = refundId;
     }
 }

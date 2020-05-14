@@ -15,10 +15,10 @@ public class SalesMgt implements ManagersIntf<Sale> {
     private final PreparedStatement deleteQuery;
 
     public SalesMgt(Connection conn) throws SQLException {
-        this.addQuery = conn.prepareStatement("INSERT INTO Sales (stampRef, userId, prodId, discId, refundId) VALUES (?, ?, ?, ?, ?)");
+        this.addQuery = conn.prepareStatement("INSERT INTO Sales (stampRef, userId, prodId, discId) VALUES (?, ?, ?, ?);");
         this.getIdQuery = conn.prepareStatement("SELECT * FROM Sales WHERE id = ?;");
-        this.getListQuery = conn.prepareStatement("SELECT * FROM Sales");
-        this.modifyQuery = conn.prepareStatement("UPDATE Sales SET stampRef = ?, userId = ?, prodId = ?, discId = ?, refundId = ? WHERE id = ?");
+        this.getListQuery = conn.prepareStatement("SELECT * FROM Sales;");
+        this.modifyQuery = conn.prepareStatement("UPDATE Sales SET stampRef = ?, userId = ?, prodId = ?, discId = ? WHERE id = ?;");
         this.deleteQuery = conn.prepareStatement("DELETE FROM Sales WHERE id = ?;");
     }
 
@@ -35,7 +35,6 @@ public class SalesMgt implements ManagersIntf<Sale> {
         addQuery.setInt(2, sale.getUserId());
         addQuery.setInt(3, sale.getProdId());
         addQuery.setInt(4, sale.getDiscId());
-        addQuery.setInt(5, sale.getProdId());
 
         // Ejecutamos la sentencia sql.
         addQuery.execute();
@@ -65,7 +64,6 @@ public class SalesMgt implements ManagersIntf<Sale> {
                 sale.setUserId(rs.getInt("userId"));
                 sale.setProdId(rs.getInt("prodId"));
                 sale.setDiscId(rs.getInt("discId"));
-                sale.setRefundId(rs.getInt("refundId"));
             } else {
                 throw new ManagerErrorException("No se ha encontrado la venta");
             }
@@ -97,7 +95,6 @@ public class SalesMgt implements ManagersIntf<Sale> {
                 sale.setUserId(rs.getInt("userId"));
                 sale.setProdId(rs.getInt("prodId"));
                 sale.setDiscId(rs.getInt("discId"));
-                sale.setRefundId(rs.getInt("refundId"));
 
                 // Lo añadimos a la lista a retornar.
                 salesList.add(sale);
@@ -120,8 +117,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
         modifyQuery.setInt(2, sale.getUserId());
         modifyQuery.setInt(3, sale.getProdId());
         modifyQuery.setInt(4, sale.getDiscId());
-        modifyQuery.setInt(5, sale.getRefundId());
-        modifyQuery.setInt(6, sale.getId());
+        modifyQuery.setInt(5, sale.getId());
 
         if (modifyQuery.execute() == false)
             throw new ManagerErrorException("No se ha encontrado la venta.");
