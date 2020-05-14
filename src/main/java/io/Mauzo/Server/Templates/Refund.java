@@ -7,7 +7,8 @@ public class Refund {
     private int id;
     private Date dateRefund;
     private int userId;
-
+    private int salesId;
+    
     public int getId() {
         return id;
     }

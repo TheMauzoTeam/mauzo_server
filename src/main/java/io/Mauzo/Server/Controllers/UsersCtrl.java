@@ -39,11 +39,11 @@ import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
 public class UsersCtrl {
     /**
      * Controlador que permite a un administrador obtener un listado de usuarios dentro 
-     * del servidor, permitiendo asi obtener de manera dinamica los usuarios validos o 
+     * del servidor, permitiendo asi obtener de manera dinamica los usuarios validos u 
      * otros administradores validos dentro del sistema.
      * 
      * El contenido que recibirá esta vista http es mediante una peticion GET con
-     * la estructura de atributos de username, email, password, firstname, lastname
+     * la estructura de atributos de id, username, email, firstname, lastname
      * y isAdmin.
      * 
      * @param req      El header de la petición HTTP.
@@ -56,11 +56,11 @@ public class UsersCtrl {
             JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
             
             // Adquirimos una conexión de usuarios
-            UsersMgt userMgt = ServerPools.getController().acquireUsers();
+            UsersMgt usersMgt = ServerPools.getController().acquireUsers();
 
             try {
                 // Recorremos la lista que nos ha entregado el servidor.
-                for (User user : userMgt.getList()) {
+                for (User user : usersMgt.getList()) {
                     // Inicializamos los objetos a usar.
                     JsonObjectBuilder jsonObj = Json.createObjectBuilder();
 
@@ -78,7 +78,7 @@ public class UsersCtrl {
                 }
             } finally {
                 // Devolvemos la conexión de usuarios
-                ServerPools.getController().releaseUsers(userMgt);
+                ServerPools.getController().releaseUsers(usersMgt);
             }
 
             return Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
@@ -87,7 +87,7 @@ public class UsersCtrl {
 
     /**
      * Controlador que permite a un administrador registrar usuarios dentro del
-     * servidor, permitiendo asi agregar de manera dinamica usuarios validos o otros
+     * servidor, permitiendo asi agregar de manera dinamica usuarios validos u otros
      * administradores validos dentro del sistema.
      * 
      * El contenido que recibirá esta vista http es mediante una peticion POST con
@@ -110,7 +110,7 @@ public class UsersCtrl {
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
                 // Adquirimos una conexión de usuarios
-                UsersMgt userMgt = ServerPools.getController().acquireUsers();
+                UsersMgt usersMgt = ServerPools.getController().acquireUsers();
 
                 try {
                     // Incializamos el objeto.
@@ -126,10 +126,10 @@ public class UsersCtrl {
                     userAux.setUserPic(ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("userPic"))));
 
                     // Agregamos el usuario a la lista.
-                    userMgt.add(userAux);
+                    usersMgt.add(userAux);
                 } finally {
                     // Devolvemos la conexión de usuarios
-                    ServerPools.getController().releaseUsers(userMgt);
+                    ServerPools.getController().releaseUsers(usersMgt);
                 }
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
@@ -146,7 +146,7 @@ public class UsersCtrl {
      * como parametro en la interfaz web.
      * 
      * El contenido que recibirá esta vista http es mediante una peticion GET con
-     * la estructura de atributos de username, email, password, firstname, lastname
+     * la estructura de atributos de id, username, email, firstname, lastname
      * y isAdmin.
      * 
      * @param req      El header de la petición HTTP.
@@ -161,12 +161,12 @@ public class UsersCtrl {
             ResponseBuilder response = null;
 
             // Adquirimos una conexión de usuarios
-            UsersMgt userMgt = ServerPools.getController().acquireUsers();
+            UsersMgt usersMgt = ServerPools.getController().acquireUsers();
 
             try {
                 // Inicializamos los objetos a usar.
                 JsonObjectBuilder jsonResponse = Json.createObjectBuilder();
-                User user = userMgt.get(paramId);
+                User user = usersMgt.get(paramId);
                 
                 // Generamos un JSON con los atributos del usuario.
                 jsonResponse.add("id", user.getId());
@@ -185,7 +185,7 @@ public class UsersCtrl {
                 response = Response.status(Status.NOT_FOUND);
             } finally {
                 // Devolvemos la conexión de usuarios
-                ServerPools.getController().releaseUsers(userMgt);
+                ServerPools.getController().releaseUsers(usersMgt);
             }
 
             return response;
@@ -215,11 +215,11 @@ public class UsersCtrl {
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
                 // Adquirimos una conexión de usuarios
-                UsersMgt userMgt = ServerPools.getController().acquireUsers();
+                UsersMgt usersMgt = ServerPools.getController().acquireUsers();
 
                 try {
                     // Incializamos el objeto.
-                    User userAux = userMgt.get(paramId);
+                    User userAux = usersMgt.get(paramId);
 
                     // Agregamos la información al usuario.
                     userAux.setFirstName(jsonRequest.isNull("firstname") ? userAux.getFirstName() : jsonRequest.getString("firstname"));
@@ -227,10 +227,10 @@ public class UsersCtrl {
                     userAux.setEmail(jsonRequest.isNull("email") ? userAux.getEmail() : jsonRequest.getString("email"));
                     userAux.setPassword(jsonRequest.isNull("password") ? userAux.getPassword() : jsonRequest.getString("password"));
                     userAux.setAdmin(jsonRequest.isNull("isAdmin") ?  userAux.isAdmin() : jsonRequest.getBoolean("isAdmin"));
-                    userAux.setUserPic(jsonRequest.isNull("userpic") ? userAux.getUserPic() : ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("userPic"))));
+                    userAux.setUserPic(jsonRequest.isNull("userPic") ? userAux.getUserPic() : ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("userPic"))));
                     
                     // Agregamos el usuario a la lista.
-                    userMgt.modify(userAux);
+                    usersMgt.modify(userAux);
 
                     // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                     response = Response.status(Status.OK);
@@ -239,8 +239,8 @@ public class UsersCtrl {
                     ServerApp.getLoggerSystem().info(e.toString());
                     response = Response.status(Status.NOT_FOUND);
                 } finally {
-                    // Devolvemos la conexión de usuarios
-                    ServerPools.getController().releaseUsers(userMgt);
+                   // Devolvemos la conexión de usuarios
+                   ServerPools.getController().releaseUsers(usersMgt);
                 }
             }
 
@@ -263,14 +263,14 @@ public class UsersCtrl {
             ResponseBuilder response;
 
             // Adquirimos una conexión de usuarios
-            UsersMgt userMgt = ServerPools.getController().acquireUsers();
+            UsersMgt usersMgt = ServerPools.getController().acquireUsers();
 
             try {
                 // Obtenemos el usuario de la base de datos.
-                User userAux = userMgt.get(paramId);
+                User userAux = usersMgt.get(paramId);
 
                 // Agregamos el usuario a la lista.
-                userMgt.remove(userAux);
+                usersMgt.remove(userAux);
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                 response = Response.status(Status.OK);
@@ -280,7 +280,7 @@ public class UsersCtrl {
                 response = Response.status(Status.NOT_FOUND);
             } finally {
                 // Devolvemos la conexión de usuarios
-                ServerPools.getController().releaseUsers(userMgt);
+                ServerPools.getController().releaseUsers(usersMgt);
             }
 
             return response;

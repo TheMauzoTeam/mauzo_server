@@ -14,7 +14,7 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
     private final PreparedStatement removeQuery;
 
     public RefundsMgt(Connection connection) throws SQLException{
-        addQuery = connection.prepareStatement("INSERT INTO Refunds ( dateRefund, userId) VALUES (?, ?);");
+        addQuery = connection.prepareStatement("INSERT INTO Refunds ( dateRefund, userId, salesId) VALUES (?, ?);");
         getIdQuery = connection.prepareStatement("SELECT * FROM User WHERE id = ?;");
         getListQuery = connection.prepareStatement("SELECT * FROM Refunds");
         modifyQuery = connection.prepareStatement("UPDATE Refunds SET dateRefund = ?, userId = ? WHERE id = ?;");

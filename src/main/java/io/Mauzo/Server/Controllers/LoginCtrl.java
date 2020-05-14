@@ -63,10 +63,10 @@ public class LoginCtrl {
                 final String username = jsonRequest.getString("username");
                 final String password = jsonRequest.getString("password");
 
-                UsersMgt userMgt = ServerPools.getController().acquireUsers();
+                UsersMgt usersMgt = ServerPools.getController().acquireUsers();
                 
                 try {
-                    User userAux = userMgt.get(username);
+                    User userAux = usersMgt.get(username);
 
                     if(userAux != null) {
                         // Comprobamos la contraseña si es valida.
@@ -91,10 +91,11 @@ public class LoginCtrl {
                     } else {
                         throw new ManagerErrorException("Login invalido para el usuario " + username + " con IP " + req.getRemoteAddr());
                     }
-
                 } catch (ManagerErrorException e) {
                     ServerApp.getLoggerSystem().error(e.toString());
                     response = Response.status(Status.FORBIDDEN);
+                } finally {
+                    ServerPools.getController().releaseUsers(usersMgt);
                 }
             }
             
