@@ -9,7 +9,7 @@ public class Refund {
     private Integer userId;
     private Integer saleId;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -25,7 +25,7 @@ public class Refund {
         this.dateRefund = dateRefund;
     }
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
@@ -33,7 +33,7 @@ public class Refund {
         this.userId = userId;
     }
 
-    public int getSaleId() {
+    public Integer getSaleId() {
         return saleId;
     }
 
