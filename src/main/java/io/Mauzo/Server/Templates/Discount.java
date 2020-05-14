@@ -1,16 +1,16 @@
 package io.Mauzo.Server.Templates;
 
 public class Discount {
-    private int id;
+    private Integer id;
     private String code;
     private String desc;
-    private float priceDisc;
+    private Float priceDisc;
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -26,5 +26,5 @@ public class Discount {
         return priceDisc;
     }
 
-    public void setPriceDisc(float priceDisc) { this.priceDisc = priceDisc; }
+    public void setPriceDisc(Float priceDisc) { this.priceDisc = priceDisc; }
 }
