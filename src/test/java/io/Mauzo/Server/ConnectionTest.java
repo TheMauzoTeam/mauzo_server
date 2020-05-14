@@ -33,7 +33,7 @@ public class ConnectionTest {
         }
 
         try (Statement st = DriverManager.getConnection(url).createStatement()) {
-            st.execute("DROP TABLE IF EXISTS Sales; DROP TABLE IF EXISTS Refunds; DROP TABLE IF EXISTS Users; DROP TABLE IF EXISTS Products; DROP TABLE IF EXISTS Discounts;");
+            st.execute("DROP TABLE IF EXISTS Refunds; DROP TABLE IF EXISTS Sales; DROP TABLE IF EXISTS Users; DROP TABLE IF EXISTS Products; DROP TABLE IF EXISTS Discounts;");
         }
     }
 

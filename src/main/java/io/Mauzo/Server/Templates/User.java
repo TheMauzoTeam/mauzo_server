@@ -12,7 +12,7 @@ public class User {
     private Boolean isAdmin;
     private BufferedImage userPic;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

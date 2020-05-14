@@ -25,7 +25,7 @@ public class Sale {
         this.stampRef = stampRef;
     }
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
@@ -33,7 +33,7 @@ public class Sale {
         this.userId = userId;
     }
 
-    public int getProdId() {
+    public Integer getProdId() {
         return prodId;
     }
 
@@ -41,7 +41,7 @@ public class Sale {
         this.prodId = prodId;
     }
 
-    public int getDiscId() {
+    public Integer getDiscId() {
         return discId;
     }
 
