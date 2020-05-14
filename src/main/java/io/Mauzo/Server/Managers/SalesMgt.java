@@ -59,6 +59,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
         // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
         try (ResultSet rs = getIdQuery.executeQuery()) {
             if (rs.next()) {
+                // Le damos valor al objeto
                 sale.setId(rs.getInt("id"));
                 sale.setStampRef(new Date(rs.getDate("stampRef").getTime()));
                 sale.setUserId(rs.getInt("userId"));
@@ -84,10 +85,13 @@ public class SalesMgt implements ManagersIntf<Sale> {
     public List<Sale> getList() throws SQLException {
         List<Sale> salesList = new ArrayList<>();
 
+        // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
         try (ResultSet rs = getListQuery.executeQuery()) {
             while (rs.next()) {
+                // Preparamos un nuevo objeto de ventas.
                 Sale sale = new Sale();
 
+                // Le damos valor al objeto
                 sale.setId(rs.getInt("id"));
                 sale.setStampRef(rs.getDate("stampRef"));
                 sale.setUserId(rs.getInt("userId"));
@@ -95,6 +99,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
                 sale.setDiscId(rs.getInt("discId"));
                 sale.setRefundId(rs.getInt("refundId"));
 
+                // Lo añadimos a la lista a retornar.
                 salesList.add(sale);
             }
         }

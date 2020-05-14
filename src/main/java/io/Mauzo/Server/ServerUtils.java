@@ -399,7 +399,7 @@ public class ServerUtils {
     }
 
     /**
-     * Transforma un array de Bytes a Base64
+     * Transforma un array de Bytes a una cadena de Base64
      *
      * @param array array de bytes
      * @return Cadena de carácteres en Base64

@@ -50,6 +50,17 @@ public class ServerPools {
         }
     }
 
+    /**
+     * Método para adquirir una conexión de usuarios.
+     * 
+     * En vez de utilizar un new UsersMgt(), utilizamos este método,
+     * dado que hay infraestructuras donde la base de datos es bastante
+     * limitada (Por ejemplo en Heroku), asi conseguimos tener conexiones,
+     * que se vayan a aprovechar de forma eficaz.
+     * 
+     * @return  Una conexion con la base de de datos de tipo usuarios.
+     * @throws InterruptedException Ha sido interrumpido el método.
+     */
     public UsersMgt acquireUsers() throws InterruptedException {
         uSemaphore.acquire();
 
@@ -59,6 +70,17 @@ public class ServerPools {
         return aux;
     }
 
+    /**
+     * Método para adquirir una conexión de ventas.
+     * 
+     * En vez de utilizar un new SalesMgt(), utilizamos este método,
+     * dado que hay infraestructuras donde la base de datos es bastante
+     * limitada (Por ejemplo en Heroku), asi conseguimos tener conexiones,
+     * que se vayan a aprovechar de forma eficaz.
+     * 
+     * @return  Una conexion con la base de de datos de tipo ventas.
+     * @throws InterruptedException Ha sido interrumpido el método.
+     */
     public SalesMgt acquireSales() throws InterruptedException {
         sSemaphore.acquire();
 
@@ -68,6 +90,17 @@ public class ServerPools {
         return aux;
     }
 
+    /**
+     * Método para adquirir una conexión de devoluciones.
+     * 
+     * En vez de utilizar un new RefundsMgt(), utilizamos este método,
+     * dado que hay infraestructuras donde la base de datos es bastante
+     * limitada (Por ejemplo en Heroku), asi conseguimos tener conexiones,
+     * que se vayan a aprovechar de forma eficaz.
+     * 
+     * @return  Una conexion con la base de de datos de tipo devoluciones.
+     * @throws InterruptedException Ha sido interrumpido el método.
+     */
     public RefundsMgt acquireRefunds() throws InterruptedException {
         rSemaphore.acquire();
 
@@ -77,6 +110,17 @@ public class ServerPools {
         return aux;
     }
 
+    /**
+     * Método para adquirir una conexión de productos.
+     * 
+     * En vez de utilizar un new ProductsMgt(), utilizamos este método,
+     * dado que hay infraestructuras donde la base de datos es bastante
+     * limitada (Por ejemplo en Heroku), asi conseguimos tener conexiones,
+     * que se vayan a aprovechar de forma eficaz.
+     * 
+     * @return  Una conexion con la base de de datos de tipo productos.
+     * @throws InterruptedException Ha sido interrumpido el método.
+     */
     public ProductsMgt acquireProducts() throws InterruptedException {
         pSemaphore.acquire();
 
@@ -95,6 +139,17 @@ public class ServerPools {
     //     return aux;
     // }
 
+    /**
+     * Método para adquirir una conexión de descuentos.
+     * 
+     * En vez de utilizar un new DiscountsMgt(), utilizamos este método,
+     * dado que hay infraestructuras donde la base de datos es bastante
+     * limitada (Por ejemplo en Heroku), asi conseguimos tener conexiones,
+     * que se vayan a aprovechar de forma eficaz.
+     * 
+     * @return  Una conexion con la base de de datos de tipo descuentos.
+     * @throws InterruptedException Ha sido interrumpido el método.
+     */
     public DiscountsMgt acquireDiscounts() throws InterruptedException {
         dSemaphore.acquire();
 
@@ -104,26 +159,51 @@ public class ServerPools {
         return aux;
     }
 
+    /**
+     * Método para devolver una conexión de tipo usuarios.
+     * 
+     * @param users La conexión de tipo usuarios.
+     */
     public void releaseUsers(UsersMgt users) {
         uConnectionList.add(users);
         uSemaphore.release();
     }
 
+    /**
+     * Método para devolver una conexión de tipo ventas.
+     * 
+     * @param sales La conexión de tipo ventas.
+     */
     public void releaseSales(SalesMgt sales) {
         sConnectionList.add(sales);
         sSemaphore.release();
     }
 
+    /**
+     * Método para devolver una conexión de tipo devoluciones.
+     * 
+     * @param refunds La conexión de tipo devoluciones.
+     */
     public void releaseRefunds(RefundsMgt refunds) {
         rConnectionList.add(refunds);
         rSemaphore.release();
     }
 
+    /**
+     * Método para devolver una conexión de tipo productos.
+     * 
+     * @param products La conexión de tipo productos.
+     */
     public void releaseProducts(ProductsMgt products) {
         pConnectionList.add(products);
         pSemaphore.release();
     }
 
+    /**
+     * Método para devolver una conexión de tipo descuentos.
+     * 
+     * @param discounts La conexión de tipo descuentos.
+     */
     public void releaseDiscounts(DiscountsMgt discounts) {
         dConnectionList.add(discounts);
         dSemaphore.release();
