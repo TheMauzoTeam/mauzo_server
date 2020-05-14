@@ -58,7 +58,6 @@ public class SalesCtrl {
                     jsonObj.add("userId", sale.getUserId());
                     jsonObj.add("prodId", sale.getProdId());
                     jsonObj.add("discId", sale.getDiscId());
-                    jsonObj.add("refundId", sale.getRefundId());
     
                     // Lo añadimos al Json Array.
                     jsonResponse.add(jsonObj);
@@ -91,11 +90,11 @@ public class SalesCtrl {
                     Sale saleAux = new Sale();
 
                     // Agregamos la información de la venta.
+                    saleAux.setStampRef(new Date(Long.valueOf(jsonRequest.getString("stampRef"))));
                     saleAux.setUserId(jsonRequest.getInt("userId"));
                     saleAux.setDiscId(jsonRequest.getInt("discId"));
                     saleAux.setProdId(jsonRequest.getInt("prodId"));
-                    saleAux.setRefundId(jsonRequest.getInt("refundId"));
-                    saleAux.setStampRef(new Date(Long.valueOf(jsonRequest.getString("stampRef"))));
+
                 
                     // Agregamos la venta a la lista.
                     salesMgt.add(saleAux);
@@ -132,7 +131,6 @@ public class SalesCtrl {
                 jsonResponse.add("userId", saleAux.getUserId());
                 jsonResponse.add("prodId", saleAux.getProdId());
                 jsonResponse.add("discId", saleAux.getDiscId());
-                jsonResponse.add("refundId", saleAux.getRefundId());
 
                 response = Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
             } catch (ManagerErrorException e) {
@@ -171,7 +169,6 @@ public class SalesCtrl {
                     saleAux.setUserId(jsonRequest.isNull("userId") ? jsonRequest.getInt("userId") : saleAux.getUserId());
                     saleAux.setProdId(jsonRequest.isNull("prodId") ? jsonRequest.getInt("prodId") : saleAux.getProdId());
                     saleAux.setDiscId(jsonRequest.isNull("discId") ? jsonRequest.getInt("discId") : saleAux.getDiscId());
-                    saleAux.setRefundId(jsonRequest.isNull("refundId") ? jsonRequest.getInt("refundId") : saleAux.getRefundId());
   
                     // Agregamos el usuario a la lista.
                     salesMgt.modify(saleAux);
