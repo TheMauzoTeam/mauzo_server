@@ -99,7 +99,6 @@ public class ManagersTest {
 
         sale.setDiscId(1);
         sale.setProdId(1);
-        sale.setRefundId(1);
         sale.setUserId(1);
         sale.setStampRef(new Date());
 
@@ -150,6 +149,7 @@ public class ManagersTest {
     @Test
     public void testDiscounts() throws Exception {
         Discount discount = new Discount();
+
 
         discount.setCode("151");
         discount.setDesc("753");
