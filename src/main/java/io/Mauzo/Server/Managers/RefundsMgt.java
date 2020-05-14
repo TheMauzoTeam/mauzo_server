@@ -14,10 +14,10 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
     private final PreparedStatement removeQuery;
 
     public RefundsMgt(Connection connection) throws SQLException{
-        addQuery = connection.prepareStatement("INSERT INTO Refunds ( dateRefund, userId, salesId) VALUES (?, ?);");
+        addQuery = connection.prepareStatement("INSERT INTO Refunds ( dateRefund, userId, saleId ) VALUES (?, ?, ?);");
         getIdQuery = connection.prepareStatement("SELECT * FROM User WHERE id = ?;");
         getListQuery = connection.prepareStatement("SELECT * FROM Refunds");
-        modifyQuery = connection.prepareStatement("UPDATE Refunds SET dateRefund = ?, userId = ? WHERE id = ?;");
+        modifyQuery = connection.prepareStatement("UPDATE Refunds SET dateRefund = ?, userId = ?, saleId = ? WHERE id = ?;");
         removeQuery = connection.prepareStatement("DELETE FROM Refunds WHERE id = ?;");
     }
 
@@ -31,6 +31,7 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
     public void add(Refund obj) throws SQLException {
         addQuery.setDate(1, new Date(obj.getDateRefund().getTime()));
         addQuery.setInt(2, obj.getUserId());
+        addQuery.setInt(3, obj.getSaleId());
 
         addQuery.execute();
     }
@@ -49,15 +50,16 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
 
             getIdQuery.setInt(1, id);
 
-            try (ResultSet resultSet = getIdQuery.executeQuery()){
-                if (!(resultSet.isLast()))
-                    while (resultSet.next()) {
-                        refund = new Refund();
-                        refund.setId(resultSet.getInt("id"));
-                        refund.setDateRefund(resultSet.getDate("dateRefund"));
-                        refund.setUserId(resultSet.getInt("userId"));
-                    }
-                else
+            try (ResultSet resultSet = getIdQuery.executeQuery()) {
+                if (resultSet.next()) {
+
+                    refund = new Refund();
+                    refund.setId(resultSet.getInt("id"));
+                    refund.setDateRefund(resultSet.getDate("dateRefund"));
+                    refund.setUserId(resultSet.getInt("userId"));
+                    refund.setSaleId(resultSet.getInt("saleId"));
+
+                } else
                     throw new ManagerErrorException("No se ha encontrado la devolución");
             }
 
@@ -83,6 +85,7 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
                     refund.setId(resultSet.getInt("id"));
                     refund.setDateRefund(resultSet.getDate("dateRefund"));
                     refund.setUserId(resultSet.getInt("userId"));
+                    refund.setSaleId(resultSet.getInt("saleId"));
 
                     refundList.add(refund);
                 }
@@ -102,7 +105,8 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
     public void modify(Refund obj) throws SQLException, ManagerErrorException {
         modifyQuery.setDate(1, (Date) obj.getDateRefund());
         modifyQuery.setInt(2, obj.getUserId());
-        modifyQuery.setInt(3, obj.getId());
+        modifyQuery.setInt(3, obj.getSaleId());
+        modifyQuery.setInt(4, obj.getId());
 
         if (modifyQuery.execute() == false)
             throw new ManagerErrorException("No se ha encontrado la devolución");

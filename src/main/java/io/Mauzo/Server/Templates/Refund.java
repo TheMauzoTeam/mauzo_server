@@ -4,16 +4,16 @@ import java.util.Date;
 
 public class Refund {
 
-    private int id;
+    private Integer id;
     private Date dateRefund;
-    private int userId;
-    private int salesId;
-    
+    private Integer userId;
+    private Integer saleId;
+
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -29,8 +29,15 @@ public class Refund {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
+    public int getSaleId() {
+        return saleId;
+    }
+
+    public void setSaleId(Integer saleId) {
+        this.saleId = saleId;
+    }
 }

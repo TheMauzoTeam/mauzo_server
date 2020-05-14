@@ -3,20 +3,20 @@ package io.Mauzo.Server.Templates;
 import java.awt.image.BufferedImage;
 
 public class User {
-    private int id;
+    private Integer id;
     private String username;
     private String password;
     private String firstName;
     private String lastName;
     private String email;
-    private boolean isAdmin;
+    private Boolean isAdmin;
     private BufferedImage userPic;
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -32,7 +32,7 @@ public class User {
         return isAdmin;
     }
 
-    public void setAdmin(boolean admin) {
+    public void setAdmin(Boolean admin) {
         this.isAdmin = admin;
     }
 

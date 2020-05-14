@@ -73,8 +73,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
                          product.setDescription(resultSet.getString("prodDesc"));
                          product.setPicture(ServerUtils.imageFromByteArray(resultSet.getBytes("prodPic")));
                      }
-                 }
-                 else
+                 } else
                      throw new ManagerErrorException("No se ha encontrado el producto");
              }
 
@@ -95,21 +94,20 @@ public class ProductsMgt implements ManagersIntf<Product>{
            getNameQuery.setString(1, name);
 
             try (ResultSet resultSet = getNameQuery.executeQuery()){
-                if (!resultSet.isLast()){
-                    while (resultSet.next()){
-                        product = new Product();
+                if (resultSet.next()) {
 
-                        product.setId(resultSet.getInt("id"));
-                        product.setCode(resultSet.getString("ProdCode"));
-                        product.setDescription(resultSet.getString("prodDesc"));
-                        product.setPrice(resultSet.getFloat("prodPrice"));
-                        product.setName(resultSet.getString("prodName"));
-                        product.setPicture(ServerUtils.imageFromByteArray(resultSet.getBytes("prodPic")));
+                    product = new Product();
 
-                    }
-                }else {
+                    product.setId(resultSet.getInt("id"));
+                    product.setCode(resultSet.getString("ProdCode"));
+                    product.setDescription(resultSet.getString("prodDesc"));
+                    product.setPrice(resultSet.getFloat("prodPrice"));
+                    product.setName(resultSet.getString("prodName"));
+                    product.setPicture(ServerUtils.imageFromByteArray(resultSet.getBytes("prodPic")));
+
+                } else
                     throw new ManagerErrorException("No se ha encontrado el producto");
-                }
+
             }
 
            return product;
@@ -159,6 +157,9 @@ public class ProductsMgt implements ManagersIntf<Product>{
             modifyQuery.setDouble(3, obj.getPrice());
             modifyQuery.setString(4,obj.getDescription());
             modifyQuery.setBytes(5,ServerUtils.imageToByteArray(obj.getPicture(),"png"));
+
+            if(modifyQuery.execute() == false)
+                throw new ManagerErrorException("No se ha encontrado el producto durante la actualización del mismo.");
     }
 
     /**

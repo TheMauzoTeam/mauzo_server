@@ -3,17 +3,17 @@ package io.Mauzo.Server.Templates;
 import java.util.Date;
 
 public class Sale {
-    private int id;
+    private Integer id;
     private Date stampRef;
-    private int userId;
-    private int prodId;
-    private int discId;
+    private Integer userId;
+    private Integer prodId;
+    private Integer discId;
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -29,7 +29,7 @@ public class Sale {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -37,7 +37,7 @@ public class Sale {
         return prodId;
     }
 
-    public void setProdId(int prodId) {
+    public void setProdId(Integer prodId) {
         this.prodId = prodId;
     }
 
@@ -45,7 +45,7 @@ public class Sale {
         return discId;
     }
 
-    public void setDiscId(int discId) {
+    public void setDiscId(Integer discId) {
         this.discId = discId;
     }
 }
