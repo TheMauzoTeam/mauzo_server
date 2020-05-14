@@ -15,7 +15,7 @@ public class Inform {
     private Date dEnd;
 
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -23,7 +23,7 @@ public class Inform {
         this.id = id;
     }
 
-    public int getnSales() {
+    public Integer getnSales() {
         return nSales;
     }
 
@@ -31,7 +31,7 @@ public class Inform {
         this.nSales = nSales;
     }
 
-    public int getnRefunds() {
+    public Integer getnRefunds() {
         return nRefunds;
     }
 

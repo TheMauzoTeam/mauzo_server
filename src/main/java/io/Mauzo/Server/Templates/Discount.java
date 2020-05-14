@@ -6,7 +6,7 @@ public class Discount {
     private String desc;
     private Float priceDisc;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -22,7 +22,7 @@ public class Discount {
 
     public void setDesc(String desc) { this.desc = desc; }
 
-    public float getPrizeDisc() {
+    public Float getPrizeDisc() {
         return priceDisc;
     }
 
