@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.util.Date;
 
 public class ManagersTest {
+    //Before para insertar datos en las tablas que tengan relación entre si y el administrador
     /**
      * Preparación de la URL de JDBC con la base de datos
      * de pruebas donde se ejecutarán todos los test de

@@ -2,7 +2,6 @@ package io.Mauzo.Server.Controllers;
 
 // Paquetes relativos al framework estandar de Java.
 import java.io.StringReader;
-import java.util.Date;
 
 // Paquetes relativos a los Json de entrada y salida.
 import javax.json.Json;
@@ -28,9 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 
 
 import io.Mauzo.Server.Managers.ManagersIntf;
-import io.Mauzo.Server.Managers.UsersMgt;
 import io.Mauzo.Server.ServerApp;
-import io.Mauzo.Server.Templates.User;
 import org.springframework.stereotype.Component;
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.ServerPools;
