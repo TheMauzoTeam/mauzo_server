@@ -17,7 +17,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
     public SalesMgt(Connection conn) throws SQLException {
         this.addQuery = conn.prepareStatement("INSERT INTO Sales (stampRef, userId, prodId, discId) VALUES (?, ?, ?, ?);");
         this.getIdQuery = conn.prepareStatement("SELECT * FROM Sales WHERE id = ?;");
-        this.getListQuery = conn.prepareStatement("SELECT * FROM Sales;");
+        this.getListQuery = conn.prepareStatement("SELECT * FROM Sales;x");
         this.modifyQuery = conn.prepareStatement("UPDATE Sales SET stampRef = ?, userId = ?, prodId = ?, discId = ? WHERE id = ?;");
         this.deleteQuery = conn.prepareStatement("DELETE FROM Sales WHERE id = ?;");
     }
@@ -34,7 +34,13 @@ public class SalesMgt implements ManagersIntf<Sale> {
         addQuery.setDate(1, new Date(sale.getStampRef().getTime()));
         addQuery.setInt(2, sale.getUserId());
         addQuery.setInt(3, sale.getProdId());
-        addQuery.setInt(4, sale.getDiscId());
+
+        // Este es un posible valor nulo.
+        if(sale.getDiscId() != null) {
+            addQuery.setInt(4, sale.getDiscId());
+        } else {
+            addQuery.setNull(4, Types.INTEGER);
+        }
 
         // Ejecutamos la sentencia sql.
         addQuery.execute();
@@ -116,7 +122,14 @@ public class SalesMgt implements ManagersIntf<Sale> {
         modifyQuery.setDate(1, (Date) sale.getStampRef());
         modifyQuery.setInt(2, sale.getUserId());
         modifyQuery.setInt(3, sale.getProdId());
-        modifyQuery.setInt(4, sale.getDiscId());
+
+        // Este es un posible valor nulo.
+        if(sale.getDiscId() != null) {
+            addQuery.setInt(4, sale.getDiscId());
+        } else {
+            addQuery.setNull(4, Types.INTEGER);
+        }
+
         modifyQuery.setInt(5, sale.getId());
 
         if (modifyQuery.execute() == false)

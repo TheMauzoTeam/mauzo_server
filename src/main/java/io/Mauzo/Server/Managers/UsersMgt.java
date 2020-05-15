@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,12 +46,19 @@ public class UsersMgt implements ManagersIntf<User> {
     public void add(User user) throws SQLException {
         // Asociamos los valores respecto a la sentencia sql.
         addQuery.setString(1, user.getFirstName());
+        
         addQuery.setString(2, user.getLastName());
         addQuery.setString(3, user.getUsername());
         addQuery.setString(4, user.getEmail());
         addQuery.setString(5, user.getPassword());
         addQuery.setBoolean(6, user.isAdmin());
-        addQuery.setBytes(7, ServerUtils.imageToByteArray(user.getUserPic(), "png"));
+
+        // Este es un posible valor nulo.
+        if(user.getUserPic() != null) {
+            addQuery.setBytes(7, ServerUtils.imageToByteArray(user.getUserPic(), "png"));
+        } else {
+            addQuery.setNull(7, Types.BOOLEAN);
+        }
 
         // Ejecutamos la sentencia sql.
         addQuery.execute();
@@ -182,7 +190,14 @@ public class UsersMgt implements ManagersIntf<User> {
         modifyQuery.setString(4, user.getEmail());
         modifyQuery.setString(5, user.getPassword());
         modifyQuery.setBoolean(6, user.isAdmin());
-        modifyQuery.setBytes(7, ServerUtils.imageToByteArray(user.getUserPic(), "png"));
+        
+        // Este es un posible valor nulo.
+        if(user.getUserPic() != null) {
+            addQuery.setBytes(7, ServerUtils.imageToByteArray(user.getUserPic(), "png"));
+        } else {
+            addQuery.setNull(7, Types.BOOLEAN);
+        }
+
         modifyQuery.setInt(8, user.getId());
 
         // Ejecutamos la sentencia sql.
