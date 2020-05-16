@@ -58,6 +58,7 @@ public class SalesCtrl {
                     jsonObj.add("userId", saleAux.getUserId());
                     jsonObj.add("prodId", saleAux.getProdId());
 
+                    // Capturamos posible null procedente de la BBDD.
                     try {
                         jsonObj.add("discId", saleAux.getDiscId());
                     } catch (NullPointerException e) {
@@ -136,6 +137,7 @@ public class SalesCtrl {
                 jsonResponse.add("userId", saleAux.getUserId());
                 jsonResponse.add("prodId", saleAux.getProdId());
                 
+                // Capturamos posible null procedente de la BBDD.
                 try {
                     jsonResponse.add("discId", saleAux.getDiscId());
                 } catch (NullPointerException e) {

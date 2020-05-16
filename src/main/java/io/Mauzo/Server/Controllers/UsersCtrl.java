@@ -72,6 +72,7 @@ public class UsersCtrl {
                     jsonObj.add("email", user.getEmail());
                     jsonObj.add("isAdmin", user.isAdmin());
 
+                    // Capturamos posible null procedente de la BBDD.
                     try {
                         jsonObj.add("userPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(user.getUserPic(), "png")));
                     } catch (NullPointerException e) {
@@ -181,6 +182,7 @@ public class UsersCtrl {
                 jsonResponse.add("email", user.getEmail());
                 jsonResponse.add("isAdmin", user.isAdmin());
                
+                // Capturamos posible null procedente de la BBDD.
                 try {
                     jsonResponse.add("userPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(user.getUserPic(), "png")));
                 } catch (NullPointerException e) {

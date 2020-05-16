@@ -1,5 +1,6 @@
 package io.Mauzo.Server;
 
+import java.util.Arrays;
 // Paquetes del framework estandar de java
 import java.util.Base64;
 import java.util.List;
@@ -80,7 +81,7 @@ public class ServerUtils {
 
             // Informacion necesaria en procesos de debug.
             ServerApp.getLoggerSystem().debug(e.getMessage());
-            ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
+            ServerApp.getLoggerSystem().debug(Arrays.toString(e.getStackTrace()));
 
             response = Response.serverError();
         } catch (Exception e) {
@@ -89,7 +90,7 @@ public class ServerUtils {
 
             // Informacion necesaria en procesos de debug.
             ServerApp.getLoggerSystem().debug(e.getMessage());
-            ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
+            ServerApp.getLoggerSystem().debug(Arrays.toString(e.getStackTrace()));
 
             response = Response.serverError();
         }
@@ -131,14 +132,14 @@ public class ServerUtils {
                 // Detectamos errores en la SQL
                 ServerApp.getLoggerSystem().warn("Error en procesar la consulta SQL: " + e.toString());
                 ServerApp.getLoggerSystem().debug(e.getMessage());
-                ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
+                ServerApp.getLoggerSystem().debug(Arrays.toString(e.getStackTrace()));
 
                 response = Response.serverError();
             } catch (Exception e) {
                 // En caso de existir otros errores, devolvemos un error 500 y listo.
                 ServerApp.getLoggerSystem().warn("Error imprevisto: " + e.toString());
                 ServerApp.getLoggerSystem().debug(e.getMessage());
-                ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
+                ServerApp.getLoggerSystem().debug(Arrays.toString(e.getStackTrace()));
 
                 response = Response.serverError();
             }
@@ -184,14 +185,14 @@ public class ServerUtils {
                 // Detectamos errores en la SQL
                 ServerApp.getLoggerSystem().warn("Error en procesar la consulta SQL: " + e.toString());
                 ServerApp.getLoggerSystem().debug(e.getMessage());
-                ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
+                ServerApp.getLoggerSystem().debug(Arrays.toString(e.getStackTrace()));
 
                 response = Response.serverError();
             } catch (Exception e) {
                 // En caso de existir otros errores, devolvemos un error 500 y listo.
                 ServerApp.getLoggerSystem().warn("Error imprevisto: " + e.toString());
                 ServerApp.getLoggerSystem().debug(e.getMessage());
-                ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
+                ServerApp.getLoggerSystem().debug(Arrays.toString(e.getStackTrace()));
 
                 response = Response.serverError();
             }
