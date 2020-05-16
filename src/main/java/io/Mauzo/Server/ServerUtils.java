@@ -405,7 +405,7 @@ public class ServerUtils {
      * @return Cadena de carácteres en Base64
      */
     public static String byteArrayToBase64(byte[] array){
-        return (array == null) ? "" : Base64.getEncoder().encodeToString(array);
+        return (array == null) ? null : Base64.getEncoder().encodeToString(array);
     }
 
     /**

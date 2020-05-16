@@ -28,7 +28,7 @@ public class User {
         this.username = username;
     }
 
-    public boolean isAdmin() {
+    public Boolean isAdmin() {
         return isAdmin;
     }
 

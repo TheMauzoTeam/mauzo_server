@@ -9,7 +9,7 @@ public class Sale {
     private Integer prodId;
     private Integer discId;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

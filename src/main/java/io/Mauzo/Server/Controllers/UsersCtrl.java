@@ -71,8 +71,13 @@ public class UsersCtrl {
                     jsonObj.add("lastname", user.getLastName());
                     jsonObj.add("email", user.getEmail());
                     jsonObj.add("isAdmin", user.isAdmin());
-                    jsonObj.add("userPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(user.getUserPic(), "png")));
 
+                    try {
+                        jsonObj.add("userPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(user.getUserPic(), "png")));
+                    } catch (NullPointerException e) {
+                        jsonObj.addNull("userPic");
+                    }
+                    
                     // Lo añadimos al Json Array.
                     jsonResponse.add(jsonObj);
                 }
@@ -175,13 +180,18 @@ public class UsersCtrl {
                 jsonResponse.add("lastname", user.getLastName());
                 jsonResponse.add("email", user.getEmail());
                 jsonResponse.add("isAdmin", user.isAdmin());
-                jsonResponse.add("userPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(user.getUserPic(), "png")));
+               
+                try {
+                    jsonResponse.add("userPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(user.getUserPic(), "png")));
+                } catch (NullPointerException e) {
+                    jsonResponse.addNull("userPic");
+                }
 
                 // Lanzamos la respuesta 200 OK si todo ha ido bien.
                 response = Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
             } catch (ManagerErrorException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
-                ServerApp.getLoggerSystem().info(e.toString());
+                ServerApp.getLoggerSystem().debug(e.toString());
                 response = Response.status(Status.NOT_FOUND);
             } finally {
                 // Devolvemos la conexión de usuarios
@@ -236,7 +246,7 @@ public class UsersCtrl {
                     response = Response.status(Status.OK);
                 } catch (ManagerErrorException e) {
                     // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
-                    ServerApp.getLoggerSystem().info(e.toString());
+                    ServerApp.getLoggerSystem().debug(e.toString());
                     response = Response.status(Status.NOT_FOUND);
                 } finally {
                    // Devolvemos la conexión de usuarios
@@ -276,7 +286,7 @@ public class UsersCtrl {
                 response = Response.status(Status.OK);
             } catch (ManagerErrorException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
-                ServerApp.getLoggerSystem().info(e.toString());
+                ServerApp.getLoggerSystem().debug(e.toString());
                 response = Response.status(Status.NOT_FOUND);
             } finally {
                 // Devolvemos la conexión de usuarios

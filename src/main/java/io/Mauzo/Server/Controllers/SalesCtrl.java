@@ -48,16 +48,21 @@ public class SalesCtrl {
             SalesMgt salesMgt = ServerPools.getController().acquireSales();
 
             try {
-                for (Sale sale : salesMgt.getList()) {
+                for (Sale saleAux : salesMgt.getList()) {
                     // Inicializamos los objetos a usar.
                     JsonObjectBuilder jsonObj = Json.createObjectBuilder();
     
                     // Construimos el objeto Json con los atributo de la venta.
-                    jsonObj.add("id", sale.getId());
-                    jsonObj.add("stampRef", sale.getStampRef().getTime());
-                    jsonObj.add("userId", sale.getUserId());
-                    jsonObj.add("prodId", sale.getProdId());
-                    jsonObj.add("discId", sale.getDiscId());
+                    jsonObj.add("id", saleAux.getId());
+                    jsonObj.add("stampRef", saleAux.getStampRef().getTime());
+                    jsonObj.add("userId", saleAux.getUserId());
+                    jsonObj.add("prodId", saleAux.getProdId());
+
+                    try {
+                        jsonObj.add("discId", saleAux.getDiscId());
+                    } catch (NullPointerException e) {
+                        jsonObj.addNull("discId");
+                    }
     
                     // Lo añadimos al Json Array.
                     jsonResponse.add(jsonObj);
@@ -130,12 +135,17 @@ public class SalesCtrl {
                 jsonResponse.add("stampRef", saleAux.getStampRef().getTime());
                 jsonResponse.add("userId", saleAux.getUserId());
                 jsonResponse.add("prodId", saleAux.getProdId());
-                jsonResponse.add("discId", saleAux.getDiscId());
+                
+                try {
+                    jsonResponse.add("discId", saleAux.getDiscId());
+                } catch (NullPointerException e) {
+                    jsonResponse.addNull("discId");
+                }
 
                 response = Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
             } catch (ManagerErrorException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
-                ServerApp.getLoggerSystem().info(e.toString());
+                ServerApp.getLoggerSystem().debug(e.toString());
                 response = Response.status(Status.NOT_FOUND);
             } finally {
                 // Devolvemos la conexión de ventas
@@ -177,7 +187,7 @@ public class SalesCtrl {
                     response = Response.status(Status.OK);
                 } catch (ManagerErrorException e) {
                     // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
-                    ServerApp.getLoggerSystem().info(e.toString());
+                    ServerApp.getLoggerSystem().debug(e.toString());
                     response = Response.status(Status.NOT_FOUND);
                 } finally {
                     // Devolvemos la conexión de ventas
@@ -210,7 +220,7 @@ public class SalesCtrl {
 
             } catch (ManagerErrorException e) {
                 // Si no se ha encontrado, lanzamos la respuesta 404 NOT FOUND.
-                ServerApp.getLoggerSystem().info(e.toString());
+                ServerApp.getLoggerSystem().debug(e.toString());
                 response = Response.status(Status.NOT_FOUND);
             } finally {
                 // Devolvemos la conexión de ventas
