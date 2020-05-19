@@ -36,6 +36,16 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.SignatureException;
 
+/**
+ * Clase de utiliades del proyecto de Mauzo Server.
+ * 
+ * Esta clase contiene una serie de utilidades usadas en las clases
+ * controladoras, metodos de conversión de imagenes a byte array y base64 o
+ * comprobar si el token es valido.
+ * 
+ * @author Illuminar Lidia Martínez
+ * @author Neirth Sergio Martinez
+ */
 public class ServerUtils {
     public interface Content {
         /**
@@ -67,6 +77,9 @@ public class ServerUtils {
      * @param paramId  A que Id se refiere, en caso de referirse a uno.
      * @param jsonData Los datos en Json que ha enviado el cliente
      * @param content  Funcion lambda con todos los pasos a seguir.
+     * 
+     * @author Neirth Sergio Martinez
+     * 
      * @return La respuesta con la cual responderemos al cliente.
      */
     public static Response genericMethod(HttpServletRequest req, Integer paramId, String jsonData, Content content) {
@@ -104,6 +117,9 @@ public class ServerUtils {
      * @param paramId  A que Id se refiere, en caso de referirse a uno.
      * @param jsonData Los datos en Json que ha enviado el cliente
      * @param content  Funcion lambda con todos los pasos a seguir.
+     *
+     * @author Neirth Sergio Martinez
+     * 
      * @return La respuesta con la cual responderemos al cliente.
      */
     public static Response genericUserMethod(HttpServletRequest req, Integer paramId, String jsonData, Content content) {
@@ -120,7 +136,7 @@ public class ServerUtils {
             } catch (Exception e) {
                 // Invocamos la funcion para escribir en el registro la excepción.
                 writeServerException(e);
-    
+
                 // Establecemos la respuesta como error.
                 response = Response.serverError();
             }
@@ -149,6 +165,9 @@ public class ServerUtils {
      * @param paramId  A que Id se refiere, en caso de referirse a uno.
      * @param jsonData Los datos en Json que ha enviado el cliente
      * @param content  Funcion lambda con todos los pasos a seguir.
+     * 
+     * @author Neirth Sergio Martinez
+     * 
      * @return La respuesta con la cual responderemos al cliente.
      */
     public static Response genericAdminMethod(HttpServletRequest req, Integer paramId, String jsonData, Content content) {
@@ -165,7 +184,7 @@ public class ServerUtils {
             } catch (Exception e) {
                 // Invocamos la funcion para escribir en el registro la excepción.
                 writeServerException(e);
-    
+
                 // Establecemos la respuesta como error.
                 response = Response.serverError();
             }
@@ -178,13 +197,15 @@ public class ServerUtils {
     }
 
     /**
-     * Este metodo privado de la clase de utilidades escribe en el registro,
-     * en función de que si el servidor está trabajando en modo debug o en modo
-     * release la información en el registro.
+     * Este metodo privado de la clase de utilidades escribe en el registro, en
+     * función de que si el servidor está trabajando en modo debug o en modo release
+     * la información en el registro.
      * 
-     * En caso de estar en modo debug, el servidor mostrará todo el Stack Trace
-     * del cual se ha propiciado el fallo capturado, en caso contrario, solo se
-     * mostrará un mensaje de la excepción causante del problema.
+     * En caso de estar en modo debug, el servidor mostrará todo el Stack Trace del
+     * cual se ha propiciado el fallo capturado, en caso contrario, solo se mostrará
+     * un mensaje de la excepción causante del problema.
+     * 
+     * @author Neirth Sergio Martinez
      * 
      * @param e La excepción capturada.
      */
@@ -203,6 +224,8 @@ public class ServerUtils {
     /**
      * Método para recuperar el token recibido desde la cabecera AUTHENTICATOR el
      * token de seguridad.
+     * 
+     * @author Neirth Sergio Martinez
      * 
      * @param req La cabecera de la petición.
      * @return El token recibido.
@@ -227,6 +250,8 @@ public class ServerUtils {
      * Método para validar si el token pasado por parametro es de un login valido o
      * no.
      * 
+     * @author Neirth Sergio Martinez
+     * 
      * @param token El token JWT.
      * @return Verdadero si es valido o falso si no lo es.
      */
@@ -243,7 +268,7 @@ public class ServerUtils {
 
             // Obtenemos los datos del token.
             final Claims claims = jwtsParser.parseClaimsJws(token).getBody();
-            
+
             // Ejecutamos la consulta de verificación.
             Statement st = ServerApp.getConnection().createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM Users WHERE id = " + claims.getId());
@@ -272,6 +297,8 @@ public class ServerUtils {
      * Método para validar si el token pasado por paraametro es de un usuario
      * administrador.
      * 
+     * @author Neirth Sergio Martinez
+     * 
      * @param token El token JWT.
      * @return Verdadero si es valido o falso si no lo es.
      */
@@ -292,7 +319,7 @@ public class ServerUtils {
             // Ejecutamos la consulta de verificación.
             Statement st = ServerApp.getConnection().createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM Users WHERE id = " + claims.getId());
-            
+
             // Obtenemos el resultado.
             rs.next();
 
@@ -318,6 +345,8 @@ public class ServerUtils {
      * cliente, tambien sirve esta llave para validar si el token de seguridad no ha
      * sido manipulado.
      * 
+     * @author Neirth Sergio Martinez
+     * 
      * @return Llave en forma de objeto del Json Web Token
      */
     public static Key getKey() {
@@ -332,12 +361,14 @@ public class ServerUtils {
     /**
      * Método estatico para convertir una imagen a un array de bytes.
      * 
-     * Hay componentes en este servidor que trabajan con imagenes, dado
-     * que los productos y los usuarios tienen esta posibilidad de mostrar una imagen.
+     * Hay componentes en este servidor que trabajan con imagenes, dado que los
+     * productos y los usuarios tienen esta posibilidad de mostrar una imagen.
      * 
+     * @author Illuminar Lidia Martínez
+     *
      * @param imageBuf La imagen en buffer.
-     * @param type  El formato de salida de la image.
-     * @return  La imagen convertida a un array de bytes.
+     * @param type     El formato de salida de la image.
+     * @return La imagen convertida a un array de bytes.
      */
     public static byte[] imageToByteArray(BufferedImage imageBuf, String type) {
         // Declaramos la variable de salida.
@@ -345,7 +376,7 @@ public class ServerUtils {
 
         if (imageBuf != null) {
             // Abrimos un stream de salida
-            try (ByteArrayOutputStream out = new ByteArrayOutputStream()){
+            try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
                 // Convertimos la imagen a un byte array
                 ImageIO.write(imageBuf, type, out);
                 imageArr = out.toByteArray();
@@ -361,11 +392,13 @@ public class ServerUtils {
     /**
      * Método estatico para convertir un array de bytes a una imagen.
      * 
-     * Hay componentes en este servidor que trabajan con imagenes, dado
-     * que los productos y los usuarios tienen esta posibilidad de mostrar una imagen.
+     * Hay componentes en este servidor que trabajan con imagenes, dado que los
+     * productos y los usuarios tienen esta posibilidad de mostrar una imagen.
      * 
+     * @author Illuminar Lidia Martínez
+     *
      * @param imageArr La imagen en array de bytes.
-     * @return  La imagen convertida a un BufferedImage.
+     * @return La imagen convertida a un BufferedImage.
      */
     public static BufferedImage imageFromByteArray(byte[] imageArr) {
         // Declaramos la variable de salida.
@@ -387,32 +420,38 @@ public class ServerUtils {
 
     /**
      * Tranforma una cadena en Base64 a un array de bytes
+     * 
+     * @author Illuminar Lidia Martínez
      *
      * @param base64 Cadena de carácteres en Base64
      * @return Array de Bytes
      */
     public static byte[] byteArrayFromBase64(String base64) {
-        return ( base64 == null ) ? null : Base64.getDecoder().decode(base64);
+        return (base64 == null) ? null : Base64.getDecoder().decode(base64);
     }
 
     /**
      * Transforma un array de Bytes a una cadena de Base64
+     * 
+     * @author Illuminar Lidia Martínez
      *
      * @param array array de bytes
      * @return Cadena de carácteres en Base64
      */
     public static String byteArrayToBase64(byte[] array) {
-        return ( array == null ) ? null : Base64.getEncoder().encodeToString(array);
+        return (array == null) ? null : Base64.getEncoder().encodeToString(array);
     }
 
     /**
-     * Obtiene el fichero application.properties, lo mapea a una nueva instancia 
+     * Obtiene el fichero application.properties, lo mapea a una nueva instancia
      * Properties y la devuelve para su uso.
      * 
-     * @return  El objeto de properties.
+     * @author Neirth Sergio Martinez
+     * 
+     * @return El objeto de properties.
      */
     public static Properties loadProperties() {
-        //Obtenemos el contexto actual
+        // Obtenemos el contexto actual
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
         // Creamos un objeto properties
@@ -423,7 +462,7 @@ public class ServerUtils {
             properties.load(resourceStream);
         } catch (IOException e) {
             ServerApp.getLoggerSystem().error("Error obtaining application.properties");
-            
+
             e.printStackTrace();
         }
 

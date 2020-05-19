@@ -12,6 +12,17 @@ import io.Mauzo.Server.Managers.ProductsMgt;
 import io.Mauzo.Server.Managers.InformsMgt;
 import io.Mauzo.Server.Managers.DiscountsMgt;
 
+/**
+ * Clase la cual contiene los grupos de conexiones.
+ * 
+ * Esta clase tiene conexiones preinicializadas con preparedStatements para
+ * realizar las consultas de manera agil y sencilla. Esto está diseñado para
+ * albergar un número maximo de conexiones permitidas en el servidor, esto
+ * ocurre porque hay infraestructuras cuyos motores de bases de datos tienen un
+ * limite de conexiones.
+ * 
+ * @author Neirth Sergio Martínez
+ */
 public class ServerPools {
     private static ServerPools controller = null;
 
@@ -39,7 +50,7 @@ public class ServerPools {
      *                      con la base de datos.
      */
     private ServerPools() throws SQLException {
-        // private final Semaphore iSemaphore = new Semaphore(maxConnections); 
+        // private final Semaphore iSemaphore = new Semaphore(maxConnections);
         for (int i = 0; i < maxConnections; i++) {
             uConnectionList.add(new UsersMgt(ServerApp.setConnection()));
             sConnectionList.add(new SalesMgt(ServerApp.setConnection()));
@@ -53,12 +64,12 @@ public class ServerPools {
     /**
      * Método para adquirir una conexión de usuarios.
      * 
-     * En vez de utilizar un new UsersMgt(), utilizamos este método,
-     * dado que hay infraestructuras donde la base de datos es bastante
-     * limitada (Por ejemplo en Heroku), asi conseguimos tener conexiones,
-     * que se vayan a aprovechar de forma eficaz.
+     * En vez de utilizar un new UsersMgt(), utilizamos este método, dado que hay
+     * infraestructuras donde la base de datos es bastante limitada (Por ejemplo en
+     * Heroku), asi conseguimos tener conexiones, que se vayan a aprovechar de forma
+     * eficaz.
      * 
-     * @return  Una conexion con la base de de datos de tipo usuarios.
+     * @return Una conexion con la base de de datos de tipo usuarios.
      * @throws InterruptedException Ha sido interrumpido el método.
      */
     public UsersMgt acquireUsers() throws InterruptedException {
@@ -73,12 +84,12 @@ public class ServerPools {
     /**
      * Método para adquirir una conexión de ventas.
      * 
-     * En vez de utilizar un new SalesMgt(), utilizamos este método,
-     * dado que hay infraestructuras donde la base de datos es bastante
-     * limitada (Por ejemplo en Heroku), asi conseguimos tener conexiones,
-     * que se vayan a aprovechar de forma eficaz.
+     * En vez de utilizar un new SalesMgt(), utilizamos este método, dado que hay
+     * infraestructuras donde la base de datos es bastante limitada (Por ejemplo en
+     * Heroku), asi conseguimos tener conexiones, que se vayan a aprovechar de forma
+     * eficaz.
      * 
-     * @return  Una conexion con la base de de datos de tipo ventas.
+     * @return Una conexion con la base de de datos de tipo ventas.
      * @throws InterruptedException Ha sido interrumpido el método.
      */
     public SalesMgt acquireSales() throws InterruptedException {
@@ -93,12 +104,12 @@ public class ServerPools {
     /**
      * Método para adquirir una conexión de devoluciones.
      * 
-     * En vez de utilizar un new RefundsMgt(), utilizamos este método,
-     * dado que hay infraestructuras donde la base de datos es bastante
-     * limitada (Por ejemplo en Heroku), asi conseguimos tener conexiones,
-     * que se vayan a aprovechar de forma eficaz.
+     * En vez de utilizar un new RefundsMgt(), utilizamos este método, dado que hay
+     * infraestructuras donde la base de datos es bastante limitada (Por ejemplo en
+     * Heroku), asi conseguimos tener conexiones, que se vayan a aprovechar de forma
+     * eficaz.
      * 
-     * @return  Una conexion con la base de de datos de tipo devoluciones.
+     * @return Una conexion con la base de de datos de tipo devoluciones.
      * @throws InterruptedException Ha sido interrumpido el método.
      */
     public RefundsMgt acquireRefunds() throws InterruptedException {
@@ -113,12 +124,12 @@ public class ServerPools {
     /**
      * Método para adquirir una conexión de productos.
      * 
-     * En vez de utilizar un new ProductsMgt(), utilizamos este método,
-     * dado que hay infraestructuras donde la base de datos es bastante
-     * limitada (Por ejemplo en Heroku), asi conseguimos tener conexiones,
-     * que se vayan a aprovechar de forma eficaz.
+     * En vez de utilizar un new ProductsMgt(), utilizamos este método, dado que hay
+     * infraestructuras donde la base de datos es bastante limitada (Por ejemplo en
+     * Heroku), asi conseguimos tener conexiones, que se vayan a aprovechar de forma
+     * eficaz.
      * 
-     * @return  Una conexion con la base de de datos de tipo productos.
+     * @return Una conexion con la base de de datos de tipo productos.
      * @throws InterruptedException Ha sido interrumpido el método.
      */
     public ProductsMgt acquireProducts() throws InterruptedException {
@@ -131,23 +142,23 @@ public class ServerPools {
     }
 
     // public InformsMgt acquireInforms() throws InterruptedException {
-    //     iSemaphore.acquire();
+    // iSemaphore.acquire();
 
-    //     InformsMgt aux = iConnectionList.get(0);
-    //     iConnectionList.remove(0);
+    // InformsMgt aux = iConnectionList.get(0);
+    // iConnectionList.remove(0);
 
-    //     return aux;
+    // return aux;
     // }
 
     /**
      * Método para adquirir una conexión de descuentos.
      * 
-     * En vez de utilizar un new DiscountsMgt(), utilizamos este método,
-     * dado que hay infraestructuras donde la base de datos es bastante
-     * limitada (Por ejemplo en Heroku), asi conseguimos tener conexiones,
-     * que se vayan a aprovechar de forma eficaz.
+     * En vez de utilizar un new DiscountsMgt(), utilizamos este método, dado que
+     * hay infraestructuras donde la base de datos es bastante limitada (Por ejemplo
+     * en Heroku), asi conseguimos tener conexiones, que se vayan a aprovechar de
+     * forma eficaz.
      * 
-     * @return  Una conexion con la base de de datos de tipo descuentos.
+     * @return Una conexion con la base de de datos de tipo descuentos.
      * @throws InterruptedException Ha sido interrumpido el método.
      */
     public DiscountsMgt acquireDiscounts() throws InterruptedException {
@@ -210,8 +221,8 @@ public class ServerPools {
     }
 
     // public void releaseInforms(InformsMgt informs) {
-    //     iConnectionList.add(informs);
-    //     iSemaphore.release();
+    // iConnectionList.add(informs);
+    // iSemaphore.release();
     // }
 
     public static ServerPools getController() throws SQLException {
