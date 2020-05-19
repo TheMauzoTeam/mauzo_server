@@ -193,9 +193,9 @@ public class UsersMgt implements ManagersIntf<User> {
         
         // Este es un posible valor nulo.
         if(user.getUserPic() != null) {
-            addQuery.setBytes(7, ServerUtils.imageToByteArray(user.getUserPic(), "png"));
+            modifyQuery.setBytes(7, ServerUtils.imageToByteArray(user.getUserPic(), "png"));
         } else {
-            addQuery.setNull(7, Types.BOOLEAN);
+            modifyQuery.setNull(7, Types.BOOLEAN);
         }
 
         modifyQuery.setInt(8, user.getId());

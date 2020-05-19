@@ -80,8 +80,7 @@ public class ServerUtils {
             ServerApp.getLoggerSystem().warn("Error en procesar la consulta SQL: " + e.toString());
 
             // Informacion necesaria en procesos de debug.
-            ServerApp.getLoggerSystem().debug(e.getMessage());
-            ServerApp.getLoggerSystem().debug(Arrays.toString(e.getStackTrace()));
+            e.printStackTrace();
 
             response = Response.serverError();
         } catch (Exception e) {
@@ -89,8 +88,7 @@ public class ServerUtils {
             ServerApp.getLoggerSystem().warn("Error imprevisto: " + e.toString());
 
             // Informacion necesaria en procesos de debug.
-            ServerApp.getLoggerSystem().debug(e.getMessage());
-            ServerApp.getLoggerSystem().debug(Arrays.toString(e.getStackTrace()));
+            e.printStackTrace();
 
             response = Response.serverError();
         }
@@ -131,15 +129,13 @@ public class ServerUtils {
             } catch (SQLException e) {
                 // Detectamos errores en la SQL
                 ServerApp.getLoggerSystem().warn("Error en procesar la consulta SQL: " + e.toString());
-                ServerApp.getLoggerSystem().debug(e.getMessage());
-                ServerApp.getLoggerSystem().debug(Arrays.toString(e.getStackTrace()));
+                e.printStackTrace();
 
                 response = Response.serverError();
             } catch (Exception e) {
                 // En caso de existir otros errores, devolvemos un error 500 y listo.
                 ServerApp.getLoggerSystem().warn("Error imprevisto: " + e.toString());
-                ServerApp.getLoggerSystem().debug(e.getMessage());
-                ServerApp.getLoggerSystem().debug(Arrays.toString(e.getStackTrace()));
+                e.printStackTrace();
 
                 response = Response.serverError();
             }
@@ -184,15 +180,13 @@ public class ServerUtils {
             } catch (SQLException e) {
                 // Detectamos errores en la SQL
                 ServerApp.getLoggerSystem().warn("Error en procesar la consulta SQL: " + e.toString());
-                ServerApp.getLoggerSystem().debug(e.getMessage());
-                ServerApp.getLoggerSystem().debug(Arrays.toString(e.getStackTrace()));
+                e.printStackTrace();
 
                 response = Response.serverError();
             } catch (Exception e) {
                 // En caso de existir otros errores, devolvemos un error 500 y listo.
                 ServerApp.getLoggerSystem().warn("Error imprevisto: " + e.toString());
-                ServerApp.getLoggerSystem().debug(e.getMessage());
-                ServerApp.getLoggerSystem().debug(Arrays.toString(e.getStackTrace()));
+                e.printStackTrace();
 
                 response = Response.serverError();
             }
@@ -355,6 +349,7 @@ public class ServerUtils {
                 imageArr = out.toByteArray();
             } catch (Exception e) {
                 // En caso de problemas, devolvemos un null.
+                ServerApp.getLoggerSystem().error("Esto peta");
                 imageArr = null;
             }
         }
@@ -382,6 +377,7 @@ public class ServerUtils {
                 imageBuf = ImageIO.read(in);
             } catch (IOException e) {
                 // En caso de problemas, devolvemos un null.
+                ServerApp.getLoggerSystem().error("Esto peta");
                 imageBuf = null;
             }
         }
@@ -395,8 +391,8 @@ public class ServerUtils {
      * @param base64 Cadena de carácteres en Base64
      * @return Array de Bytes
      */
-    public static byte[] byteArrayFromBase64(String base64){
-        return Base64.getDecoder().decode(base64);
+    public static byte[] byteArrayFromBase64(String base64) {
+        return ( base64 == null ) ? null : Base64.getDecoder().decode(base64);
     }
 
     /**
@@ -405,8 +401,8 @@ public class ServerUtils {
      * @param array array de bytes
      * @return Cadena de carácteres en Base64
      */
-    public static String byteArrayToBase64(byte[] array){
-        return (array == null) ? null : Base64.getEncoder().encodeToString(array);
+    public static String byteArrayToBase64(byte[] array) {
+        return ( array == null ) ? null : Base64.getEncoder().encodeToString(array);
     }
 
     /**
