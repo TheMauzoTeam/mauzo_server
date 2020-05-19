@@ -4,7 +4,6 @@ package io.Mauzo.Server;
 import java.util.Base64;
 import java.util.List;
 import java.util.Properties;
-import java.util.Arrays;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,13 +13,15 @@ import java.security.Key;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Collections;
-import java.sql.SQLException;
 
 // Paquetes del framework extendido de java
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.DatatypeConverter;
+
+import org.apache.logging.log4j.Level;
+
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.crypto.spec.SecretKeySpec;
 import javax.imageio.ImageIO;
@@ -75,21 +76,11 @@ public class ServerUtils {
         try {
             // Lanzamos el resto de la secuencia a ejecutar.
             response = content.executeContent();
-        } catch (SQLException e) {
-            // Detectamos errores en la SQL
-            ServerApp.getLoggerSystem().warn("Error en procesar la consulta SQL: " + e.toString());
-
-            // Informacion necesaria en procesos de debug.
-            e.printStackTrace();
-
-            response = Response.serverError();
         } catch (Exception e) {
-            // En caso de existir otros errores, devolvemos un error 500 y listo.
-            ServerApp.getLoggerSystem().warn("Error imprevisto: " + e.toString());
+            // Invocamos la funcion para escribir en el registro la excepción.
+            writeServerException(e);
 
-            // Informacion necesaria en procesos de debug.
-            e.printStackTrace();
-
+            // Establecemos la respuesta como error.
             response = Response.serverError();
         }
 
@@ -126,17 +117,12 @@ public class ServerUtils {
             try {
                 // Lanzamos el resto de la secuencia a ejecutar.
                 response = content.executeContent();
-            } catch (SQLException e) {
-                // Detectamos errores en la SQL
-                ServerApp.getLoggerSystem().warn("Error en procesar la consulta SQL: " + e.toString());
-                e.printStackTrace();
-
-                response = Response.serverError();
             } catch (Exception e) {
                 // En caso de existir otros errores, devolvemos un error 500 y listo.
-                ServerApp.getLoggerSystem().warn("Error imprevisto: " + e.toString());
-                e.printStackTrace();
-
+                // Invocamos la funcion para escribir en el registro la excepción.
+                writeServerException(e);
+    
+                // Establecemos la respuesta como error.
                 response = Response.serverError();
             }
         } else {
@@ -177,17 +163,12 @@ public class ServerUtils {
             try {
                 // Lanzamos el resto de la secuencia a ejecutar.
                 response = content.executeContent();
-            } catch (SQLException e) {
-                // Detectamos errores en la SQL
-                ServerApp.getLoggerSystem().warn("Error en procesar la consulta SQL: " + e.toString());
-                e.printStackTrace();
-
-                response = Response.serverError();
             } catch (Exception e) {
                 // En caso de existir otros errores, devolvemos un error 500 y listo.
-                ServerApp.getLoggerSystem().warn("Error imprevisto: " + e.toString());
-                e.printStackTrace();
-
+                // Invocamos la funcion para escribir en el registro la excepción.
+                writeServerException(e);
+    
+                // Establecemos la respuesta como error.
                 response = Response.serverError();
             }
         } else {
@@ -196,6 +177,29 @@ public class ServerUtils {
 
         // Lanzamos la respuesta.
         return response.build();
+    }
+
+    /**
+     * Este metodo privado de la clase de utilidades escribe en el registro,
+     * en función de que si el servidor está trabajando en modo debug o en modo
+     * release la información en el registro.
+     * 
+     * En caso de estar en modo debug, el servidor mostrará todo el Stack Trace
+     * del cual se ha propiciado el fallo capturado, en caso contrario, solo se
+     * mostrará un mensaje de la excepción causante del problema.
+     * 
+     * @param e La excepción capturada.
+     */
+    private static void writeServerException(Exception e) {
+        // En caso de existir otros errores, devolvemos un error 500 y listo.
+        if (ServerApp.getLoggerSystem().getLevel() == Level.DEBUG) {
+            // Informacion necesaria en procesos de debug.
+            ServerApp.getLoggerSystem().debug("Obteniendo fallo del Stack Trace...");
+            e.printStackTrace();
+        } else {
+            // Informacion a mostrar en procesos de produccion.
+            ServerApp.getLoggerSystem().warn("Se ha detectado un error: " + e.toString());
+        }
     }
 
     /**
@@ -349,7 +353,6 @@ public class ServerUtils {
                 imageArr = out.toByteArray();
             } catch (Exception e) {
                 // En caso de problemas, devolvemos un null.
-                ServerApp.getLoggerSystem().error("Esto peta");
                 imageArr = null;
             }
         }
@@ -377,7 +380,6 @@ public class ServerUtils {
                 imageBuf = ImageIO.read(in);
             } catch (IOException e) {
                 // En caso de problemas, devolvemos un null.
-                ServerApp.getLoggerSystem().error("Esto peta");
                 imageBuf = null;
             }
         }
@@ -424,8 +426,7 @@ public class ServerUtils {
         } catch (IOException e) {
             ServerApp.getLoggerSystem().error("Error obtaining application.properties");
             
-            ServerApp.getLoggerSystem().debug(e.getMessage());
-            ServerApp.getLoggerSystem().debug(e.getStackTrace().toString());
+            e.printStackTrace();
         }
 
         // Devolvemos el objeto
