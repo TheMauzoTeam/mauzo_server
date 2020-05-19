@@ -38,6 +38,17 @@ import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
 @Component
 @Path("/sales")
 public class SalesCtrl {
+    /**
+     * Controlador que permite a un usuario obtener un listado de ventas dentro 
+     * del servidor, permitiendo asi obtener de manera dinamica los ventas validos u 
+     * otros usuarios validos dentro del sistema.
+     * 
+     * El contenido que recibirá esta vista http es mediante una peticion GET con
+     * la estructura de atributos de id, stampRef, userId, prodId y discId.
+     * 
+     * @param req      El header de la petición HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSalesMethod(@Context final HttpServletRequest req) {
@@ -77,6 +88,18 @@ public class SalesCtrl {
         });
     }
 
+    /**
+     * Controlador que permite a un usuario registrar ventas dentro del
+     * servidor, permitiendo asi agregar de manera dinamica ventas validos u otros
+     * usuarios validos dentro del sistema.
+     * 
+     * El contenido que recibirá esta vista http es mediante una peticion GET con
+     * la estructura de atributos de id, stampRef, userId, prodId y discId.
+     * 
+     * @param req      El header de la petición HTTP.
+     * @param jsonData El body de la petición HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addSalesMethod(@Context final HttpServletRequest req, String jsonData) {
@@ -117,6 +140,18 @@ public class SalesCtrl {
         });
     }
 
+    /**
+     * Controlador que permite a un usuario obtener una venta especifica dentro 
+     * del servidor, permitiendo asi obtener de manera dinamica la venta requeria
+     * como parametro en la interfaz web.
+     * 
+     * El contenido que recibirá esta vista http es mediante una peticion GET con
+     * la estructura de atributos de id, stampRef, userId, prodId y discId.
+     * 
+     * @param req      El header de la petición HTTP.
+     * @param paramId  El ID de usuario en la peticion HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
     @GET
     @Path("{param_id}")
     public Response getSaleMethod(@Context final HttpServletRequest req, @PathParam("param_id") int paramId) {
@@ -158,6 +193,16 @@ public class SalesCtrl {
         });
     }
 
+    /**
+     * Controlador que gestiona las actualizaciones de información de las ventas
+     * cuya informacion se recibe mediante una peticion PUT a la interfaz web.
+     * http://HOST_URL/api/sales/(id)
+     * 
+     * @param req      El header de la petición HTTP.
+     * @param paramId  El ID de usuario en la peticion HTTP.
+     * @param jsonData El body de la petición HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
     @PUT
     @Path("{param_id}")
     public Response modifySaleMethod(@Context final HttpServletRequest req, @PathParam("param_id") int paramId, String jsonData) {
@@ -201,6 +246,14 @@ public class SalesCtrl {
         });
     }
 
+    /**
+     * Controlador para eliminar ventas pasados por parametro en la interfaz web
+     * http://HOST_URL/api/sales/(id) con el tipo de petición DELETE.
+     * 
+     * @param req      El header de la petición HTTP.
+     * @param paramId  El ID de usuario en la peticion HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
     @DELETE
     @Path("{param_id}")
     public Response deleteSaleMethod(@Context final HttpServletRequest req, @PathParam("param_id") int paramId) {

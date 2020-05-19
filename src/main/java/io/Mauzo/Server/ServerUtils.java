@@ -118,7 +118,6 @@ public class ServerUtils {
                 // Lanzamos el resto de la secuencia a ejecutar.
                 response = content.executeContent();
             } catch (Exception e) {
-                // En caso de existir otros errores, devolvemos un error 500 y listo.
                 // Invocamos la funcion para escribir en el registro la excepción.
                 writeServerException(e);
     
@@ -164,7 +163,6 @@ public class ServerUtils {
                 // Lanzamos el resto de la secuencia a ejecutar.
                 response = content.executeContent();
             } catch (Exception e) {
-                // En caso de existir otros errores, devolvemos un error 500 y listo.
                 // Invocamos la funcion para escribir en el registro la excepción.
                 writeServerException(e);
     
@@ -197,7 +195,7 @@ public class ServerUtils {
             ServerApp.getLoggerSystem().debug("Obteniendo fallo del Stack Trace...");
             e.printStackTrace();
         } else {
-            // Informacion a mostrar en procesos de produccion.
+            // Informacion a mostrar en procesos de producción.
             ServerApp.getLoggerSystem().warn("Se ha detectado un error: " + e.toString());
         }
     }

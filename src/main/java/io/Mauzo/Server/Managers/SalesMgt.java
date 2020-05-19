@@ -125,9 +125,9 @@ public class SalesMgt implements ManagersIntf<Sale> {
 
         // Este es un posible valor nulo.
         if(sale.getDiscId() != null) {
-            addQuery.setInt(4, sale.getDiscId());
+            modifyQuery.setInt(4, sale.getDiscId());
         } else {
-            addQuery.setNull(4, Types.INTEGER);
+            modifyQuery.setNull(4, Types.INTEGER);
         }
 
         modifyQuery.setInt(5, sale.getId());
