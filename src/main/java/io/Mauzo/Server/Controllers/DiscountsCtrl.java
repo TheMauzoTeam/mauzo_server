@@ -70,7 +70,7 @@ public class DiscountsCtrl {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerDiscount(@Context final HttpServletRequest req, String jsonData) {
+    public Response addDiscountMethod(@Context final HttpServletRequest req, String jsonData) {
         return ServerUtils.genericAdminMethod(req, null, jsonData, () -> {
             ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
@@ -107,7 +107,29 @@ public class DiscountsCtrl {
     @GET
     @Path("{param_id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getDiscount(@Context final HttpServletRequest req, @PathParam("param_id") int param)
+    public Response getDiscount(@Context final HttpServletRequest req, @PathParam("param_id") int param) {
+        return ServerUtils.genericAdminMethod(req, param, null, () -> {
+            ResponseBuilder response = null;
+            DiscountsMgt discountsMgt = ServerPools.getController().acquireDiscounts();
+            try {
+                JsonObjectBuilder jsonResponse = Json.createObjectBuilder();
+                Discount discount = discountsMgt.get(param);
+
+                jsonResponse.add("id", discount.getId());
+                jsonResponse.add("codeDisc", discount.getId());
+                jsonResponse.add("descDisc", discount.getDesc());
+                jsonResponse.add("pricePerc", discount.getPrizeDisc());
+
+                response = Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
+            } catch (ManagerErrorException e) {
+                ServerApp.getLoggerSystem().debug(e.toString());
+                response = Response.status(Status.NOT_FOUND);
+            } finally {
+                ServerPools.getController().releaseDiscounts(discountsMgt);
+            }
+            return response;
+        });
+    }
 
     @PUT
     @Path("{param_id}")
