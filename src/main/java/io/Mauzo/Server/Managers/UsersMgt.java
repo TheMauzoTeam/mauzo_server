@@ -57,7 +57,7 @@ public class UsersMgt implements ManagersIntf<User> {
         if(user.getUserPic() != null) {
             addQuery.setBytes(7, ServerUtils.imageToByteArray(user.getUserPic(), "png"));
         } else {
-            addQuery.setNull(7, Types.BOOLEAN);
+            addQuery.setNull(7, Types.BINARY);
         }
 
         // Ejecutamos la sentencia sql.
@@ -195,12 +195,13 @@ public class UsersMgt implements ManagersIntf<User> {
         if(user.getUserPic() != null) {
             modifyQuery.setBytes(7, ServerUtils.imageToByteArray(user.getUserPic(), "png"));
         } else {
-            modifyQuery.setNull(7, Types.BOOLEAN);
+            modifyQuery.setNull(7, Types.BINARY);
         }
 
         modifyQuery.setInt(8, user.getId());
 
         // Ejecutamos la sentencia sql.
+        // FIXME: Actualiza but no indica que ha actualizado correctamente.
         if(modifyQuery.execute() == false) 
             throw new ManagerErrorException("No se ha encontrado el usuario durante la actualización del mismo.");
     }
