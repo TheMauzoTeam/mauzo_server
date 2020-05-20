@@ -1,9 +1,6 @@
 package io.Mauzo.Server.Managers;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.PreparedStatement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +37,13 @@ public class ProductsMgt implements ManagersIntf<Product>{
             addQuery.setString(2, product.getName());
             addQuery.setDouble(3,product.getPrice());
             addQuery.setString(4, product.getDescription());
-            addQuery.setBytes(5, ServerUtils.imageToByteArray(product.getPicture(),"png"));
+
+            if(product.getPicture() != null) {
+                addQuery.setBytes(5, ServerUtils.imageToByteArray(product.getPicture(), "png"));
+            } else {
+                addQuery.setNull(5, Types.BINARY);
+            }
+
             //Ejecutamos la sentencia SQl
             addQuery.execute();
     }
@@ -156,7 +159,13 @@ public class ProductsMgt implements ManagersIntf<Product>{
             modifyQuery.setString(2, obj.getName());
             modifyQuery.setDouble(3, obj.getPrice());
             modifyQuery.setString(4,obj.getDescription());
-            modifyQuery.setBytes(5,ServerUtils.imageToByteArray(obj.getPicture(),"png"));
+
+            // Este es un posible valor nulo.
+            if(obj.getPicture() != null) {
+                modifyQuery.setBytes(5, ServerUtils.imageToByteArray(obj.getPicture(), "png"));
+            } else {
+                modifyQuery.setNull(5, Types.BINARY);
+            }
 
             if(modifyQuery.execute() == false)
                 throw new ManagerErrorException("No se ha encontrado el producto durante la actualización del mismo.");

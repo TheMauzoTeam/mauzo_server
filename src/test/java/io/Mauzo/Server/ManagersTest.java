@@ -112,9 +112,12 @@ public class ManagersTest {
     public void testProducts() throws Exception {
         ProductsMgt productsMgt = ServerPools.getController().acquireProducts();
         Product product = productsMgt.get(1);
+        product.setName("adolfo");
+        productsMgt.modify(product);
+        product = productsMgt.get(1);
         ServerPools.getController().releaseProducts(productsMgt);
 
-        Assert.assertTrue(productsMgt != null && product.getCode() != null);
+        Assert.assertTrue(productsMgt != null && product.getCode() != null && product.getName().equals("adolfo"));
     }
 
     /**
