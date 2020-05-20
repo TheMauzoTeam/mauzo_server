@@ -40,7 +40,7 @@ public class ManagersTest {
         RefundsMgt refundsMgt = ServerPools.getController().acquireRefunds();
 
         try (Statement st = DriverManager.getConnection(url).createStatement()) {
-            st.execute("DROP TABLE IF EXISTS Refunds; DROP TABLE IF EXISTS Sales; DROP TABLE IF EXISTS Users; DROP TABLE IF EXISTS Products; DROP TABLE IF EXISTS Discounts;");
+            st.execute("TRUNCATE TABLE Refunds CASCADE; TRUNCATE TABLE Sales CASCADE; TRUNCATE TABLE Users CASCADE; TRUNCATE TABLE Products CASCADE; TRUNCATE TABLE Discounts CASCADE;");
 
             User user = new User();
             user.setFirstName("Paco");
@@ -49,7 +49,6 @@ public class ManagersTest {
             user.setUsername("pacoman");
             user.setPassword("pacothebest");
             user.setAdmin(true);
-            user.setUserPic(null);
             usersMgt.add(user);
 
             Product product = new Product();
@@ -57,7 +56,6 @@ public class ManagersTest {
             product.setCode("1452");
             product.setDescription("Con cuerdas");
             product.setPrice(1.52f);
-            product.setPicture(null);
             productsMgt.add(product);
 
             Discount discount = new Discount();
@@ -68,14 +66,14 @@ public class ManagersTest {
 
             Sale sale = new Sale();
             sale.setStampRef(new Date());
-            sale.setUserId(2);
+            sale.setUserId(1);
             sale.setDiscId(1);
             sale.setProdId(1);
             salesMgt.add(sale);
 
             Refund refund = new Refund();
             refund.setSaleId(1);
-            refund.setUserId(2);
+            refund.setUserId(1);
             refund.setDateRefund(new Date());
             refundsMgt.add(refund);
 
@@ -111,7 +109,11 @@ public class ManagersTest {
      */
     @Test
     public void testProducts() throws Exception {
+        ProductsMgt productsMgt = ServerPools.getController().acquireProducts();
+        Product product = productsMgt.get(1);
+        ServerPools.getController().releaseProducts(productsMgt);
 
+        Assert.assertTrue(productsMgt != null && product.getCode() != null);
     }
 
     /**
