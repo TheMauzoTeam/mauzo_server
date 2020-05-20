@@ -2,22 +2,25 @@ package io.Mauzo.Server.Controllers;
 
 import io.Mauzo.Server.Managers.ManagersIntf;
 import io.Mauzo.Server.Managers.RefundsMgt;
-
 import io.Mauzo.Server.ServerApp;
 import io.Mauzo.Server.ServerPools;
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.Templates.Refund;
 import org.springframework.stereotype.Component;
 
+// Paquetes relativos a los Json de entrada y salida.
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+// Paquetes relativos al framework estandar de Java.
 import java.io.StringReader;
 import java.util.Date;
 

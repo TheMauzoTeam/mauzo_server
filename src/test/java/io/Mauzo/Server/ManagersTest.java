@@ -2,12 +2,14 @@ package io.Mauzo.Server;
 
 import io.Mauzo.Server.Managers.*;
 import io.Mauzo.Server.Templates.*;
+import org.apache.catalina.Server;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Connection;
 import java.sql.Statement;
 
 import java.util.Date;
@@ -19,8 +21,8 @@ public class ManagersTest {
      * de pruebas donde se ejecutarán todos los test de
      * validación respecto a los métodos a probar.
      */
-    @BeforeClass
-    public static void prepareDatabase() throws Exception {
+    @Before
+    public void prepareDatabase() throws Exception {
         String url = ServerUtils.loadProperties().getProperty("mauzo.debugDatabase.url");
         
         ServerApp.setUrl(url);
@@ -31,8 +33,55 @@ public class ManagersTest {
             throw new SQLException("No se ha encontrado el driver de PostgreSQL: " + e.toString());
         }
 
+        UsersMgt usersMgt = ServerPools.getController().acquireUsers();
+        ProductsMgt productsMgt = ServerPools.getController().acquireProducts();
+        SalesMgt salesMgt = ServerPools.getController().acquireSales();
+        DiscountsMgt discountsMgt = ServerPools.getController().acquireDiscounts();
+        RefundsMgt refundsMgt = ServerPools.getController().acquireRefunds();
+
         try (Statement st = DriverManager.getConnection(url).createStatement()) {
-            st.execute("DROP TABLE IF EXISTS Refunds; DROP TABLE IF EXISTS Sales; DROP TABLE IF EXISTS Users; DROP TABLE IF EXISTS Products; DROP TABLE IF EXISTS Discounts;");
+            st.execute("TRUNCATE TABLE Refunds CASCADE; TRUNCATE TABLE Sales CASCADE; TRUNCATE TABLE Users CASCADE; TRUNCATE TABLE Products CASCADE; TRUNCATE TABLE Discounts CASCADE;");
+
+            User user = new User();
+            user.setFirstName("Paco");
+            user.setLastName("Sanchez");
+            user.setEmail("paco@gmail.com");
+            user.setUsername("pacoman");
+            user.setPassword("pacothebest");
+            user.setAdmin(true);
+            usersMgt.add(user);
+
+            Product product = new Product();
+            product.setName("raqueta");
+            product.setCode("1452");
+            product.setDescription("Con cuerdas");
+            product.setPrice(1.52f);
+            productsMgt.add(product);
+
+            Discount discount = new Discount();
+            discount.setCode("56230");
+            discount.setDesc("50%");
+            discount.setPriceDisc(15f);
+            discountsMgt.add(discount);
+
+            Sale sale = new Sale();
+            sale.setStampRef(new Date());
+            sale.setUserId(1);
+            sale.setDiscId(1);
+            sale.setProdId(1);
+            salesMgt.add(sale);
+
+            Refund refund = new Refund();
+            refund.setSaleId(1);
+            refund.setUserId(1);
+            refund.setDateRefund(new Date());
+            refundsMgt.add(refund);
+
+        } finally {
+            ServerPools.getController().releaseUsers(usersMgt);
+            ServerPools.getController().releaseProducts(productsMgt);
+            ServerPools.getController().releaseRefunds(refundsMgt);
+            ServerPools.getController().releaseDiscounts(discountsMgt);
         }
     }
 
@@ -44,21 +93,12 @@ public class ManagersTest {
     //TEST REFUNDS
     @Test
     public void testRefunds() throws Exception {
-        Refund refund = new Refund();
-
-        refund.setDateRefund(new Date());
-        refund.setUserId(1);
-
         RefundsMgt refundsMgt = ServerPools.getController().acquireRefunds();
-
-        //Probamos los métodos
-        refundsMgt.add(refund);
-        refundsMgt.get(0);
-        refundsMgt.getList();
-        refundsMgt.modify(refund);
-        refundsMgt.remove(refund);
-
+        Refund refund = refundsMgt.get(1);
         ServerPools.getController().releaseRefunds(refundsMgt);
+
+        Assert.assertTrue( refundsMgt != null && refund.getDateRefund() != null);
+
     }
 
     //TEST PRODUCTOS
@@ -69,23 +109,11 @@ public class ManagersTest {
      */
     @Test
     public void testProducts() throws Exception {
-        Product product = new Product();
-
-        product.setCode("1878");
-        product.setDescription("redondo");
-        product.setName("balón");
-        product.setPrice(10.0f);
-
         ProductsMgt productsMgt = ServerPools.getController().acquireProducts();
-
-        productsMgt.add(product);
-        productsMgt.get(0);
-        productsMgt.get("cable");
-        productsMgt.getList();
-        productsMgt.modify(product);
-        productsMgt.remove(product);
-
+        Product product = productsMgt.get(1);
         ServerPools.getController().releaseProducts(productsMgt);
+
+        Assert.assertTrue(productsMgt != null && product.getCode() != null);
     }
 
     /**
@@ -96,22 +124,7 @@ public class ManagersTest {
     //TEST SALES
     @Test
     public void testSales() throws Exception {
-        Sale sale = new Sale();
 
-        sale.setDiscId(1);
-        sale.setProdId(1);
-        sale.setUserId(1);
-        sale.setStampRef(new Date());
-
-        SalesMgt salesMgt = ServerPools.getController().acquireSales();
-
-        salesMgt.add(sale);
-        salesMgt.get(0);
-        salesMgt.getList();
-        salesMgt.modify(sale);
-        salesMgt.remove(sale);
-
-        ServerPools.getController().releaseSales(salesMgt);
     }
 
     /**
@@ -122,23 +135,7 @@ public class ManagersTest {
     //TEST USERS
     @Test
     public void testUsers() throws Exception {
-        User user = new User();
 
-        user.setUsername("brrrr");
-        user.setFirstName("brrrrr");
-        user.setLastName("brrrrrrrrr");
-        user.setPassword("brrrrrrrrrrrr");
-        user.setEmail("brrrrrrr@BRRRRRRRRRRR.br");
-
-        UsersMgt usersMgt = ServerPools.getController().acquireUsers();
-
-        usersMgt.add(user);
-        User user1 = usersMgt.get(1);
-        usersMgt.getList();
-        usersMgt.modify(user1);
-        usersMgt.remove(user1);
-
-        ServerPools.getController().releaseUsers(usersMgt);
     }
 
     /**
@@ -149,21 +146,6 @@ public class ManagersTest {
     //TEST DISCOUNTS
     @Test
     public void testDiscounts() throws Exception {
-        Discount discount = new Discount();
 
-
-        discount.setCode("151");
-        discount.setDesc("753");
-        discount.setPriceDisc(15.9f);
-
-        DiscountsMgt discountsMgt = ServerPools.getController().acquireDiscounts();
-
-        discountsMgt.add(discount);
-        Discount discount1 = discountsMgt.get(1);
-        discountsMgt.getList();
-        discountsMgt.modify(discount1);
-        discountsMgt.remove(discount1);
-
-        ServerPools.getController().releaseDiscounts(discountsMgt);
     }
 }
