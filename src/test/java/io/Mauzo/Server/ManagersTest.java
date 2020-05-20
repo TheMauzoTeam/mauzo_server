@@ -112,12 +112,12 @@ public class ManagersTest {
     public void testProducts() throws Exception {
         ProductsMgt productsMgt = ServerPools.getController().acquireProducts();
         Product product = productsMgt.get(1);
-        product.setName("adolfo");
+        product.setName("pelota");
         productsMgt.modify(product);
         product = productsMgt.get(1);
         ServerPools.getController().releaseProducts(productsMgt);
 
-        Assert.assertTrue(productsMgt != null && product.getCode() != null && product.getName().equals("adolfo"));
+        Assert.assertTrue(productsMgt != null && product.getCode() != null && product.getName().equals("pelota"));
     }
 
     /**
@@ -128,7 +128,12 @@ public class ManagersTest {
     //TEST SALES
     @Test
     public void testSales() throws Exception {
+        SalesMgt salesMgt = ServerPools.getController().acquireSales();
+        Sale sale = salesMgt.get(1);
 
+        ServerPools.getController().releaseSales(salesMgt);
+
+        Assert.assertTrue(salesMgt != null);
     }
 
     /**
@@ -139,6 +144,16 @@ public class ManagersTest {
     //TEST USERS
     @Test
     public void testUsers() throws Exception {
+        UsersMgt usersMgt = ServerPools.getController().acquireUsers();
+        User user = usersMgt.get(1);
+
+        user.setUsername("adolfo");
+        usersMgt.modify(user);
+        ServerPools.getController().releaseUsers(usersMgt);
+        user = usersMgt.get(1);
+        ServerPools.getController().releaseUsers(usersMgt);
+
+        Assert.assertTrue(usersMgt != null && user.getFirstName() != null && user.getUsername().equals("adolfo"));
 
     }
 
@@ -150,6 +165,15 @@ public class ManagersTest {
     //TEST DISCOUNTS
     @Test
     public void testDiscounts() throws Exception {
+        DiscountsMgt discountsMgt = ServerPools.getController().acquireDiscounts();
+        Discount discount = discountsMgt.get(1);
 
+        discount.setPriceDisc(78f);
+        discountsMgt.modify(discount);
+        ServerPools.getController().releaseDiscounts(discountsMgt);
+        discount = discountsMgt.get(1);
+        ServerPools.getController().releaseDiscounts(discountsMgt);
+        
+        Assert.assertTrue(discountsMgt != null && discount.getCode() != null && discount.getPrizeDisc().equals(78f));
     }
 }
