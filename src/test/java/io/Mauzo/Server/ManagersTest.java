@@ -66,14 +66,14 @@ public class ManagersTest {
 
             Sale sale = new Sale();
             sale.setStampRef(new Date());
-            sale.setUserId(1);
-            sale.setDiscId(1);
-            sale.setProdId(1);
+            sale.setUserId(usersMgt.get("pacoman").getId());
+            sale.setDiscId(discountsMgt.get("56230").getId());
+            sale.setProdId(productsMgt.get("1452").getId());
             salesMgt.add(sale);
 
             Refund refund = new Refund();
             refund.setSaleId(1);
-            refund.setUserId(1);
+            refund.setUserId(usersMgt.get("pacoman").getId());
             refund.setDateRefund(new Date());
             refundsMgt.add(refund);
 

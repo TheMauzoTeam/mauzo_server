@@ -21,7 +21,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
     public ProductsMgt(Connection connection) throws SQLException {
         addQuery = connection.prepareStatement("INSERT INTO Products ( ProdCode, ProdName, ProdPrice, ProdDesc, ProdPic) VALUES ( ?, ?, ?, ?, ?);");
         getIdQuery = connection.prepareStatement("SELECT * FROM Products WHERE id = ?;");
-        getNameQuery = connection.prepareStatement("SELECT * FROM Products WHERE prodName = ?;");
+        getNameQuery = connection.prepareStatement("SELECT * FROM Products WHERE prodCode = ?;");
         getListQuery = connection.prepareStatement("SELECT * FROM Products");
         modifyQuery = connection.prepareStatement("UPDATE Products SET ProdCode = ?, prodName = ?, prodPrice = ?, prodDesc = ? WHERE id = ?");
         removeQuery = connection.prepareStatement("DELETE FROM Products WHERE id = ?;");
