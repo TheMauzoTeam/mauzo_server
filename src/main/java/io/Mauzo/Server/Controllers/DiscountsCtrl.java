@@ -104,10 +104,7 @@ public class DiscountsCtrl {
         });
     }
 
-    @GET
-    @Path("{param_id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getDiscount(@Context final HttpServletRequest req, @PathParam("param_id") int param)
+
 
     @PUT
     @Path("{param_id}")
