@@ -9,6 +9,7 @@ public class Inform {
     private Integer id;
     private Integer nSales;
     private Integer nRefunds;
+    private Integer nDiscounts;
     private HashMap<User, Integer> userSales = new HashMap<>();
 
     private Date dStart;
@@ -37,6 +38,14 @@ public class Inform {
 
     public void setnRefunds(Integer nRefunds) {
         this.nRefunds = nRefunds;
+    }
+
+    public Integer getnDiscounts() {
+        return nDiscounts;
+    }
+
+    public void setnDiscounts(Integer nDiscounts) {
+        this.nDiscounts = nDiscounts;
     }
 
     public HashMap<User, Integer> getUserSales() {

@@ -56,16 +56,14 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
 
         // Ejecutamos la sentencia sql y recuperamos lo que nos ha retornado.
         try (ResultSet rs = getIdQuery.executeQuery()) {
-            if (!(rs.isLast()))
-                while (rs.next()) {
-                    discount = new Discount();
+            if (rs.next()) {
+                discount = new Discount();
 
-                    discount.setId(rs.getInt("id"));
-                    discount.setCode(rs.getString("codeDisc"));
-                    discount.setDesc(rs.getString("descDisc"));
-                    discount.setPriceDisc(rs.getFloat("pricePerc"));
-                }
-            else
+                discount.setId(rs.getInt("id"));
+                discount.setCode(rs.getString("codeDisc"));
+                discount.setDesc(rs.getString("descDisc"));
+                discount.setPriceDisc(rs.getFloat("pricePerc"));
+            } else
                 throw new ManagerErrorException("No se ha encontrado el descuento.");
         }
 

@@ -14,17 +14,27 @@ public class Discount {
         this.id = id;
     }
 
-    public String getCode() { return code; }
+    public String getCode() {
+        return code;
+    }
 
-    public void setCode(String code) { this.code = code; }
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-    public String getDesc() { return desc; }
+    public String getDesc() {
+        return desc;
+    }
 
-    public void setDesc(String desc) { this.desc = desc; }
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 
     public Float getPrizeDisc() {
         return priceDisc;
     }
 
-    public void setPriceDisc(Float priceDisc) { this.priceDisc = priceDisc; }
+    public void setPriceDisc(Float priceDisc) {
+        this.priceDisc = priceDisc;
+    }
 }

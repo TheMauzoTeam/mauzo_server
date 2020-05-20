@@ -45,19 +45,23 @@ public class DiscountsCtrl {
 
             DiscountsMgt discountMgt = ServerPools.getController().acquireDiscounts();
 
-            // Recorremos la lista que nos ha entregado el servidor.
-            for (Discount discount : discountMgt.getList()) {
-                // Inicializamos los objetos a usar.
-                JsonObjectBuilder jsonObj = Json.createObjectBuilder();
+            try {
+                // Recorremos la lista que nos ha entregado el servidor.
+                for (Discount discount : discountMgt.getList()) {
+                    // Inicializamos los objetos a usar.
+                    JsonObjectBuilder jsonObj = Json.createObjectBuilder();
 
-                // Construimos el objeto Json con los atributo del descuento.
-                jsonObj.add("id", discount.getId());
-                jsonObj.add("codeDisc", discount.getCode());
-                jsonObj.add("descDisc", discount.getDesc());
-                jsonObj.add("pricePerc", discount.getPrizeDisc());
+                    // Construimos el objeto Json con los atributo del descuento.
+                    jsonObj.add("id", discount.getId());
+                    jsonObj.add("codeDisc", discount.getCode());
+                    jsonObj.add("descDisc", discount.getDesc());
+                    jsonObj.add("pricePerc", discount.getPrizeDisc());
 
-                // Lo añadimos al Json Array.
-                jsonResponse.add(jsonObj);
+                    // Lo añadimos al Json Array.
+                    jsonResponse.add(jsonObj);
+                }
+            } finally {
+                ServerPools.getController().releaseDiscounts(discountMgt);
             }
 
             return Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
@@ -77,25 +81,33 @@ public class DiscountsCtrl {
 
                 DiscountsMgt discountMgt = ServerPools.getController().acquireDiscounts();
 
-                // Inicializamos el objeto
-                Discount disAux = new Discount();
+                try {
+                    // Inicializamos el objeto
+                    Discount disAux = new Discount();
 
-                // Agregamos la información al descuento.
-                disAux.setCode(jsonRequest.getString("codeDisc"));
-                disAux.setDesc(jsonRequest.getString("descDisc"));
-                disAux.setPriceDisc(Float.valueOf(jsonRequest.getString("pricePerc")));
+                    // Agregamos la información al descuento.
+                    disAux.setCode(jsonRequest.getString("codeDisc"));
+                    disAux.setDesc(jsonRequest.getString("descDisc"));
+                    disAux.setPriceDisc(Float.valueOf(jsonRequest.getString("pricePerc")));
 
-                // Agregamos el descuento al la lista.
-                discountMgt.add(disAux);
-
-                ServerPools.getController().releaseDiscounts(discountMgt);
+                    // Agregamos el descuento al la lista.
+                    discountMgt.add(disAux);
+                } finally {
+                    ServerPools.getController().releaseDiscounts(discountMgt);
+                }
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                 response = Response.status(Status.OK);
             }
+
             return response;
         });
     }
+
+    @GET
+    @Path("{param_id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDiscount(@Context final HttpServletRequest req, @PathParam("param_id") int param)
 
     @PUT
     @Path("{param_id}")
