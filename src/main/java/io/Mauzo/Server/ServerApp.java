@@ -96,9 +96,9 @@ public class ServerApp {
         config.register(UsersCtrl.class);
         config.register(LoginCtrl.class);
         config.register(SalesCtrl.class);
-        // config.register(RefundsCtrl.class);
+        config.register(RefundsCtrl.class);
         config.register(ProductsCtrl.class);
-        // config.register(InformsCtrl.class);
+        config.register(InformsCtrl.class);
         config.register(DiscountsCtrl.class);
 
         return config;

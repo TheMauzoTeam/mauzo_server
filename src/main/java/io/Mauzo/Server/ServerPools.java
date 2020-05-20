@@ -33,14 +33,14 @@ public class ServerPools {
     private final Semaphore rSemaphore = new Semaphore(maxConnections);
     private final Semaphore pSemaphore = new Semaphore(maxConnections);
     private final Semaphore dSemaphore = new Semaphore(maxConnections);
-    // private final Semaphore iSemaphore = new Semaphore(maxConnections);
+    private final Semaphore iSemaphore = new Semaphore(maxConnections);
 
     private final List<UsersMgt> uConnectionList = new ArrayList<>();
     private final List<SalesMgt> sConnectionList = new ArrayList<>();
     private final List<RefundsMgt> rConnectionList = new ArrayList<>();
     private final List<ProductsMgt> pConnectionList = new ArrayList<>();
     private final List<DiscountsMgt> dConnectionList = new ArrayList<>();
-    // private final List<InformsMgt> iConnectionList = new ArrayList<>();
+    private final List<InformsMgt> iConnectionList = new ArrayList<>();
 
     /**
      * Constructor privado del cual inicializa los objetos que manejarán las
@@ -50,14 +50,13 @@ public class ServerPools {
      *                      con la base de datos.
      */
     private ServerPools() throws SQLException {
-        // private final Semaphore iSemaphore = new Semaphore(maxConnections);
         for (int i = 0; i < maxConnections; i++) {
             uConnectionList.add(new UsersMgt(ServerApp.setConnection()));
             sConnectionList.add(new SalesMgt(ServerApp.setConnection()));
             rConnectionList.add(new RefundsMgt(ServerApp.setConnection()));
             pConnectionList.add(new ProductsMgt(ServerApp.setConnection()));
             dConnectionList.add(new DiscountsMgt(ServerApp.setConnection()));
-            // iConnectionList.add(new InformsMgt(ServerApp.setConnection()));
+            iConnectionList.add(new InformsMgt(ServerApp.setConnection()));
         }
     }
 
@@ -141,14 +140,14 @@ public class ServerPools {
         return aux;
     }
 
-    // public InformsMgt acquireInforms() throws InterruptedException {
-    // iSemaphore.acquire();
+    public InformsMgt acquireInforms() throws InterruptedException {
+        iSemaphore.acquire();
 
-    // InformsMgt aux = iConnectionList.get(0);
-    // iConnectionList.remove(0);
+        InformsMgt aux = iConnectionList.get(0);
+        iConnectionList.remove(0);
 
-    // return aux;
-    // }
+        return aux;
+    }
 
     /**
      * Método para adquirir una conexión de descuentos.
@@ -220,10 +219,10 @@ public class ServerPools {
         dSemaphore.release();
     }
 
-    // public void releaseInforms(InformsMgt informs) {
-    // iConnectionList.add(informs);
-    // iSemaphore.release();
-    // }
+    public void releaseInforms(InformsMgt informs) {
+        iConnectionList.add(informs);
+        iSemaphore.release();
+    }
 
     public static ServerPools getController() throws SQLException {
         if (controller == null)

@@ -26,6 +26,7 @@ public class UsersMgt implements ManagersIntf<User> {
      * 
      * @throws SQLException Excepcion en la consulta SQL.
      */
+    // TODO: Preguntarle a javi como hacer los constructores visibles solo en el paquete.
     public UsersMgt(Connection conn) throws SQLException {  
         // Dejamos las consultas preparadas
         addQuery = conn.prepareStatement("INSERT INTO Users (firstname, lastname, username, email, password, isAdmin, userPic) VALUES (?, ?, ?, ?, ?, ?, ?);");
