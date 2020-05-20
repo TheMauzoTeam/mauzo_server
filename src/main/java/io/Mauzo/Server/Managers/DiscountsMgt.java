@@ -9,6 +9,7 @@ import java.util.List;
 public class DiscountsMgt implements ManagersIntf<Discount> {
     private final PreparedStatement addQuery;
     private final PreparedStatement getIdQuery;
+    private final PreparedStatement getNameQuery;
     private final PreparedStatement getListQuery;
     private final PreparedStatement modifyQuery;
     private final PreparedStatement deleteQuery;
@@ -16,6 +17,7 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
     public DiscountsMgt(Connection conn) throws SQLException {
         addQuery = conn.prepareStatement("INSERT INTO Discounts (codeDisc, descDisc, pricePerc) VALUES(?, ?, ?)");
         getIdQuery = conn.prepareStatement("SELECT * FROM Discounts WHERE id = ?;");
+        getNameQuery = conn.prepareStatement("SELECT * FROM Discounts WHERE codeDisc = ?;");
         getListQuery = conn.prepareStatement("SELECT * FROM Discounts");
         modifyQuery = conn.prepareStatement("UPDATE Discounts SET codeDisc = ?, descDisc = ?, pricePerc = ? WHERE id = ?;");
         deleteQuery = conn.prepareStatement("DELETE FROM Discounts WHERE id = ?;");
@@ -65,6 +67,26 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
                 discount.setPriceDisc(rs.getFloat("pricePerc"));
             } else
                 throw new ManagerErrorException("No se ha encontrado el descuento.");
+        }
+
+        return discount;
+    }
+
+    public Discount get(String name) throws SQLException, ManagerErrorException {
+        Discount discount = null;
+
+        getNameQuery.setString(1, name);
+
+        try (ResultSet rs = getNameQuery.executeQuery()) {
+            if (rs.next()) {
+                discount = new Discount();
+
+                discount.setId(rs.getInt("id"));
+                discount.setCode(rs.getString("codeDisc"));
+                discount.setDesc(rs.getString("descDisc"));
+                discount.setPriceDisc(rs.getFloat("pricePerc"));
+            } else
+                throw new ManagerErrorException("No se ha encontrado el descuento");
         }
 
         return discount;
