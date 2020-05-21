@@ -1,9 +1,9 @@
 package io.Mauzo.Server.Controllers;
 
+import io.Mauzo.Server.Managers.Connections;
 import io.Mauzo.Server.Managers.ManagersIntf;
 import io.Mauzo.Server.Managers.RefundsMgt;
 import io.Mauzo.Server.ServerApp;
-import io.Mauzo.Server.ServerPools;
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.Templates.Refund;
 import org.springframework.stereotype.Component;
@@ -43,7 +43,7 @@ public class RefundsCtrl {
         return ServerUtils.genericUserMethod(req, null, null, () -> {
             JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
 
-            RefundsMgt refundsMgt = ServerPools.getController().acquireRefunds();
+            RefundsMgt refundsMgt = Connections.getController().acquireRefunds();
 
             for (Refund refund : refundsMgt.getList()) {
                 // Inicializamos los objetos a usar.
@@ -58,7 +58,7 @@ public class RefundsCtrl {
                 jsonResponse.add(jsonObj);
             }
 
-            ServerPools.getController().releaseRefunds(refundsMgt);
+            Connections.getController().releaseRefunds(refundsMgt);
 
             return Response.ok(jsonResponse.build().toString());
         });
@@ -87,7 +87,7 @@ public class RefundsCtrl {
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
                 // Adquirimos una conexión de reembolsos
-                RefundsMgt refundsMgt = ServerPools.getController().acquireRefunds();
+                RefundsMgt refundsMgt = Connections.getController().acquireRefunds();
 
                 try {
                     // Incializamos el objeto.
@@ -103,7 +103,7 @@ public class RefundsCtrl {
                     refundsMgt.add(refund);
                 } finally {
                     // Devolvemos la conexión de reembolsos
-                    ServerPools.getController().releaseRefunds(refundsMgt);
+                    Connections.getController().releaseRefunds(refundsMgt);
                 }
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
@@ -134,7 +134,7 @@ public class RefundsCtrl {
             Response.ResponseBuilder response = null;
 
             // Adquirimos una conexión de reembolsos
-            RefundsMgt refundsMgt = ServerPools.getController().acquireRefunds();
+            RefundsMgt refundsMgt = Connections.getController().acquireRefunds();
 
             try {
                 // Inicializamos los objetos a usar.
@@ -155,7 +155,7 @@ public class RefundsCtrl {
                 response = Response.status(Response.Status.NOT_FOUND);
             } finally {
                 // Devolvemos la conexión de productos
-                ServerPools.getController().releaseRefunds(refundsMgt);
+                Connections.getController().releaseRefunds(refundsMgt);
             }
 
             return response;
@@ -184,7 +184,7 @@ public class RefundsCtrl {
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
                 // Adquirimos una conexión de reembolsos
-                RefundsMgt refundsMgt = ServerPools.getController().acquireRefunds();
+                RefundsMgt refundsMgt = Connections.getController().acquireRefunds();
 
                 try  {
                     // Incializamos el objeto.
@@ -207,7 +207,7 @@ public class RefundsCtrl {
                     response = Response.status(Response.Status.NOT_FOUND);
                 } finally {
                     // Devolvemos la conexión de reembolsos
-                    ServerPools.getController().releaseRefunds(refundsMgt);
+                    Connections.getController().releaseRefunds(refundsMgt);
                 }
             }
             return response;
@@ -229,7 +229,7 @@ public class RefundsCtrl {
             Response.ResponseBuilder response;
 
             // Adquirimos una conexión de reembolsos
-            RefundsMgt refundsMgt = ServerPools.getController().acquireRefunds();
+            RefundsMgt refundsMgt = Connections.getController().acquireRefunds();
 
             try {
                 // Obtenemos el reembolso de la base de datos.
@@ -246,7 +246,7 @@ public class RefundsCtrl {
                 response = Response.status(Response.Status.NOT_FOUND);
             } finally {
                 // Devolvemos la conexión de reembolsos
-                ServerPools.getController().releaseRefunds(refundsMgt);
+                Connections.getController().releaseRefunds(refundsMgt);
             }
 
             return response;

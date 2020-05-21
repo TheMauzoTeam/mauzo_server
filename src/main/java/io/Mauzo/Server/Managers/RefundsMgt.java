@@ -13,7 +13,7 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
     private final PreparedStatement modifyQuery;
     private final PreparedStatement removeQuery;
 
-    public RefundsMgt(Connection connection) throws SQLException{
+    RefundsMgt(Connection connection) throws SQLException{
         addQuery = connection.prepareStatement("INSERT INTO Refunds ( dateRefund, userId, saleId ) VALUES (?, ?, ?);");
         getIdQuery = connection.prepareStatement("SELECT * FROM Refunds WHERE id = ?;");
         getListQuery = connection.prepareStatement("SELECT * FROM Refunds");
@@ -108,7 +108,8 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
         modifyQuery.setInt(3, obj.getSaleId());
         modifyQuery.setInt(4, obj.getId());
 
-        if (modifyQuery.execute() == false)
+
+        if (modifyQuery.executeUpdate() == 0)
             throw new ManagerErrorException("No se ha encontrado la devolución");
     }
 

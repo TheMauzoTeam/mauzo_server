@@ -26,11 +26,11 @@ import javax.ws.rs.core.MediaType;
 import javax.servlet.http.HttpServletRequest;
 
 
+import io.Mauzo.Server.Managers.Connections;
 import io.Mauzo.Server.Managers.ManagersIntf;
 import io.Mauzo.Server.ServerApp;
 import org.springframework.stereotype.Component;
 import io.Mauzo.Server.ServerUtils;
-import io.Mauzo.Server.ServerPools;
 import io.Mauzo.Server.Templates.Product;
 import io.Mauzo.Server.Managers.ProductsMgt;
 
@@ -54,7 +54,7 @@ public class ProductsCtrl {
         return ServerUtils.genericUserMethod(req, null, null, () -> {
             JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
 
-            ProductsMgt productsMgt = ServerPools.getController().acquireProducts();
+            ProductsMgt productsMgt = Connections.getController().acquireProducts();
 
             for (Product product : productsMgt.getList()) {
                 // Inicializamos los objetos a usar.
@@ -71,7 +71,7 @@ public class ProductsCtrl {
                 jsonResponse.add(jsonObj);
             }
 
-            ServerPools.getController().releaseProducts(productsMgt);
+            Connections.getController().releaseProducts(productsMgt);
 
             return Response.ok(jsonResponse.build().toString());
         });
@@ -94,7 +94,7 @@ public class ProductsCtrl {
         return ServerUtils.genericUserMethod(req, null, jsonData, () -> {
             ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
-            ProductsMgt productsMgt = ServerPools.getController().acquireProducts();
+            ProductsMgt productsMgt = Connections.getController().acquireProducts();
 
             // Si la informacion que recibe es nula, no se procesa nada
             if (jsonData.length() != 0) {
@@ -118,7 +118,7 @@ public class ProductsCtrl {
                 response = Response.status(Status.OK);
             }
 
-            ServerPools.getController().releaseProducts(productsMgt);
+            Connections.getController().releaseProducts(productsMgt);
 
             return response;
         });
@@ -144,7 +144,7 @@ public class ProductsCtrl {
             ResponseBuilder response = null;
 
             // Adquirimos una conexión de productos
-            ProductsMgt productsMgt = ServerPools.getController().acquireProducts();
+            ProductsMgt productsMgt = Connections.getController().acquireProducts();
 
             try {
                 // Inicializamos los objetos a usar.
@@ -167,7 +167,7 @@ public class ProductsCtrl {
                 response = Response.status(Status.NOT_FOUND);
             } finally {
                 // Devolvemos la conexión de productos
-                ServerPools.getController().releaseProducts(productsMgt);
+                Connections.getController().releaseProducts(productsMgt);
             }
 
             return response;
@@ -197,7 +197,7 @@ public class ProductsCtrl {
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
                 // Adquirimos una conexión de productos
-                ProductsMgt productsMgt = ServerPools.getController().acquireProducts();
+                ProductsMgt productsMgt = Connections.getController().acquireProducts();
 
                 try {
                     // Incializamos el objeto.
@@ -221,7 +221,7 @@ public class ProductsCtrl {
                     response = Response.status(Status.NOT_FOUND);
                 } finally {
                     // Devolvemos la conexión de productos
-                    ServerPools.getController().releaseProducts(productsMgt);
+                    Connections.getController().releaseProducts(productsMgt);
                 }
             }
 
@@ -244,7 +244,7 @@ public class ProductsCtrl {
             ResponseBuilder response;
 
             // Adquirimos una conexión de productos
-            ProductsMgt productsMgt = ServerPools.getController().acquireProducts();
+            ProductsMgt productsMgt = Connections.getController().acquireProducts();
 
             try {
                 // Obtenemos el producto de la base de datos.
@@ -261,7 +261,7 @@ public class ProductsCtrl {
                 response = Response.status(Status.NOT_FOUND);
             } finally {
                 // Devolvemos la conexión de usuarios
-                ServerPools.getController().releaseProducts(productsMgt);
+                Connections.getController().releaseProducts(productsMgt);
             }
 
             return response;

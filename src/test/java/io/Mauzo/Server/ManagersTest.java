@@ -2,10 +2,8 @@ package io.Mauzo.Server;
 
 import io.Mauzo.Server.Managers.*;
 import io.Mauzo.Server.Templates.*;
-import org.apache.catalina.Server;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.DriverManager;
@@ -33,11 +31,11 @@ public class ManagersTest {
             throw new SQLException("No se ha encontrado el driver de PostgreSQL: " + e.toString());
         }
 
-        UsersMgt usersMgt = ServerPools.getController().acquireUsers();
-        ProductsMgt productsMgt = ServerPools.getController().acquireProducts();
-        SalesMgt salesMgt = ServerPools.getController().acquireSales();
-        DiscountsMgt discountsMgt = ServerPools.getController().acquireDiscounts();
-        RefundsMgt refundsMgt = ServerPools.getController().acquireRefunds();
+        UsersMgt usersMgt = Connections.getController().acquireUsers();
+        ProductsMgt productsMgt = Connections.getController().acquireProducts();
+        SalesMgt salesMgt = Connections.getController().acquireSales();
+        DiscountsMgt discountsMgt = Connections.getController().acquireDiscounts();
+        RefundsMgt refundsMgt = Connections.getController().acquireRefunds();
 
         try (Statement st = DriverManager.getConnection(url).createStatement()) {
             st.execute("TRUNCATE TABLE Refunds CASCADE; TRUNCATE TABLE Sales CASCADE; TRUNCATE TABLE Users CASCADE; TRUNCATE TABLE Products CASCADE; TRUNCATE TABLE Discounts CASCADE;");
@@ -79,10 +77,10 @@ public class ManagersTest {
             refundsMgt.add(refund);
 
         } finally {
-            ServerPools.getController().releaseUsers(usersMgt);
-            ServerPools.getController().releaseProducts(productsMgt);
-            ServerPools.getController().releaseRefunds(refundsMgt);
-            ServerPools.getController().releaseDiscounts(discountsMgt);
+            Connections.getController().releaseUsers(usersMgt);
+            Connections.getController().releaseProducts(productsMgt);
+            Connections.getController().releaseRefunds(refundsMgt);
+            Connections.getController().releaseDiscounts(discountsMgt);
         }
     }
 
@@ -94,9 +92,9 @@ public class ManagersTest {
     //TEST REFUNDS
     @Test
     public void testRefunds() throws Exception {
-        RefundsMgt refundsMgt = ServerPools.getController().acquireRefunds();
+        RefundsMgt refundsMgt = Connections.getController().acquireRefunds();
         Refund refund = refundsMgt.get(1);
-        ServerPools.getController().releaseRefunds(refundsMgt);
+        Connections.getController().releaseRefunds(refundsMgt);
 
         Assert.assertTrue( refundsMgt != null && refund.getDateRefund() != null);
 
@@ -110,12 +108,12 @@ public class ManagersTest {
      */
     @Test
     public void testProducts() throws Exception {
-        ProductsMgt productsMgt = ServerPools.getController().acquireProducts();
+        ProductsMgt productsMgt = Connections.getController().acquireProducts();
         Product product = productsMgt.get(1);
         product.setName("pelota");
         productsMgt.modify(product);
         product = productsMgt.get(1);
-        ServerPools.getController().releaseProducts(productsMgt);
+        Connections.getController().releaseProducts(productsMgt);
 
         Assert.assertTrue(productsMgt != null && product.getCode() != null && product.getName().equals("pelota"));
     }
@@ -128,10 +126,10 @@ public class ManagersTest {
      */
     @Test
     public void testSales() throws Exception {
-        SalesMgt salesMgt = ServerPools.getController().acquireSales();
+        SalesMgt salesMgt = Connections.getController().acquireSales();
         Sale sale = salesMgt.get(1);
 
-        ServerPools.getController().releaseSales(salesMgt);
+        Connections.getController().releaseSales(salesMgt);
 
         Assert.assertTrue(salesMgt != null);
     }
@@ -144,13 +142,13 @@ public class ManagersTest {
      */
     @Test
     public void testUsers() throws Exception {
-        UsersMgt usersMgt = ServerPools.getController().acquireUsers();
+        UsersMgt usersMgt = Connections.getController().acquireUsers();
         User user = usersMgt.get(1);
 
         user.setUsername("adolfo");
         usersMgt.modify(user);
         user = usersMgt.get(1);
-        ServerPools.getController().releaseUsers(usersMgt);
+        Connections.getController().releaseUsers(usersMgt);
 
         Assert.assertTrue(usersMgt != null && user.getFirstName() != null && user.getUsername().equals("adolfo"));
     }
@@ -163,13 +161,13 @@ public class ManagersTest {
      */
     @Test
     public void testDiscounts() throws Exception {
-        DiscountsMgt discountsMgt = ServerPools.getController().acquireDiscounts();
+        DiscountsMgt discountsMgt = Connections.getController().acquireDiscounts();
         Discount discount = discountsMgt.get(1);
 
         discount.setPriceDisc(78f);
         discountsMgt.modify(discount);
         discount = discountsMgt.get(1);
-        ServerPools.getController().releaseDiscounts(discountsMgt);
+        Connections.getController().releaseDiscounts(discountsMgt);
 
         Assert.assertTrue(discountsMgt != null && discount.getCode() != null && discount.getPrizeDisc().equals(78f));
     }

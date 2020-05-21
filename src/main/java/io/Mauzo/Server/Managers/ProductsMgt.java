@@ -15,7 +15,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
     private final PreparedStatement modifyQuery;
     private final PreparedStatement removeQuery;
 
-    public ProductsMgt(Connection connection) throws SQLException {
+    ProductsMgt(Connection connection) throws SQLException {
         addQuery = connection.prepareStatement("INSERT INTO Products ( ProdCode, ProdName, ProdPrice, ProdDesc, ProdPic) VALUES ( ?, ?, ?, ?, ?);");
         getIdQuery = connection.prepareStatement("SELECT * FROM Products WHERE id = ?;");
         getNameQuery = connection.prepareStatement("SELECT * FROM Products WHERE prodCode = ?;");
@@ -167,7 +167,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
                 modifyQuery.setNull(5, Types.BINARY);
             }
 
-            if(modifyQuery.execute() == false)
+            if(modifyQuery.executeUpdate() == 0)
                 throw new ManagerErrorException("No se ha encontrado el producto durante la actualización del mismo.");
     }
 
