@@ -16,7 +16,7 @@ public class InformsMgt implements ManagersIntf<Inform> {
     private final PreparedStatement getNumberRefunds;
     private final PreparedStatement getNumberDiscounts;
 
-    public InformsMgt(Connection conn) throws SQLException {
+    InformsMgt(Connection conn) throws SQLException {
         this.conn = conn;
 
         getNumberSales = conn.prepareStatement("SELECT count(id) AS nSales FROM Sales WHERE stampref BETWEEN ? AND ?");
@@ -32,7 +32,6 @@ public class InformsMgt implements ManagersIntf<Inform> {
     @Override
     public Inform get(int month) throws SQLException, ManagerErrorException {
 
-        conn.setAutoCommit(false);
 
         Date dStart = new Date(new GregorianCalendar(YearMonth.now().getYear(), month, 1).getTimeInMillis());
         Date dEnd = new Date(new GregorianCalendar(YearMonth.now().getYear(), month, Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH)).getTimeInMillis());
@@ -46,21 +45,28 @@ public class InformsMgt implements ManagersIntf<Inform> {
         getNumberDiscounts.setDate(1, dStart);
         getNumberDiscounts.setDate(2, dEnd);
 
-        ResultSet rsSales = getNumberSales.executeQuery();
-        ResultSet rsRefunds = getNumberRefunds.executeQuery();
-        ResultSet rsDiscounts = getNumberDiscounts.executeQuery();
-
-        conn.commit();
-        conn.setAutoCommit(true);
-
         Inform inform = new Inform();
 
-        inform.setnSales(rsSales.getInt("nSales"));
-        inform.setnRefunds(rsRefunds.getInt("nRefunds"));
-        inform.setnDiscounts(rsDiscounts.getInt("nDiscounts"));
+        conn.setAutoCommit(false);
 
-        inform.setdStart(dStart);
-        inform.setdEnd(dEnd);
+        try (ResultSet rsSales = getNumberSales.executeQuery();
+            ResultSet rsRefunds = getNumberRefunds.executeQuery();
+            ResultSet rsDiscounts = getNumberDiscounts.executeQuery()){
+
+
+            inform.setnSales(rsSales.getInt("nSales"));
+            inform.setnRefunds(rsRefunds.getInt("nRefunds"));
+            inform.setnDiscounts(rsDiscounts.getInt("nDiscounts"));
+
+            inform.setdStart(dStart);
+            inform.setdEnd(dEnd);
+
+            conn.commit();
+        } catch (Exception e) {
+            conn.rollback();
+        } finally {
+            conn.setAutoCommit(true);
+        }
 
         return inform;
     }
