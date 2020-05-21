@@ -148,7 +148,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
         deleteQuery.setInt(1, sale.getId());
 
         // Ejecutamos la sentencia sql.
-        if (deleteQuery.execute() == false) 
+        if (deleteQuery.executeUpdate() == 0) 
             throw new ManagerErrorException("No se ha encontrado el usuario durante la eliminación del mismo.");
     }
 }
