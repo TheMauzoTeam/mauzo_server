@@ -30,8 +30,8 @@ import org.springframework.stereotype.Component;
 // Paquetes propios de la aplicación.
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.ServerApp;
-import io.Mauzo.Server.ServerPools;
 import io.Mauzo.Server.Templates.Sale;
+import io.Mauzo.Server.Managers.Connections;
 import io.Mauzo.Server.Managers.SalesMgt;
 import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
 
@@ -56,7 +56,7 @@ public class SalesCtrl {
             JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
 
             // Adquirimos una conexión de ventas
-            SalesMgt salesMgt = ServerPools.getController().acquireSales();
+            SalesMgt salesMgt = Connections.getController().acquireSales();
 
             try {
                 for (Sale saleAux : salesMgt.getList()) {
@@ -81,7 +81,7 @@ public class SalesCtrl {
                 }
             } finally {
                 // Devolvemos la conexión de ventas
-                ServerPools.getController().releaseSales(salesMgt);
+                Connections.getController().releaseSales(salesMgt);
             }
 
             return Response.ok(jsonResponse.build().toString());
@@ -107,7 +107,7 @@ public class SalesCtrl {
             ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
             // Adquirimos una conexión de ventas
-            SalesMgt salesMgt = ServerPools.getController().acquireSales();
+            SalesMgt salesMgt = Connections.getController().acquireSales();
 
             try {
                 // Si la informacion que recibe es nula, no se procesa nada
@@ -133,7 +133,7 @@ public class SalesCtrl {
                 }
             } finally {
                 // Devolvemos la conexión de ventas
-                ServerPools.getController().releaseSales(salesMgt);
+                Connections.getController().releaseSales(salesMgt);
             }           
 
             return response;
@@ -159,7 +159,7 @@ public class SalesCtrl {
             ResponseBuilder response = null;
 
             // Adquirimos una conexión de ventas
-            SalesMgt salesMgt = ServerPools.getController().acquireSales();
+            SalesMgt salesMgt = Connections.getController().acquireSales();
 
             try {
                 // Inicializamos los objetos a usar.
@@ -186,7 +186,7 @@ public class SalesCtrl {
                 response = Response.status(Status.NOT_FOUND);
             } finally {
                 // Devolvemos la conexión de ventas
-                ServerPools.getController().releaseSales(salesMgt);
+                Connections.getController().releaseSales(salesMgt);
             }
 
             return response;
@@ -215,7 +215,7 @@ public class SalesCtrl {
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
                 // Adquirimos una conexión de ventas
-                SalesMgt salesMgt = ServerPools.getController().acquireSales();
+                SalesMgt salesMgt = Connections.getController().acquireSales();
 
                 try  {
                     // Incializamos el objeto.
@@ -238,7 +238,7 @@ public class SalesCtrl {
                     response = Response.status(Status.NOT_FOUND);
                 } finally {
                     // Devolvemos la conexión de ventas
-                    ServerPools.getController().releaseSales(salesMgt);
+                    Connections.getController().releaseSales(salesMgt);
                 }                
             }
 
@@ -261,7 +261,7 @@ public class SalesCtrl {
             ResponseBuilder response;
 
             // Adquirimos una conexión de ventas
-            SalesMgt salesMgt = ServerPools.getController().acquireSales();
+            SalesMgt salesMgt = Connections.getController().acquireSales();
 
             try {
                 // Obtenemos la venta de la base de datos.
@@ -279,7 +279,7 @@ public class SalesCtrl {
                 response = Response.status(Status.NOT_FOUND);
             } finally {
                 // Devolvemos la conexión de ventas
-                ServerPools.getController().releaseSales(salesMgt);
+                Connections.getController().releaseSales(salesMgt);
             }
 
             return response;

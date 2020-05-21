@@ -14,7 +14,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
     private final PreparedStatement modifyQuery;
     private final PreparedStatement deleteQuery;
 
-    public SalesMgt(Connection conn) throws SQLException {
+    SalesMgt(Connection conn) throws SQLException {
         this.addQuery = conn.prepareStatement("INSERT INTO Sales (stampRef, userId, prodId, discId) VALUES (?, ?, ?, ?);");
         this.getIdQuery = conn.prepareStatement("SELECT * FROM Sales WHERE id = ?;");
         this.getListQuery = conn.prepareStatement("SELECT * FROM Sales;");

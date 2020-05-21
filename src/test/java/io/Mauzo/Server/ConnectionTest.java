@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
+import io.Mauzo.Server.Managers.Connections;
 import io.Mauzo.Server.Managers.DiscountsMgt;
 import io.Mauzo.Server.Managers.ProductsMgt;
 import io.Mauzo.Server.Managers.RefundsMgt;
@@ -82,44 +83,44 @@ public class ConnectionTest {
         boolean testPassed = true;
 
         // Obtenemos una conexion del pool de conexiones de tipo users.
-        UsersMgt connUsers = ServerPools.getController().acquireUsers();;
+        UsersMgt connUsers = Connections.getController().acquireUsers();;
  
         if (connUsers == null)
             testPassed = false;
 
-        ServerPools.getController().releaseUsers(connUsers);
+        Connections.getController().releaseUsers(connUsers);
 
         // Obtenemos una conexion del pool de conexiones de tipo sales.
-        SalesMgt connSales = ServerPools.getController().acquireSales();
+        SalesMgt connSales = Connections.getController().acquireSales();
 
         if (connSales == null)
             testPassed = false;
 
-        ServerPools.getController().releaseSales(connSales);
+        Connections.getController().releaseSales(connSales);
 
         // Obtenemos una conexion del pool de conexiones de tipo products.
-        ProductsMgt connProducts = ServerPools.getController().acquireProducts();
+        ProductsMgt connProducts = Connections.getController().acquireProducts();
 
         if (connProducts == null)
             testPassed = false;
 
-        ServerPools.getController().releaseProducts(connProducts);
+        Connections.getController().releaseProducts(connProducts);
 
         // Obtenemos una conexion del pool de conexiones de tipo refunds.
-        RefundsMgt connRefunds = ServerPools.getController().acquireRefunds();
+        RefundsMgt connRefunds = Connections.getController().acquireRefunds();
 
         if (connRefunds == null)
             testPassed = false;
 
-        ServerPools.getController().releaseRefunds(connRefunds);
+        Connections.getController().releaseRefunds(connRefunds);
 
         // Obtenemos una conexion del pool de conexiones de tipo discounts.
-        DiscountsMgt connDiscounts = ServerPools.getController().acquireDiscounts();
+        DiscountsMgt connDiscounts = Connections.getController().acquireDiscounts();
 
         if(connDiscounts == null)
             testPassed = false;
 
-        ServerPools.getController().releaseDiscounts(connDiscounts);
+        Connections.getController().releaseDiscounts(connDiscounts);
 
         // Obtenemos una conexion del pool de conexiones de tipo informs.
         // InformsMgt connInforms = ServerPools.getController().acquireInforms();

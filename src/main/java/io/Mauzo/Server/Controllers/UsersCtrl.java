@@ -29,8 +29,8 @@ import org.springframework.stereotype.Component;
 // Paquetes propios de la aplicación.
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.ServerApp;
-import io.Mauzo.Server.ServerPools;
 import io.Mauzo.Server.Templates.User;
+import io.Mauzo.Server.Managers.Connections;
 import io.Mauzo.Server.Managers.UsersMgt;
 import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
 
@@ -56,7 +56,7 @@ public class UsersCtrl {
             JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
             
             // Adquirimos una conexión de usuarios
-            UsersMgt usersMgt = ServerPools.getController().acquireUsers();
+            UsersMgt usersMgt = Connections.getController().acquireUsers();
 
             try {
                 // Recorremos la lista que nos ha entregado el servidor.
@@ -84,7 +84,7 @@ public class UsersCtrl {
                 }
             } finally {
                 // Devolvemos la conexión de usuarios
-                ServerPools.getController().releaseUsers(usersMgt);
+                Connections.getController().releaseUsers(usersMgt);
             }
 
             return Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
@@ -116,7 +116,7 @@ public class UsersCtrl {
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
                 // Adquirimos una conexión de usuarios
-                UsersMgt usersMgt = ServerPools.getController().acquireUsers();
+                UsersMgt usersMgt = Connections.getController().acquireUsers();
 
                 try {
                     // Incializamos el objeto.
@@ -135,7 +135,7 @@ public class UsersCtrl {
                     usersMgt.add(userAux);
                 } finally {
                     // Devolvemos la conexión de usuarios
-                    ServerPools.getController().releaseUsers(usersMgt);
+                    Connections.getController().releaseUsers(usersMgt);
                 }
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
@@ -167,7 +167,7 @@ public class UsersCtrl {
             ResponseBuilder response = null;
 
             // Adquirimos una conexión de usuarios
-            UsersMgt usersMgt = ServerPools.getController().acquireUsers();
+            UsersMgt usersMgt = Connections.getController().acquireUsers();
 
             try {
                 // Inicializamos los objetos a usar.
@@ -197,7 +197,7 @@ public class UsersCtrl {
                 response = Response.status(Status.NOT_FOUND);
             } finally {
                 // Devolvemos la conexión de usuarios
-                ServerPools.getController().releaseUsers(usersMgt);
+                Connections.getController().releaseUsers(usersMgt);
             }
 
             return response;
@@ -227,7 +227,7 @@ public class UsersCtrl {
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
                 // Adquirimos una conexión de usuarios
-                UsersMgt usersMgt = ServerPools.getController().acquireUsers();
+                UsersMgt usersMgt = Connections.getController().acquireUsers();
 
                 try {
                     // Incializamos el objeto.
@@ -252,7 +252,7 @@ public class UsersCtrl {
                     response = Response.status(Status.NOT_FOUND);
                 } finally {
                    // Devolvemos la conexión de usuarios
-                   ServerPools.getController().releaseUsers(usersMgt);
+                   Connections.getController().releaseUsers(usersMgt);
                 }
             }
 
@@ -275,7 +275,7 @@ public class UsersCtrl {
             ResponseBuilder response;
 
             // Adquirimos una conexión de usuarios
-            UsersMgt usersMgt = ServerPools.getController().acquireUsers();
+            UsersMgt usersMgt = Connections.getController().acquireUsers();
 
             try {
                 // Obtenemos el usuario de la base de datos.
@@ -292,7 +292,7 @@ public class UsersCtrl {
                 response = Response.status(Status.NOT_FOUND);
             } finally {
                 // Devolvemos la conexión de usuarios
-                ServerPools.getController().releaseUsers(usersMgt);
+                Connections.getController().releaseUsers(usersMgt);
             }
 
             return response;

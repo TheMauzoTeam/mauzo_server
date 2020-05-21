@@ -26,8 +26,7 @@ public class UsersMgt implements ManagersIntf<User> {
      * 
      * @throws SQLException Excepcion en la consulta SQL.
      */
-    // TODO: Preguntarle a javi como hacer los constructores visibles solo en el paquete.
-    public UsersMgt(Connection conn) throws SQLException {  
+    UsersMgt(Connection conn) throws SQLException {  
         // Dejamos las consultas preparadas
         addQuery = conn.prepareStatement("INSERT INTO Users (firstname, lastname, username, email, password, isAdmin, userPic) VALUES (?, ?, ?, ?, ?, ?, ?);");
         getIdQuery = conn.prepareStatement("SELECT * FROM Users WHERE id = ?;");
@@ -202,8 +201,7 @@ public class UsersMgt implements ManagersIntf<User> {
         modifyQuery.setInt(8, user.getId());
 
         // Ejecutamos la sentencia sql.
-        // FIXME: Actualiza but no indica que ha actualizado correctamente.
-        if(modifyQuery.execute() == false) 
+        if(modifyQuery.executeUpdate() == 0) 
             throw new ManagerErrorException("No se ha encontrado el usuario durante la actualización del mismo.");
     }
     

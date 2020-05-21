@@ -24,6 +24,7 @@ import io.Mauzo.Server.Controllers.LoginCtrl;
 import io.Mauzo.Server.Controllers.ProductsCtrl;
 import io.Mauzo.Server.Controllers.SalesCtrl;
 import io.Mauzo.Server.Controllers.UsersCtrl;
+import io.Mauzo.Server.Managers.Connections;
 import io.Mauzo.Server.Controllers.RefundsCtrl;
 
 /**
@@ -63,7 +64,7 @@ public class ServerApp {
             try {
                 loggerSystem.info("Loading the database connections...");
 
-                ServerPools.getController();
+                Connections.getController();
                 ServerApp.getConnection();
             } catch (Exception e) {
                 loggerSystem.error("The server couldn't be loaded, please check the debug info...");

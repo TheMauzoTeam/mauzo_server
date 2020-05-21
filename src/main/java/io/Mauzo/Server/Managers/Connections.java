@@ -1,16 +1,11 @@
-package io.Mauzo.Server;
+package io.Mauzo.Server.Managers;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-
-import io.Mauzo.Server.Managers.UsersMgt;
-import io.Mauzo.Server.Managers.SalesMgt;
-import io.Mauzo.Server.Managers.RefundsMgt;
-import io.Mauzo.Server.Managers.ProductsMgt;
-import io.Mauzo.Server.Managers.InformsMgt;
-import io.Mauzo.Server.Managers.DiscountsMgt;
+import io.Mauzo.Server.ServerApp;
+import io.Mauzo.Server.ServerUtils;
 
 /**
  * Clase la cual contiene los grupos de conexiones.
@@ -23,8 +18,8 @@ import io.Mauzo.Server.Managers.DiscountsMgt;
  * 
  * @author Neirth Sergio Martínez
  */
-public class ServerPools {
-    private static ServerPools controller = null;
+public class Connections {
+    private static Connections controller = null;
 
     private final int maxConnections = Integer.valueOf(ServerUtils.loadProperties().getProperty("mauzo.maxParallel.typeConnections"));
 
@@ -49,7 +44,7 @@ public class ServerPools {
      * @throws SQLException Puede lanzar alguna excepción si ocurre algún problema
      *                      con la base de datos.
      */
-    private ServerPools() throws SQLException {
+    private Connections() throws SQLException {
         for (int i = 0; i < maxConnections; i++) {
             uConnectionList.add(new UsersMgt(ServerApp.setConnection()));
             sConnectionList.add(new SalesMgt(ServerApp.setConnection()));
@@ -224,9 +219,9 @@ public class ServerPools {
         iSemaphore.release();
     }
 
-    public static ServerPools getController() throws SQLException {
+    public static Connections getController() throws SQLException {
         if (controller == null)
-            controller = new ServerPools();
+            controller = new Connections();
 
         return controller;
     }
