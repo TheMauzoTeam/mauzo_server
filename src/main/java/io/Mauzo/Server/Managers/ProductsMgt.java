@@ -20,7 +20,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
         getIdQuery = connection.prepareStatement("SELECT * FROM Products WHERE id = ?;");
         getNameQuery = connection.prepareStatement("SELECT * FROM Products WHERE prodCode = ?;");
         getListQuery = connection.prepareStatement("SELECT * FROM Products");
-        modifyQuery = connection.prepareStatement("UPDATE Products SET ProdCode = ?, prodName = ?, prodPrice = ?, prodDesc = ? WHERE id = ?");
+        modifyQuery = connection.prepareStatement("UPDATE Products SET ProdCode = ?, prodName = ?, prodPrice = ?, prodDesc = ?, ProdPic = ? WHERE id = ?");
         removeQuery = connection.prepareStatement("DELETE FROM Products WHERE id = ?;");
     }
 
@@ -161,13 +161,15 @@ public class ProductsMgt implements ManagersIntf<Product>{
             modifyQuery.setString(4,obj.getDescription());
 
             // Este es un posible valor nulo.
-            if(obj.getPicture() != null) {
+           if(obj.getPicture() != null) {
                 modifyQuery.setBytes(5, ServerUtils.imageToByteArray(obj.getPicture(), "png"));
-            } else {
+           } else {
                 modifyQuery.setNull(5, Types.BINARY);
-            }
+           }
 
-            if(modifyQuery.executeUpdate() == 0)
+            modifyQuery.setInt(6,obj.getId());
+
+           if(modifyQuery.executeUpdate() == 0)
                 throw new ManagerErrorException("No se ha encontrado el producto durante la actualización del mismo.");
     }
 
@@ -182,7 +184,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
         removeQuery.setInt(1, obj.getId());
 
         // Ejecutamos la sentencia sql.
-        if(removeQuery.execute() == false)
+        if(removeQuery.executeUpdate() == 1)
             throw new ManagerErrorException("No se ha encontrado el producto");
     }
 }

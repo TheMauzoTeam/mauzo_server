@@ -111,7 +111,11 @@ public class ManagersTest {
         ProductsMgt productsMgt = Connections.getController().acquireProducts();
         Product product = productsMgt.get(1);
         product.setName("pelota");
-        productsMgt.modify(product);
+        try {
+            productsMgt.modify(product);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         product = productsMgt.get(1);
         Connections.getController().releaseProducts(productsMgt);
 
@@ -131,7 +135,7 @@ public class ManagersTest {
 
         Connections.getController().releaseSales(salesMgt);
 
-        Assert.assertTrue(salesMgt != null);
+        Assert.assertTrue(sale != null && sale.getDiscId() == 1);
     }
 
     //TEST USERS
