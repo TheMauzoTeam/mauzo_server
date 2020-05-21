@@ -120,12 +120,12 @@ public class ManagersTest {
         Assert.assertTrue(productsMgt != null && product.getCode() != null && product.getName().equals("pelota"));
     }
 
+    //TEST SALES
     /**
      * Hacemos un test que compruebe los métodos de la clase SalesMgt
      *
      * @throws Exception Se indica que se espera que lance una excepción SQL
      */
-    //TEST SALES
     @Test
     public void testSales() throws Exception {
         SalesMgt salesMgt = ServerPools.getController().acquireSales();
@@ -136,12 +136,12 @@ public class ManagersTest {
         Assert.assertTrue(salesMgt != null);
     }
 
+    //TEST USERS
     /**
      * Hacemos un test que compruebe los métodos de la clase UsersMgt
      *
      * @throws Exception Se indica que se espera que lance una excepción SQL
      */
-    //TEST USERS
     @Test
     public void testUsers() throws Exception {
         UsersMgt usersMgt = ServerPools.getController().acquireUsers();
@@ -149,20 +149,18 @@ public class ManagersTest {
 
         user.setUsername("adolfo");
         usersMgt.modify(user);
-        ServerPools.getController().releaseUsers(usersMgt);
         user = usersMgt.get(1);
         ServerPools.getController().releaseUsers(usersMgt);
 
         Assert.assertTrue(usersMgt != null && user.getFirstName() != null && user.getUsername().equals("adolfo"));
-
     }
 
+    //TEST DISCOUNTS
     /**
      * Hacemos un test que compruebe los métodos de la clase Discounts
      *
      * @throws Exception Se indica que se espera que lance una excepción SQL
      */
-    //TEST DISCOUNTS
     @Test
     public void testDiscounts() throws Exception {
         DiscountsMgt discountsMgt = ServerPools.getController().acquireDiscounts();
@@ -170,10 +168,9 @@ public class ManagersTest {
 
         discount.setPriceDisc(78f);
         discountsMgt.modify(discount);
-        ServerPools.getController().releaseDiscounts(discountsMgt);
         discount = discountsMgt.get(1);
         ServerPools.getController().releaseDiscounts(discountsMgt);
-        
+
         Assert.assertTrue(discountsMgt != null && discount.getCode() != null && discount.getPrizeDisc().equals(78f));
     }
 }
