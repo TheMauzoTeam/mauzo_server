@@ -132,7 +132,7 @@ public class SalesMgt implements ManagersIntf<Sale> {
 
         modifyQuery.setInt(5, sale.getId());
 
-        if (modifyQuery.execute() == false)
+        if (modifyQuery.executeUpdate() == 0)
             throw new ManagerErrorException("No se ha encontrado la venta.");
     }
 
