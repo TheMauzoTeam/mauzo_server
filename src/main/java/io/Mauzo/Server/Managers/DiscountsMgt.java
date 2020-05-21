@@ -14,7 +14,7 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
     private final PreparedStatement modifyQuery;
     private final PreparedStatement deleteQuery;
 
-    public DiscountsMgt(Connection conn) throws SQLException {
+    DiscountsMgt(Connection conn) throws SQLException {
         addQuery = conn.prepareStatement("INSERT INTO Discounts (codeDisc, descDisc, pricePerc) VALUES(?, ?, ?)");
         getIdQuery = conn.prepareStatement("SELECT * FROM Discounts WHERE id = ?;");
         getNameQuery = conn.prepareStatement("SELECT * FROM Discounts WHERE codeDisc = ?;");
@@ -137,7 +137,7 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
         modifyQuery.setInt(4, discount.getId());
 
         // Ejecutamos la sentencia sql.
-        if (modifyQuery.execute() == false)
+        if (modifyQuery.executeUpdate() == 0)
             throw new ManagerErrorException("No se ha encontrado el descuento durante la actualización del mismo.");
     }
 

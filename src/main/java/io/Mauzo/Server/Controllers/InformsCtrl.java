@@ -1,12 +1,9 @@
 package io.Mauzo.Server.Controllers;
 
-import io.Mauzo.Server.Managers.DiscountsMgt;
+import io.Mauzo.Server.Managers.Connections;
 import io.Mauzo.Server.Managers.InformsMgt;
-import io.Mauzo.Server.Managers.ManagersIntf;
 import io.Mauzo.Server.ServerApp;
-import io.Mauzo.Server.ServerPools;
 import io.Mauzo.Server.ServerUtils;
-import io.Mauzo.Server.Templates.Discount;
 import io.Mauzo.Server.Templates.Inform;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +32,7 @@ public class InformsCtrl {
         return ServerUtils.genericUserMethod(req, null, null, () -> {
             JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
 
-            InformsMgt informsMgt = ServerPools.getController().acquireInforms();
+            InformsMgt informsMgt = Connections.getController().acquireInforms();
 
             try {
 
@@ -54,7 +51,7 @@ public class InformsCtrl {
                 }
 
             } finally {
-                ServerPools.getController().releaseInforms(informsMgt);
+                Connections.getController().releaseInforms(informsMgt);
             }
 
             return Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
@@ -67,7 +64,7 @@ public class InformsCtrl {
     public Response getDiscount(@Context final HttpServletRequest req, @PathParam("param_id") int param) {
         return ServerUtils.genericAdminMethod(req, param, null, () -> {
             ResponseBuilder response = null;
-            InformsMgt informsMgt = ServerPools.getController().acquireInforms();
+            InformsMgt informsMgt = Connections.getController().acquireInforms();
 
             try {
                 JsonObjectBuilder jsonResponse = Json.createObjectBuilder();
@@ -86,7 +83,7 @@ public class InformsCtrl {
                 ServerApp.getLoggerSystem().debug(e.toString());
                 response = Response.status(Status.NOT_FOUND);
             } finally {
-                ServerPools.getController().releaseInforms(informsMgt);
+                Connections.getController().releaseInforms(informsMgt);
             }
 
             return response;
