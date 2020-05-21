@@ -137,7 +137,7 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
         modifyQuery.setInt(4, discount.getId());
 
         // Ejecutamos la sentencia sql.
-        if (modifyQuery.execute() == false)
+        if (modifyQuery.executeUpdate() == 0)
             throw new ManagerErrorException("No se ha encontrado el descuento durante la actualización del mismo.");
     }
 
