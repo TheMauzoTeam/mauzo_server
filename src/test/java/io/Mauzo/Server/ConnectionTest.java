@@ -1,9 +1,7 @@
 package io.Mauzo.Server;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import org.junit.Test;
 import org.junit.Assert;
@@ -11,6 +9,7 @@ import org.junit.BeforeClass;
 
 import io.Mauzo.Server.Managers.Connections;
 import io.Mauzo.Server.Managers.DiscountsMgt;
+import io.Mauzo.Server.Managers.InformsMgt;
 import io.Mauzo.Server.Managers.ProductsMgt;
 import io.Mauzo.Server.Managers.RefundsMgt;
 import io.Mauzo.Server.Managers.SalesMgt;
@@ -32,25 +31,6 @@ public class ConnectionTest {
         } catch (ClassNotFoundException e) {
             throw new SQLException("No se ha encontrado el driver de PostgreSQL: " + e.toString());
         }
-
-        try (Statement st = DriverManager.getConnection(url).createStatement()) {
-            st.execute("DROP TABLE IF EXISTS Refunds; DROP TABLE IF EXISTS Sales; DROP TABLE IF EXISTS Users; DROP TABLE IF EXISTS Products; DROP TABLE IF EXISTS Discounts;");
-        }
-    }
-
-    /**
-     * Test que comprueba el momento de conectarse a la base de datos con una URL
-     * null lance una excepción esperada para nosotros.
-     * 
-     * @throws Exception Puede arrojar cualquier tipo de Excepción.
-     */
-    @Test(expected = SQLException.class)
-    public void checkErrorConnection() throws Exception {
-        // Establecemos la URL a nulo, el cual deberia de provocar errores.
-        ServerApp.setUrl(null);
-
-        // Obtenemos una conexion indivual.
-        ServerApp.setConnection().close();
     }
 
     /**
@@ -67,7 +47,6 @@ public class ConnectionTest {
             // Si no es nulo, significa que ha pasado la prueba.
             Assert.assertNotNull(conn);
         }
-        ;
     }
 
     /**
@@ -123,12 +102,12 @@ public class ConnectionTest {
         Connections.getController().releaseDiscounts(connDiscounts);
 
         // Obtenemos una conexion del pool de conexiones de tipo informs.
-        // InformsMgt connInforms = ServerPools.getController().acquireInforms();
+        InformsMgt connInforms = Connections.getController().acquireInforms();
 
-        // if(connInforms == null)
-        //    testPassed = false;
+        if(connInforms == null)
+            testPassed = false;
 
-        //ServerPools.getController().releaseInforms(connInforms);
+        Connections.getController().releaseInforms(connInforms);
 
         // Si no es falso, significa que ha pasado la prueba
         Assert.assertTrue(testPassed);
