@@ -25,8 +25,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.MediaType;
 import javax.servlet.http.HttpServletRequest;
 
+import io.Mauzo.Server.Managers.Connections;
 import io.Mauzo.Server.Managers.DiscountsMgt;
-import io.Mauzo.Server.ServerPools;
 import io.Mauzo.Server.Templates.Discount;
 import org.springframework.stereotype.Component;
 
@@ -43,7 +43,7 @@ public class DiscountsCtrl {
         return ServerUtils.genericUserMethod(req, null, null, () -> {
             JsonArrayBuilder jsonResponse = Json.createArrayBuilder();
 
-            DiscountsMgt discountMgt = ServerPools.getController().acquireDiscounts();
+            DiscountsMgt discountMgt = Connections.getController().acquireDiscounts();
 
             try {
                 // Recorremos la lista que nos ha entregado el servidor.
@@ -61,7 +61,7 @@ public class DiscountsCtrl {
                     jsonResponse.add(jsonObj);
                 }
             } finally {
-                ServerPools.getController().releaseDiscounts(discountMgt);
+                Connections.getController().releaseDiscounts(discountMgt);
             }
 
             return Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
@@ -79,7 +79,7 @@ public class DiscountsCtrl {
                 // Convertimos la información JSON recibida en un objeto.
                 final JsonObject jsonRequest = Json.createReader( new StringReader(jsonData)).readObject();
 
-                DiscountsMgt discountMgt = ServerPools.getController().acquireDiscounts();
+                DiscountsMgt discountMgt = Connections.getController().acquireDiscounts();
 
                 try {
                     // Inicializamos el objeto
@@ -93,7 +93,7 @@ public class DiscountsCtrl {
                     // Agregamos el descuento al la lista.
                     discountMgt.add(disAux);
                 } finally {
-                    ServerPools.getController().releaseDiscounts(discountMgt);
+                    Connections.getController().releaseDiscounts(discountMgt);
                 }
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
@@ -110,7 +110,7 @@ public class DiscountsCtrl {
     public Response getDiscount(@Context final HttpServletRequest req, @PathParam("param_id") int param) {
         return ServerUtils.genericAdminMethod(req, param, null, () -> {
             ResponseBuilder response = null;
-            DiscountsMgt discountsMgt = ServerPools.getController().acquireDiscounts();
+            DiscountsMgt discountsMgt = Connections.getController().acquireDiscounts();
             try {
                 JsonObjectBuilder jsonResponse = Json.createObjectBuilder();
                 Discount discount = discountsMgt.get(param);
@@ -125,7 +125,7 @@ public class DiscountsCtrl {
                 ServerApp.getLoggerSystem().debug(e.toString());
                 response = Response.status(Status.NOT_FOUND);
             } finally {
-                ServerPools.getController().releaseDiscounts(discountsMgt);
+                Connections.getController().releaseDiscounts(discountsMgt);
             }
             return response;
         });
@@ -143,7 +143,7 @@ public class DiscountsCtrl {
                 // Convertimos la información JSON recibida en un objeto.
                 final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
-                DiscountsMgt discountMgt = ServerPools.getController().acquireDiscounts();
+                DiscountsMgt discountMgt = Connections.getController().acquireDiscounts();
 
                 try {
                     // Inicializamos el objeto.
@@ -165,7 +165,7 @@ public class DiscountsCtrl {
                     response = Response.status(Status.NOT_FOUND);
                 }
 
-                ServerPools.getController().releaseDiscounts(discountMgt);
+                Connections.getController().releaseDiscounts(discountMgt);
             }
 
             return response;
@@ -178,7 +178,7 @@ public class DiscountsCtrl {
         return ServerUtils.genericAdminMethod(req, paramId, null, () -> {
             ResponseBuilder response;
 
-            DiscountsMgt discountMgt = ServerPools.getController().acquireDiscounts();
+            DiscountsMgt discountMgt = Connections.getController().acquireDiscounts();
 
             try {
                 // Obtenemos el descuento de la base de datos.
@@ -195,7 +195,7 @@ public class DiscountsCtrl {
                 response = Response.status(Status.NOT_FOUND);
             }
 
-            ServerPools.getController().releaseDiscounts(discountMgt);
+            Connections.getController().releaseDiscounts(discountMgt);
 
             return response;
         });
