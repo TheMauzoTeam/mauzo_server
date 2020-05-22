@@ -153,7 +153,7 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
         deleteQuery.setInt(1, discount.getId());
 
         // Ejecutamos la setencia sql.
-        if (deleteQuery.execute() == false)
+        if (deleteQuery.executeUpdate() == 0)
             throw new ManagerErrorException("No se ha encontrado el descuento durante la eliminación del mismo.");
     }
 }
