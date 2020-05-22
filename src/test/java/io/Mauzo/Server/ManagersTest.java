@@ -3,7 +3,7 @@ package io.Mauzo.Server;
 import io.Mauzo.Server.Managers.*;
 import io.Mauzo.Server.Templates.*;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.DriverManager;
@@ -19,8 +19,9 @@ public class ManagersTest {
      * de pruebas donde se ejecutarán todos los test de
      * validación respecto a los métodos a probar.
      */
-    @Before
-    public void prepareDatabase() throws Exception {
+    @BeforeClass
+    public static void prepareDatabase() throws Exception {
+        System.out.println("prepara");
         String url = ServerUtils.loadProperties().getProperty("mauzo.debugDatabase.url");
         
         ServerApp.setUrl(url);
@@ -92,6 +93,8 @@ public class ManagersTest {
     //TEST REFUNDS
     @Test
     public void testRefunds() throws Exception {
+        System.out.println("Ejecutado refunds");
+
         RefundsMgt refundsMgt = Connections.getController().acquireRefunds();
         Refund refund = refundsMgt.get(1);
         Connections.getController().releaseRefunds(refundsMgt);
@@ -108,6 +111,8 @@ public class ManagersTest {
      */
     @Test
     public void testProducts() throws Exception {
+        System.out.println("Ejecutado products");
+
         ProductsMgt productsMgt = Connections.getController().acquireProducts();
         Product product = productsMgt.get(1);
         product.setName("pelota");
@@ -130,6 +135,7 @@ public class ManagersTest {
      */
     @Test
     public void testSales() throws Exception {
+        System.out.println("Ejecutado sales");
         SalesMgt salesMgt = Connections.getController().acquireSales();
         Sale sale = salesMgt.get(1);
 
@@ -146,6 +152,8 @@ public class ManagersTest {
      */
     @Test
     public void testUsers() throws Exception {
+        System.out.println("Ejecutado users");
+
         UsersMgt usersMgt = Connections.getController().acquireUsers();
         User user = usersMgt.get(1);
 
@@ -165,6 +173,8 @@ public class ManagersTest {
      */
     @Test
     public void testDiscounts() throws Exception {
+        System.out.println("Ejecutado discounts");
+
         DiscountsMgt discountsMgt = Connections.getController().acquireDiscounts();
         Discount discount = discountsMgt.get(1);
 
