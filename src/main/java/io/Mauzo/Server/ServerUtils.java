@@ -1,6 +1,6 @@
 package io.Mauzo.Server;
 
-// Paquetes del framework estandar de java
+// Paquetes del framework estandar de java.
 import java.util.Base64;
 import java.util.List;
 import java.util.Properties;
@@ -9,24 +9,23 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Key;
-
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Collections;
 
-// Paquetes del framework extendido de java
+// Paquetes del framework extendido de java.
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.DatatypeConverter;
-
-import org.apache.logging.log4j.Level;
-
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.crypto.spec.SecretKeySpec;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
+
+// Paquetes de la libreria de registros log4j.
+import org.apache.logging.log4j.Level;
 
 // Paquetes para la validación del token de inicio de sesión.
 import io.jsonwebtoken.Claims;
@@ -94,7 +93,7 @@ public class ServerUtils {
             writeServerException(e);
 
             // Establecemos la respuesta como error.
-            response = Response.serverError();
+            response = Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage());
         }
 
         // Lanzamos la respuesta.
@@ -122,7 +121,8 @@ public class ServerUtils {
      * 
      * @return La respuesta con la cual responderemos al cliente.
      */
-    public static Response genericUserMethod(HttpServletRequest req, Integer paramId, String jsonData, Content content) {
+    public static Response genericUserMethod(HttpServletRequest req, Integer paramId, String jsonData,
+            Content content) {
         // Obtenemos el token
         String token = getToken(req);
 
@@ -138,7 +138,7 @@ public class ServerUtils {
                 writeServerException(e);
 
                 // Establecemos la respuesta como error.
-                response = Response.serverError();
+                response = Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage());
             }
         } else {
             response = Response.status(Status.FORBIDDEN);
@@ -170,7 +170,8 @@ public class ServerUtils {
      * 
      * @return La respuesta con la cual responderemos al cliente.
      */
-    public static Response genericAdminMethod(HttpServletRequest req, Integer paramId, String jsonData, Content content) {
+    public static Response genericAdminMethod(HttpServletRequest req, Integer paramId, String jsonData,
+            Content content) {
         // Obtenemos el token
         String token = getToken(req);
 
@@ -186,7 +187,7 @@ public class ServerUtils {
                 writeServerException(e);
 
                 // Establecemos la respuesta como error.
-                response = Response.serverError();
+                response = Response.status(Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage());
             }
         } else {
             response = Response.status(Status.FORBIDDEN);
