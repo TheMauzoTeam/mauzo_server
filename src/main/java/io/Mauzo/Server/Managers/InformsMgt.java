@@ -55,19 +55,21 @@ public class InformsMgt implements ManagersIntf<Inform> {
             ResultSet rsRefunds = getNumberRefunds.executeQuery();
             ResultSet rsDiscounts = getNumberDiscounts.executeQuery()){
 
-
-            inform.setnSales(rsSales.getInt("nSales"));
-            inform.setnRefunds(rsRefunds.getInt("nRefunds"));
-            inform.setnDiscounts(rsDiscounts.getInt("nDiscounts"));
-
-            inform.setdStart(dStart);
-            inform.setdEnd(dEnd);
-
             conn.commit();
-        } catch (Exception e) {
-            conn.rollback();
+
+            if (rsSales.next() && rsRefunds.next() && rsDiscounts.next()) {
+                inform.setId(month);
+                inform.setnSales(rsSales.getInt("nSales"));
+                inform.setnRefunds(rsRefunds.getInt("nRefunds"));
+                inform.setnDiscounts(rsDiscounts.getInt("nDiscounts"));
+
+                inform.setdStart(dStart);
+                inform.setdEnd(dEnd);
+
+            }
         } finally {
             conn.setAutoCommit(true);
+
         }
 
         return inform;

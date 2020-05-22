@@ -129,7 +129,13 @@ public class UsersCtrl {
                     userAux.setEmail(jsonRequest.getString("email"));
                     userAux.setPassword(jsonRequest.getString("password"));
                     userAux.setAdmin(jsonRequest.getBoolean("isAdmin"));
-                    userAux.setUserPic(ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("userPic"))));
+
+                    // Capturamos posible null procedente del Json.
+                    try {
+                        userAux.setUserPic(ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("userPic"))));
+                    } catch (NullPointerException e) {
+                        userAux.setUserPic(null);
+                    }
 
                     // Agregamos el usuario a la lista.
                     usersMgt.add(userAux);
