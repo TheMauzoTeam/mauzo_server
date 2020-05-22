@@ -61,7 +61,10 @@ public class InformsCtrl {
     @GET
     @Path("{param_id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getDiscount(@Context final HttpServletRequest req, @PathParam("param_id") int param) {
+    public Response getDiscount(@Context final HttpServletRequest req, @PathParam("param_id") int param) throws ManagerErrorException {
+        if (1 > param || param > 12)
+            throw new ManagerErrorException("Mes proporcionado imposible durante la inserción del mismo.");
+
         return ServerUtils.genericAdminMethod(req, param, null, () -> {
             ResponseBuilder response = null;
             InformsMgt informsMgt = Connections.getController().acquireInforms();

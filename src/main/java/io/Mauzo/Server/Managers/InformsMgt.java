@@ -32,6 +32,8 @@ public class InformsMgt implements ManagersIntf<Inform> {
     @Override
     public Inform get(int month) throws SQLException, ManagerErrorException {
 
+        if (1 > month || month > 12)
+            throw new ManagerErrorException("Mes proporcionado imposible durante la obtención del mismo.");
 
         Date dStart = new Date(new GregorianCalendar(YearMonth.now().getYear(), month, 1).getTimeInMillis());
         Date dEnd = new Date(new GregorianCalendar(YearMonth.now().getYear(), month, Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH)).getTimeInMillis());
