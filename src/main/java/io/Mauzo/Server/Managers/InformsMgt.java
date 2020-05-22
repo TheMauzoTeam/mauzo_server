@@ -69,7 +69,7 @@ public class InformsMgt implements ManagersIntf<Inform> {
             }
         } finally {
             conn.setAutoCommit(true);
-            
+
         }
 
         return inform;
