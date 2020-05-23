@@ -210,15 +210,15 @@ public class ServerUtils {
      * 
      * @param e La excepción capturada.
      */
-    private static void writeServerException(Exception e) {
+    public static void writeServerException(Exception e) {
         // En caso de existir otros errores, devolvemos un error 500 y listo.
         if (ServerApp.getLoggerSystem().getLevel() == Level.DEBUG) {
             // Informacion necesaria en procesos de debug.
-            ServerApp.getLoggerSystem().debug("Obteniendo fallo del Stack Trace...");
+            ServerApp.getLoggerSystem().debug("An exception has occurred, getting the stacktrace of the exception: ");
             e.printStackTrace();
         } else {
             // Informacion a mostrar en procesos de producción.
-            ServerApp.getLoggerSystem().warn("Se ha detectado un error: " + e.toString());
+            ServerApp.getLoggerSystem().error("An exception has occurred, " + e.toString());
         }
     }
 

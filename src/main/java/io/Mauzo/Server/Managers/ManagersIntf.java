@@ -20,7 +20,7 @@ public interface ManagersIntf<T> {
      * Método generico para añadir elementos T a la base de datos.
      * 
      * @param obj   El objeto en cuestión.
-     * @throws SQLException
+     * @throws SQLException Excepción en la base de datos.
      */
     public void add(T obj) throws Exception;
 
@@ -28,25 +28,26 @@ public interface ManagersIntf<T> {
      * Método generico para obtener elementos a partir del id.
      * 
      * @param id    ID del objeto en la base de datos.
-     * @return  El objeto en cuestión.
      * @throws SQLException Excepción en la base de datos.
      * @throws ManagerErrorException    Excepción de la clase gestora.
+     * 
+     * @return El objeto en cuestión.
      */
     public T get(int id) throws Exception;
     
     /**
      * Método generico para obtener un listado de elementos T.
-     * 
-     * @return  La lista de elementos T.
+     *
      * @throws SQLException Excepción en la base de datos.
+     * @return La lista de elementos T.
      */
     public List<T> getList() throws SQLException;
 
     /**
      * Método generico para modificar elementos a partir del nombre.
      * 
-     * @param name  El nombre del objeto en la base de datos.
-     * @return  El el objeto en cuestión.
+     * @param obj  El nombre del objeto en la base de datos.
+     * @return El el objeto en cuestión.
      * @throws SQLException Excepción en la base de datos.
      * @throws ManagerErrorException    Excepción de la clase gestora.
      */
@@ -55,10 +56,10 @@ public interface ManagersIntf<T> {
     /**
      * Método generico para eliminar elementos a partir del nombre.
      * 
-     * @param name  El nombre del objeto en la base de datos.
-     * @return  El el objeto en cuestión.
+     * @param obj  El nombre del objeto en la base de datos.
      * @throws SQLException Excepción en la base de datos.
      * @throws ManagerErrorException    Excepción de la clase gestora.
+     * @return El el objeto en cuestión.
      */
     public void remove(T obj) throws Exception;
 }

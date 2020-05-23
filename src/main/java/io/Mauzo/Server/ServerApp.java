@@ -68,7 +68,7 @@ public class ServerApp {
                 ServerApp.getConnection();
             } catch (Exception e) {
                 loggerSystem.error("The server couldn't be loaded, please check the debug info...");
-                loggerSystem.debug(e.getMessage());
+                ServerUtils.writeServerException(e);
 
                 System.exit(-1);
             }
@@ -148,6 +148,7 @@ public class ServerApp {
      * la URL con los parametros de conexión.
      * 
      * @throws SQLException Execepcion en caso de no poder conectar con la BBDD.
+     * @return Devuelve un objeto de conexión.
      */
     public static Connection setConnection() throws SQLException {
         // Cargamos las dependencias del driver
