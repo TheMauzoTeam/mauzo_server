@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package io.Mauzo.Server.Templates;
 
 import java.sql.Date;
-import java.util.HashMap;
 
 /**
+ * Modelo de informe con atributos iguales a la base de datos.
+ *
  * @author Ant04X Antonio Izquierdo
  */
 public class Inform {
@@ -36,7 +36,6 @@ public class Inform {
     private Integer nSales;
     private Integer nRefunds;
     private Integer nDiscounts;
-    private HashMap<User, Integer> userSales = new HashMap<>();
 
     private Date dStart;
     private Date dEnd;
@@ -72,18 +71,6 @@ public class Inform {
 
     public void setnDiscounts(Integer nDiscounts) {
         this.nDiscounts = nDiscounts;
-    }
-
-    public HashMap<User, Integer> getUserSales() {
-        return userSales;
-    }
-
-    public void addUserSales(User user, Integer salesCount) {
-        userSales.put(user, salesCount);
-    }
-
-    public void deleteUserSales(User user) {
-        userSales.remove(user);
     }
 
     public Date getdStart() {

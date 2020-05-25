@@ -34,6 +34,14 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
+ * Clase para gestionar las ventas respecto a la base de datos.
+ *
+ * La utilidad de esta clase es poder implementar métodos que permitan
+ * hacer operaciones CRUD con la base de datos mediante el lenguaje SQL,
+ * para lograr una eficiencia en las consultas, utilizamos Consultas Preparadas,
+ * esto nos ayuda a que solo tengamos que introducir las variables que deseamos
+ * a la base de datos.
+ *
  * @author Ant04X Antonio Izquierdo
  */
 public class InformsMgt implements ManagersIntf<Inform> {
@@ -52,6 +60,13 @@ public class InformsMgt implements ManagersIntf<Inform> {
         getNumberDiscounts = conn.prepareStatement("SELECT count(id) AS nDiscounts FROM Sales WHERE discId IS NOT NULL AND stampref BETWEEN ? AND ?");
     }
 
+    /**
+     * Método no soportado por este tipo.
+     *
+     * @param inform  El informe a añadir.
+     * @throws SQLException Excepción heredada de la interfaz Managment
+     * @throws ManagerErrorException Excepción heredada de la interfaz Managment
+     */
     @Override
     public void add(Inform inform) throws SQLException {
         throw new UnsupportedOperationException("Esta operación no esta soportada en este método.");
@@ -140,6 +155,13 @@ public class InformsMgt implements ManagersIntf<Inform> {
         return informs;
     }
 
+    /**
+     * Método no soportado por este tipo.
+     *
+     * @param obj  El nombre del objeto en la base de datos.
+     * @throws SQLException Excepción heredada de la interfaz Managment
+     * @throws ManagerErrorException Excepción heredada de la interfaz Managment
+     */
     @Override
     public void modify(Inform obj) throws SQLException, ManagerErrorException {
         throw new UnsupportedOperationException("Esta operación no esta soportada en este método.");
@@ -149,8 +171,8 @@ public class InformsMgt implements ManagersIntf<Inform> {
      * Método no soportado por este tipo.
      *
      * @param obj  El nombre del objeto en la base de datos.
-     * @throws SQLException
-     * @throws ManagerErrorException
+     * @throws SQLException Excepción heredada de la interfaz Managment
+     * @throws ManagerErrorException Excepción heredada de la interfaz Managment
      */
     @Override
     public void remove(Inform obj) throws SQLException, ManagerErrorException {

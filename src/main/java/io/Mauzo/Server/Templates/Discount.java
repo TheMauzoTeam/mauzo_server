@@ -25,6 +25,8 @@
 package io.Mauzo.Server.Templates;
 
 /**
+ * Modelo de descuento con atributos iguales a la base de datos.
+ *
  * @author Ant04X Antonio Izquierdo
  */
 public class Discount {

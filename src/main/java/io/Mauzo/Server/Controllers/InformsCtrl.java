@@ -48,7 +48,7 @@ import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
 
 /**
  * Clase controladora de informes, la cual gestiona las operaciones CRUD
- * con la base de datos a traves de una interfaz Rest API.
+ * con la base de datos a través de una interfaz Rest API.
  *
  * Existen dos formas de acceder a los datos, de manera general, la cual
  * te mostrará todos los datos existentes en la base de datos en relación
