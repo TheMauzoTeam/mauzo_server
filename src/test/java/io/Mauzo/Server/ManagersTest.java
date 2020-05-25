@@ -1,3 +1,26 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2020 The Mauzo Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package io.Mauzo.Server;
 
 import io.Mauzo.Server.Managers.*;
@@ -12,6 +35,12 @@ import java.sql.Statement;
 
 import java.util.Date;
 
+/**
+ * Esta clase contiene los test que prueban las clases Products, Sales, Users, Discounts y refunds.
+ * Además, prepara la base de datos para hacer los tests.
+ *
+ * @author lluminar Lidia Martínez
+ */
 public class ManagersTest {
     //Before para insertar datos en las tablas que tengan relación entre si y el administrador
     /**
@@ -21,7 +50,7 @@ public class ManagersTest {
      */
     @BeforeClass
     public static void prepareDatabase() throws Exception {
-        System.out.println("prepara");
+        System.out.println("Preparando la base de datos");
         String url = ServerUtils.loadProperties().getProperty("mauzo.debugDatabase.url");
         
         ServerApp.setUrl(url);
@@ -93,7 +122,7 @@ public class ManagersTest {
     //TEST REFUNDS
     @Test
     public void testRefunds() throws Exception {
-        System.out.println("Ejecutado refunds");
+        System.out.println("Ejecutando test de refunds");
 
         RefundsMgt refundsMgt = Connections.getController().acquireRefunds();
         Refund refund = refundsMgt.get(1);
@@ -111,7 +140,7 @@ public class ManagersTest {
      */
     @Test
     public void testProducts() throws Exception {
-        System.out.println("Ejecutado products");
+        System.out.println("Ejecutando el test de products");
 
         ProductsMgt productsMgt = Connections.getController().acquireProducts();
         Product product = productsMgt.get(1);
@@ -135,7 +164,7 @@ public class ManagersTest {
      */
     @Test
     public void testSales() throws Exception {
-        System.out.println("Ejecutado sales");
+        System.out.println("Ejecutado el test de sales");
         SalesMgt salesMgt = Connections.getController().acquireSales();
         Sale sale = salesMgt.get(1);
 
@@ -152,7 +181,7 @@ public class ManagersTest {
      */
     @Test
     public void testUsers() throws Exception {
-        System.out.println("Ejecutado users");
+        System.out.println("Ejecutando el test de users");
 
         UsersMgt usersMgt = Connections.getController().acquireUsers();
         User user = usersMgt.get(1);
@@ -173,7 +202,7 @@ public class ManagersTest {
      */
     @Test
     public void testDiscounts() throws Exception {
-        System.out.println("Ejecutado discounts");
+        System.out.println("Ejecutando el test de discounts");
 
         DiscountsMgt discountsMgt = Connections.getController().acquireDiscounts();
         Discount discount = discountsMgt.get(1);
