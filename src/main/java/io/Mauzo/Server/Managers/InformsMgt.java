@@ -17,6 +17,7 @@ public class InformsMgt implements ManagersIntf<Inform> {
     private final PreparedStatement getNumberDiscounts;
 
     InformsMgt(Connection conn) throws SQLException {
+        // Reemplazamos la conexión por la del objeto.
         this.conn = conn;
 
         getNumberSales = conn.prepareStatement("SELECT count(id) AS nSales FROM Sales WHERE stampref BETWEEN ? AND ?");
@@ -29,15 +30,27 @@ public class InformsMgt implements ManagersIntf<Inform> {
         throw new UnsupportedOperationException("Esta operación no esta soportada en este método.");
     }
 
+    /**
+     * Método para obtener en forma de objeto el informe, a partir de el mes de
+     * informe, el informe encapsulado.
+     *
+     * @param month El mes del informe.
+     * @return El informe encapsulado en forma de objeto.
+     * @throws SQLException Excepción en la consulta SQL.
+     * @throws ManagerErrorException Excepción dada al no encontrar el informe solicitado.
+     */
     @Override
     public Inform get(int month) throws SQLException, ManagerErrorException {
 
+        // Se comprueba la validez del mes.
         if (1 > month || month > 12)
             throw new ManagerErrorException("Mes proporcionado imposible durante la obtención del mismo.");
 
+        // Se generan los límites del informe.
         Date dStart = new Date(new GregorianCalendar(YearMonth.now().getYear(), month, 1).getTimeInMillis());
         Date dEnd = new Date(new GregorianCalendar(YearMonth.now().getYear(), month, Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH)).getTimeInMillis());
 
+        // Se establecen en la base de datos los límites.
         getNumberSales.setDate(1, dStart);
         getNumberSales.setDate(2, dEnd);
 
@@ -47,10 +60,11 @@ public class InformsMgt implements ManagersIntf<Inform> {
         getNumberDiscounts.setDate(1, dStart);
         getNumberDiscounts.setDate(2, dEnd);
 
-        Inform inform = new Inform();
+        Inform inform = new Inform(); // Se crea el objeto a devolver.
 
-        conn.setAutoCommit(false);
+        conn.setAutoCommit(false); // Desactivamos la conexión como AutoCommit.
 
+        // Ejecutamos las sentencias sql y recuperamos lo que nos han retornado.
         try (ResultSet rsSales = getNumberSales.executeQuery();
             ResultSet rsRefunds = getNumberRefunds.executeQuery();
             ResultSet rsDiscounts = getNumberDiscounts.executeQuery()){
@@ -68,19 +82,27 @@ public class InformsMgt implements ManagersIntf<Inform> {
 
             }
         } finally {
-            conn.setAutoCommit(true);
+            conn.setAutoCommit(true); // Se reestablece la conexión.
 
         }
 
         return inform;
     }
 
+    /**
+     * Método para obtener en forma de lista de informes, los informes presentes
+     * en la base de datos.
+     *
+     * @return El listado de informes.
+     * @throws SQLException Exception en la consulta SQL.
+     */
     @Override
     // Va del 1 al 12 generar informs por mes e introducirlos a una lista.
     public List<Inform> getList() throws SQLException {
         List<Inform> informs = new ArrayList<Inform>();
 
         try {
+            // Se añade un informe por mes.
             for (int i = 1; i <= 12; i++)
                 informs.add(get(i));
 
