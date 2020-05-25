@@ -34,9 +34,32 @@ import org.springframework.stereotype.Component;
 import io.Mauzo.Server.ServerUtils;
 import io.Mauzo.Server.ServerApp;
 import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
+
+/**
+ * Clase controladora de descuentos, la cual gestiona las operaciones CRUD
+ * con la base de datos a traves de una interfaz Rest API.
+ *
+ * Existen dos formas de acceder a los datos, de manera general, la cual
+ * te mostrará todos los datos existentes en la base de datos en relación
+ * a lo solicitado, y de manera concreta, la cual vas a poder acceder a la
+ * unidad de información solicitada.
+ *
+ * @author Ant04X Antonio Izquierdo
+ */
 @Component
 @Path("/discounts")
 public class DiscountsCtrl {
+    /**
+     * Controlador que permite a un usuario obtener un listado de descuentos dentro
+     * del servidor, permitiendo asi obtener de manera dinamica los descuentos validos u
+     * otros usuarios validos dentro del sistema.
+     *
+     * El contenido que recibirá esta vista http es mediante una peticion GET con
+     * la estructura de atributos de id, codeDisc, descDisc y pricePerc.
+     *
+     * @param req      El header de la petición HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDiscountMethod(@Context final HttpServletRequest req) {
@@ -68,6 +91,18 @@ public class DiscountsCtrl {
         });
     }
 
+    /**
+     * Controlador que permite a un usuario registrar descuentos dentro del
+     * servidor, permitiendo asi agregar de manera dinamica descuentos validos u otros
+     * usuarios validos dentro del sistema.
+     *
+     * El contenido que recibirá esta vista http es mediante una peticion GET con
+     * la estructura de atributos de id, codeDisc, descDisc y pricePerc.
+     *
+     * @param req      El header de la petición HTTP.
+     * @param jsonData El body de la petición HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addDiscountMethod(@Context final HttpServletRequest req, String jsonData) {
@@ -104,6 +139,18 @@ public class DiscountsCtrl {
         });
     }
 
+    /**
+     * Controlador que permite a un usuario obtener un descuento especifica dentro
+     * del servidor, permitiendo asi obtener de manera dinamica el descuento requeria
+     * como parametro en la interfaz web.
+     *
+     * El contenido que recibirá esta vista http es mediante una peticion GET con
+     * la estructura de atributos de id, codeDisc, descDisc y pricePerc.
+     *
+     * @param req      El header de la petición HTTP.
+     * @param param  El ID de usuario en la peticion HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
     @GET
     @Path("{param_id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -131,6 +178,16 @@ public class DiscountsCtrl {
         });
     }
 
+    /**
+     * Controlador que gestiona las actualizaciones de información de los descuentos
+     * cuya informacion se recibe mediante una peticion PUT a la interfaz web.
+     * http://HOST_URL/api/discounts/(id)
+     *
+     * @param req      El header de la petición HTTP.
+     * @param paramId  El ID de usuario en la peticion HTTP.
+     * @param jsonData El body de la petición HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
     @PUT
     @Path("{param_id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -172,6 +229,14 @@ public class DiscountsCtrl {
         });
     }
 
+    /**
+     * Controlador para eliminar descuentos pasados por parametro en la interfaz web
+     * http://HOST_URL/api/discounts/(id) con el tipo de petición DELETE.
+     *
+     * @param req      El header de la petición HTTP.
+     * @param paramId  El ID de usuario en la peticion HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
     @DELETE
     @Path("{param_id}")
     public Response deleteDiscount(@Context final HttpServletRequest req, @PathParam("param_id") int paramId) {

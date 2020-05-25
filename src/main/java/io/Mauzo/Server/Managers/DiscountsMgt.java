@@ -6,6 +6,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Ant04X Antonio Izquierdo
+ */
 public class DiscountsMgt implements ManagersIntf<Discount> {
     private final PreparedStatement addQuery;
     private final PreparedStatement getIdQuery;

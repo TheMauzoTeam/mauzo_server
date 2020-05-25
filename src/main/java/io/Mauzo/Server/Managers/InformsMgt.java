@@ -9,6 +9,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+/**
+ * @author Ant04X Antonio Izquierdo
+ */
 public class InformsMgt implements ManagersIntf<Inform> {
 
     private final Connection conn;

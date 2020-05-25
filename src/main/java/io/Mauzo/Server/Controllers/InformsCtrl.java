@@ -22,10 +22,31 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
 
-
+/**
+ * Clase controladora de informes, la cual gestiona las operaciones CRUD
+ * con la base de datos a traves de una interfaz Rest API.
+ *
+ * Existen dos formas de acceder a los datos, de manera general, la cual
+ * te mostrará todos los datos existentes en la base de datos en relación
+ * a lo solicitado, y de manera concreta, la cual vas a poder acceder a la
+ * unidad de información solicitada.
+ *
+ * @author Ant04X Antonio Izquierdo
+ */
 @Component
 @Path("/informs")
 public class InformsCtrl {
+    /**
+     * Controlador que permite a un usuario obtener un listado de informes dentro
+     * del servidor, permitiendo asi obtener de manera dinamica los informes validos u
+     * otros usuarios validos dentro del sistema.
+     *
+     * El contenido que recibirá esta vista http es mediante una peticion GET con
+     * la estructura de atributos de id, nSales, nRefunds, nDiscounts, dStart y dEnd.
+     *
+     * @param req      El header de la petición HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getInformMethod(@Context final HttpServletRequest req) {
@@ -58,10 +79,22 @@ public class InformsCtrl {
         });
     }
 
+    /**
+     * Controlador que permite a un usuario obtener un informe especifica dentro
+     * del servidor, permitiendo asi obtener de manera dinamica el informe requeria
+     * como parametro en la interfaz web.
+     *
+     * El contenido que recibirá esta vista http es mediante una peticion GET con
+     * la estructura de atributos de id, nSales, nRefunds, nDiscounts, dStart y dEnd.
+     *
+     * @param req      El header de la petición HTTP.
+     * @param param  El ID de usuario en la peticion HTTP.
+     * @return La respuesta generada por parte de la vista.
+     */
     @GET
     @Path("{param_id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getDiscount(@Context final HttpServletRequest req, @PathParam("param_id") int param) throws ManagerErrorException {
+    public Response getInform(@Context final HttpServletRequest req, @PathParam("param_id") int param) throws ManagerErrorException {
 
         return ServerUtils.genericAdminMethod(req, param, null, () -> {
             ResponseBuilder response = null;

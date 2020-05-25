@@ -4,6 +4,9 @@ package io.Mauzo.Server.Templates;
 import java.sql.Date;
 import java.util.HashMap;
 
+/**
+ * @author Ant04X Antonio Izquierdo
+ */
 public class Inform {
 
     private Integer id;

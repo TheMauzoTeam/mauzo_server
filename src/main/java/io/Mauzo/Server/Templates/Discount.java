@@ -1,5 +1,8 @@
 package io.Mauzo.Server.Templates;
 
+/**
+ * @author Ant04X Antonio Izquierdo
+ */
 public class Discount {
     private Integer id;
     private String code;
