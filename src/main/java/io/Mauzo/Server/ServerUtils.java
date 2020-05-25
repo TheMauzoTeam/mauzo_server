@@ -67,6 +67,7 @@ import io.jsonwebtoken.security.SignatureException;
  * 
  * @author lluminar Lidia Martínez
  * @author Neirth Sergio Martinez
+ * @author Ant04X Antonio Izquierdo
  */
 public class ServerUtils {
     public interface Content {
@@ -380,6 +381,17 @@ public class ServerUtils {
         }
 
         return privateKey;
+    }
+
+    /**
+     * Introduce una clave privada arbitraria para propósitos de Test.
+     *
+     * @author Ant04x Antonio Izquierdo
+     *
+     * @param privateKey
+     */
+    static void setKey(Key privateKey) {
+        ServerUtils.privateKey = privateKey;
     }
 
     /**
