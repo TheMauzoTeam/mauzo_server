@@ -2,6 +2,11 @@ package io.Mauzo.Server.Templates;
 
 import java.util.Date;
 
+/**
+ * Modelo de venta con atributos iguales a la base de datos.
+ * 
+ * @author Neirth Sergio Martínez
+ */
 public class Sale {
     private Integer id;
     private Date stampRef;

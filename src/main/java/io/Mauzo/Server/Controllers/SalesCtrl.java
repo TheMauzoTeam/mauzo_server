@@ -35,8 +35,6 @@ import io.Mauzo.Server.Managers.Connections;
 import io.Mauzo.Server.Managers.SalesMgt;
 import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
 
-@Component
-@Path("/sales")
 /**
  * Clase controladora de ventas, la cual gestiona las operaciones CRUD
  * con la base de datos a traves de una interfaz Rest API.
@@ -48,6 +46,8 @@ import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
  * 
  * @author neirth Sergio Martinez
  */
+@Component
+@Path("/sales")
 public class SalesCtrl {
     /**
      * Controlador que permite a un usuario obtener un listado de ventas dentro 

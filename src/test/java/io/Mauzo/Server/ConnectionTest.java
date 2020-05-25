@@ -15,6 +15,14 @@ import io.Mauzo.Server.Managers.RefundsMgt;
 import io.Mauzo.Server.Managers.SalesMgt;
 import io.Mauzo.Server.Managers.UsersMgt;
 
+/**
+ * Test para probar la correcta comunicación del servidor a la base de datos.
+ * 
+ * Este test prueba tanto las posibles conexiones individuales como tambien las
+ * conexiones del grupo de conexiones.
+ * 
+ * @author Neirth Sergio Martinez
+ */
 public class ConnectionTest {
     /**
      * Preparación de la URL de JDBC con la base de datos de pruebas donde se

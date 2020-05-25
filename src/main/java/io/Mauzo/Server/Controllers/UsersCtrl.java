@@ -34,8 +34,6 @@ import io.Mauzo.Server.Managers.Connections;
 import io.Mauzo.Server.Managers.UsersMgt;
 import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
 
-@Component
-@Path("/users")
 /**
  * Clase controladora de usuarios, la cual gestiona las operaciones CRUD
  * con la base de datos a traves de una interfaz Rest API.
@@ -47,6 +45,8 @@ import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
  * 
  * @author neirth Sergio Martinez
  */
+@Component
+@Path("/users")
 public class UsersCtrl {
     /**
      * Controlador que permite a un administrador obtener un listado de usuarios dentro 

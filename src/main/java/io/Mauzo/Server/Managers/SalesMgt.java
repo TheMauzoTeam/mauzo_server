@@ -6,6 +6,17 @@ import java.util.List;
 
 import io.Mauzo.Server.Templates.Sale;
 
+/**
+ * Clase para gestionar las ventas respecto a la base de datos.
+ * 
+ * La utilidad de esta clase es poder implementar métodos que permitan
+ * hacer operaciones CRUD con la base de datos mediante el lenguaje SQL,
+ * para lograr una eficiencia en las consultas, utilizamos Consultas Preparadas,
+ * esto nos ayuda a que solo tengamos que introducir las variables que deseamos 
+ * a la base de datos.
+ * 
+ * @author Neirth Sergio Martínez
+ */
 public class SalesMgt implements ManagersIntf<Sale> {
     // Dejamos preparadas las consultas
     private final PreparedStatement addQuery;

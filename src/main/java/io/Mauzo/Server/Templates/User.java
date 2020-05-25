@@ -2,6 +2,11 @@ package io.Mauzo.Server.Templates;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * Modelo de usuario con atributos iguales a la base de datos.
+ * 
+ * @author Neirth Sergio Martínez
+ */
 public class User {
     private Integer id;
     private String username;
