@@ -35,6 +35,18 @@ import io.Mauzo.Server.Managers.UsersMgt;
 import io.Mauzo.Server.Managers.ManagersIntf.ManagerErrorException;
 import io.Mauzo.Server.Templates.User;
 
+/**
+ * Clase controladora de inicios de sesion de usuarios, la cual 
+ * valida si el usuario y la contraseña proporcionados pueden 
+ * iniciar sesión en el sistema.
+ * 
+ * Para ello, utilizamos una contraseña encriptada en MD5, la 
+ * cual nos enviará el cliente ya encripada. En caso de ser un 
+ * login correcto. Le enviaremos un Json Web Token valido para
+ * operar con el resto de endpoints.
+ * 
+ * @author neirth Sergio Martinez
+ */
 @Component
 @Path("/login")
 public class LoginCtrl {
