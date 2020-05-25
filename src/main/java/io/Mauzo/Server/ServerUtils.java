@@ -65,7 +65,7 @@ import io.jsonwebtoken.security.SignatureException;
  * controladoras, metodos de conversión de imagenes a byte array y base64 o
  * comprobar si el token es valido.
  * 
- * @author Illuminar Lidia Martínez
+ * @author lluminar Lidia Martínez
  * @author Neirth Sergio Martinez
  */
 public class ServerUtils {
@@ -388,7 +388,7 @@ public class ServerUtils {
      * Hay componentes en este servidor que trabajan con imagenes, dado que los
      * productos y los usuarios tienen esta posibilidad de mostrar una imagen.
      * 
-     * @author Illuminar Lidia Martínez
+     * @author lluminar Lidia Martínez
      *
      * @param imageBuf La imagen en buffer.
      * @param type     El formato de salida de la image.
@@ -419,7 +419,7 @@ public class ServerUtils {
      * Hay componentes en este servidor que trabajan con imagenes, dado que los
      * productos y los usuarios tienen esta posibilidad de mostrar una imagen.
      * 
-     * @author Illuminar Lidia Martínez
+     * @author lluminar Lidia Martínez
      *
      * @param imageArr La imagen en array de bytes.
      * @return La imagen convertida a un BufferedImage.
@@ -445,7 +445,7 @@ public class ServerUtils {
     /**
      * Tranforma una cadena en Base64 a un array de bytes
      * 
-     * @author Illuminar Lidia Martínez
+     * @author lluminar Lidia Martínez
      *
      * @param base64 Cadena de carácteres en Base64
      * @return Array de Bytes
@@ -457,7 +457,7 @@ public class ServerUtils {
     /**
      * Transforma un array de Bytes a una cadena de Base64
      * 
-     * @author Illuminar Lidia Martínez
+     * @author lluminar Lidia Martínez
      *
      * @param array array de bytes
      * @return Cadena de carácteres en Base64
