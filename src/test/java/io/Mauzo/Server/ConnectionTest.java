@@ -50,6 +50,9 @@ public class ConnectionTest {
      */
     @Test
     public void checkIndividualConnection() throws Exception {
+        // Informamos al usuario del test que se ejeccuta
+        System.out.println("Ejecutando test de conexiones");
+
         // Obtenemos una conexion indivual.
         try (Connection conn = ServerApp.getConnection()) {
             // Si no es nulo, significa que ha pasado la prueba.
@@ -66,6 +69,9 @@ public class ConnectionTest {
      */
     @Test
     public void checkPoolsConnection() throws Exception {
+        // Informamos al usuario del test que se ejeccuta
+        System.out.println("Ejecutando test de grupo de conexiones");
+
         // Variable comprobante del test.
         boolean testPassed = true;
 
