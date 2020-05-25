@@ -44,6 +44,7 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
     private final PreparedStatement modifyQuery;
     private final PreparedStatement removeQuery;
 
+    //Constructor con las sentencias a la base de datos
     RefundsMgt(Connection connection) throws SQLException{
         addQuery = connection.prepareStatement("INSERT INTO Refunds ( dateRefund, userId, saleId ) VALUES (?, ?, ?);");
         getIdQuery = connection.prepareStatement("SELECT * FROM Refunds WHERE id = ?;");
@@ -60,6 +61,8 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public void add(Refund obj) throws SQLException {
+
+        // Asociamos los valores
         addQuery.setDate(1, new Date(obj.getDateRefund().getTime()));
         addQuery.setInt(2, obj.getUserId());
         addQuery.setInt(3, obj.getSaleId());
@@ -79,11 +82,14 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
     public Refund get(int id) throws SQLException, ManagerErrorException {
             Refund refund = null;
 
+            //Asociamos los valores
             getIdQuery.setInt(1, id);
 
+            //Ejecutamos la sentencia y conseguimos el resto de datos relacionados
             try (ResultSet resultSet = getIdQuery.executeQuery()) {
                 if (resultSet.next()) {
 
+                    // Envía los atributos de la base de datos
                     refund = new Refund();
                     refund.setId(resultSet.getInt("id"));
                     refund.setDateRefund(resultSet.getDate("dateRefund"));
@@ -107,17 +113,20 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
     public List<Refund> getList() throws SQLException {
             List<Refund> refundList = null;
 
+            // Ejecutamos la sentencia
             try (ResultSet resultSet = getListQuery.executeQuery()) {
                 refundList = new ArrayList<>();
 
                 while (resultSet.next()) {
                     Refund refund = new Refund();
 
+                    // Envía los atributos de la base de datos
                     refund.setId(resultSet.getInt("id"));
                     refund.setDateRefund(resultSet.getDate("dateRefund"));
                     refund.setUserId(resultSet.getInt("userId"));
                     refund.setSaleId(resultSet.getInt("saleId"));
 
+                    // Añade la devolución a la lista
                     refundList.add(refund);
                 }
             }
@@ -134,12 +143,14 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public void modify(Refund obj) throws SQLException, ManagerErrorException {
+        // Envía los valores a la base de datos para modificarla
         modifyQuery.setDate(1, (Date) obj.getDateRefund());
         modifyQuery.setInt(2, obj.getUserId());
         modifyQuery.setInt(3, obj.getSaleId());
         modifyQuery.setInt(4, obj.getId());
 
 
+        // Si no encuentra la devolución lanza una Excepción
         if (modifyQuery.executeUpdate() == 0)
             throw new ManagerErrorException("No se ha encontrado la devolución");
     }
@@ -153,8 +164,10 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      */
     @Override
     public void remove(Refund obj) throws SQLException, ManagerErrorException {
+        // Elimina la devolución
         removeQuery.setInt(1, obj.getId());
- 
+
+        // En el caso de no encontrarla lanza una Excepción
         if (removeQuery.executeUpdate() == 0)
             throw new ManagerErrorException("No se ha encontrado la devolución");
     }

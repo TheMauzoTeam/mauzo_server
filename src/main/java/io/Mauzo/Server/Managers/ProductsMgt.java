@@ -46,6 +46,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
     private final PreparedStatement modifyQuery;
     private final PreparedStatement removeQuery;
 
+    //Constructor con las sentencias a la base de datos
     ProductsMgt(Connection connection) throws SQLException {
         addQuery = connection.prepareStatement("INSERT INTO Products ( ProdCode, ProdName, ProdPrice, ProdDesc, ProdPic) VALUES ( ?, ?, ?, ?, ?);");
         getIdQuery = connection.prepareStatement("SELECT * FROM Products WHERE id = ?;");
@@ -63,7 +64,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
      */
     @Override
     public void add(Product product) throws SQLException{
-            //Asociamos los valores
+            // Asociamos los valores
             addQuery.setString(1, product.getCode());
             addQuery.setString(2, product.getName());
             addQuery.setDouble(3,product.getPrice());
@@ -82,7 +83,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
     /**
      *Método para obtener el producto a partir de un id
      *
-     * @param id    ID del objeto en la base de datos.
+     * @param id ID del objeto en la base de datos.
      * @return el producto en forma de objeto
      * @throws SQLException Excepción de la consuulta SQL
      * @throws ManagerErrorException Excepción dado al no poder encontrar el producto
@@ -100,6 +101,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
                      while (resultSet.next()) {
                          product = new Product();
 
+                         // Envia los atributos de la base de datos
                          product.setId(resultSet.getInt("id"));
                          product.setCode(resultSet.getString("ProdCode"));
                          product.setName(resultSet.getString("prodName"));
@@ -127,11 +129,13 @@ public class ProductsMgt implements ManagersIntf<Product>{
 
            getNameQuery.setString(1, name);
 
+           // Ejecutamos la sentencia y conseguimos el resto de datos relacionados
             try (ResultSet resultSet = getNameQuery.executeQuery()){
                 if (resultSet.next()) {
 
                     product = new Product();
 
+                    // Envía los atributos de la base de datos
                     product.setId(resultSet.getInt("id"));
                     product.setCode(resultSet.getString("ProdCode"));
                     product.setDescription(resultSet.getString("prodDesc"));
@@ -163,6 +167,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
                 while (resultSet.next()) {
                     Product product = new Product();
 
+                    // Envía los atributos de la base de datos
                     product.setId(resultSet.getInt("id"));
                     product.setName(resultSet.getString("prodName"));
                     product.setPrice(resultSet.getFloat("prodPrice"));
@@ -170,6 +175,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
                     product.setDescription(resultSet.getString("prodDesc"));
                     product.setPicture(ServerUtils.imageFromByteArray(resultSet.getBytes("prodPic")));
 
+                    // Añade un producto a la lista
                     products.add(product);
                 }
             }
@@ -186,6 +192,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
      */
     @Override
     public void modify(Product obj) throws SQLException, ManagerErrorException {
+            // Envía los valores a la base de datos para modificarla
             modifyQuery.setString(1, obj.getCode());
             modifyQuery.setString(2, obj.getName());
             modifyQuery.setDouble(3, obj.getPrice());
@@ -200,6 +207,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
 
             modifyQuery.setInt(6,obj.getId());
 
+           // En caso de que no se encuentre el producto lanza la Excepción
            if(modifyQuery.executeUpdate() == 0)
                 throw new ManagerErrorException("No se ha encontrado el producto durante la actualización del mismo.");
     }
@@ -212,9 +220,10 @@ public class ProductsMgt implements ManagersIntf<Product>{
      */
     @Override
     public void remove(Product obj) throws SQLException, ManagerErrorException {
+        // Elimina el producto
         removeQuery.setInt(1, obj.getId());
 
-        // Ejecutamos la sentencia sql.
+        // Ejecutamos la sentencia sql y en caso de no encontrar el producto lanza una Excepción.
         if(removeQuery.executeUpdate() == 1)
             throw new ManagerErrorException("No se ha encontrado el producto");
     }
