@@ -73,8 +73,6 @@ public interface ManagersIntf<T> {
      * @param obj  El nombre del objeto en la base de datos.
      * @throws SQLException Excepción en la base de datos.
      * @throws ManagerErrorException    Excepción de la clase gestora.
-     * 
-     * @return El el objeto en cuestión.
      */
     public void modify(T obj) throws Exception;
     
@@ -84,8 +82,6 @@ public interface ManagersIntf<T> {
      * @param obj  El nombre del objeto en la base de datos.
      * @throws SQLException Excepción en la base de datos.
      * @throws ManagerErrorException    Excepción de la clase gestora.
-     * 
-     * @return El el objeto en cuestión.
      */
     public void remove(T obj) throws Exception;
 }
