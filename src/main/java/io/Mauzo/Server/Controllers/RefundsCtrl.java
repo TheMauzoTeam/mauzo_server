@@ -68,8 +68,8 @@ public class RefundsCtrl {
      * El contenido que recibirá esta vista http es mediante una petición GET con
      * la estructura de atributos de id, dateRefund, userId ,saleId.
      *
-     * @param req
-     * @return
+     * @param req La cabecera de la consulta
+     * @return Devuelve una respuesta HTTP
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)

@@ -77,8 +77,8 @@ public class ProductsCtrl {
      * El contenido que recibirá esta vista http es mediante una peticion GET con
      * la estructura de atributos de prodId, prodName, prodCode, prodDesc, prodPrice, prodPic.
      *
-     * @param req
-     * @return
+     * @param req Nos da la cabecera de la consulta
+     * @return Devuelve una respuesta HTTP
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)

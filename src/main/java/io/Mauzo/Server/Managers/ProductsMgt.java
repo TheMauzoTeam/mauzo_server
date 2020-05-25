@@ -60,7 +60,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
      * Método que añade productos a la base de datos.
      *
      * @param product El producto a añadir.
-     * @Exception SQLException Excepcion de la consulta SQL
+     * @throws SQLException Excepcion de la consulta SQL
      */
     @Override
     public void add(Product product) throws SQLException{
