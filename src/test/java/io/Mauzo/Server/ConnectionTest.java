@@ -65,7 +65,7 @@ public class ConnectionTest {
     }
 
     /**
-     * Test que comprueba que las operaciones de la conexión individual ifuncionen
+     * Test que comprueba que las operaciones de la conexión individual funcionen
      * de manera correcta sobre una base de datos que opere, de manera muy semejante
      * a la base de datos que se utiliza en producción.
      * 
@@ -73,10 +73,10 @@ public class ConnectionTest {
      */
     @Test
     public void checkIndividualConnection() throws Exception {
-        // Informamos al usuario del test que se ejeccuta
+        // Informamos al usuario del test que se ejecuta
         System.out.println("Ejecutando test de conexiones");
 
-        // Obtenemos una conexion indivual.
+        // Obtenemos una conexión indivual.
         try (Connection conn = ServerApp.getConnection()) {
             // Si no es nulo, significa que ha pasado la prueba.
             Assert.assertNotNull(conn);
@@ -92,13 +92,13 @@ public class ConnectionTest {
      */
     @Test
     public void checkPoolsConnection() throws Exception {
-        // Informamos al usuario del test que se ejeccuta
+        // Informamos al usuario del test que se ejecuta
         System.out.println("Ejecutando test de grupo de conexiones");
 
         // Variable comprobante del test.
         boolean testPassed = true;
 
-        // Obtenemos una conexion del pool de conexiones de tipo users.
+        // Obtenemos una conexión del pool de conexiones de tipo users.
         UsersMgt connUsers = Connections.getController().acquireUsers();;
  
         if (connUsers == null)
@@ -106,7 +106,7 @@ public class ConnectionTest {
 
         Connections.getController().releaseUsers(connUsers);
 
-        // Obtenemos una conexion del pool de conexiones de tipo sales.
+        // Obtenemos una conexión del pool de conexiones de tipo sales.
         SalesMgt connSales = Connections.getController().acquireSales();
 
         if (connSales == null)
@@ -114,7 +114,7 @@ public class ConnectionTest {
 
         Connections.getController().releaseSales(connSales);
 
-        // Obtenemos una conexion del pool de conexiones de tipo products.
+        // Obtenemos una conexión del pool de conexiones de tipo products.
         ProductsMgt connProducts = Connections.getController().acquireProducts();
 
         if (connProducts == null)
@@ -122,7 +122,7 @@ public class ConnectionTest {
 
         Connections.getController().releaseProducts(connProducts);
 
-        // Obtenemos una conexion del pool de conexiones de tipo refunds.
+        // Obtenemos una conexión del pool de conexiones de tipo refunds.
         RefundsMgt connRefunds = Connections.getController().acquireRefunds();
 
         if (connRefunds == null)
@@ -130,7 +130,7 @@ public class ConnectionTest {
 
         Connections.getController().releaseRefunds(connRefunds);
 
-        // Obtenemos una conexion del pool de conexiones de tipo discounts.
+        // Obtenemos una conexión del pool de conexiones de tipo discounts.
         DiscountsMgt connDiscounts = Connections.getController().acquireDiscounts();
 
         if(connDiscounts == null)
@@ -138,7 +138,7 @@ public class ConnectionTest {
 
         Connections.getController().releaseDiscounts(connDiscounts);
 
-        // Obtenemos una conexion del pool de conexiones de tipo informs.
+        // Obtenemos una conexión del pool de conexiones de tipo informs.
         InformsMgt connInforms = Connections.getController().acquireInforms();
 
         if(connInforms == null)

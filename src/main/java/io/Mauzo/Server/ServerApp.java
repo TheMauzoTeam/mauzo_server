@@ -152,7 +152,8 @@ public class ServerApp {
      * Getter para obtener el objeto que se está utilizando para registrar la
      * conexion con la base de datos.
      * 
-     * @return Devuelve el objeto usado como Conexion.
+     * @throws SQLException Devuelve una excepción en caso de encontrar un error con la bbdd
+     * @return Devuelve el objeto usado como conexión.
      */
     public static Connection getConnection() throws SQLException {
         // Validamos la conexión con la base de datos.

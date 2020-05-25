@@ -381,7 +381,7 @@ public class ServerUtils {
 
         return privateKey;
     }
-
+    
     /**
      * Método estatico para convertir una imagen a un array de bytes.
      * 
