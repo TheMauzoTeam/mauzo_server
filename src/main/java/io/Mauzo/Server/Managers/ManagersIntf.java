@@ -62,6 +62,7 @@ public interface ManagersIntf<T> {
      * Método generico para obtener un listado de elementos T.
      *
      * @throws SQLException Excepción en la base de datos.
+     * 
      * @return La lista de elementos T.
      */
     public List<T> getList() throws SQLException;
@@ -70,7 +71,6 @@ public interface ManagersIntf<T> {
      * Método generico para modificar elementos a partir del nombre.
      * 
      * @param obj  El nombre del objeto en la base de datos.
-     * @return El el objeto en cuestión.
      * @throws SQLException Excepción en la base de datos.
      * @throws ManagerErrorException    Excepción de la clase gestora.
      */
@@ -82,7 +82,6 @@ public interface ManagersIntf<T> {
      * @param obj  El nombre del objeto en la base de datos.
      * @throws SQLException Excepción en la base de datos.
      * @throws ManagerErrorException    Excepción de la clase gestora.
-     * @return El el objeto en cuestión.
      */
     public void remove(T obj) throws Exception;
 }
