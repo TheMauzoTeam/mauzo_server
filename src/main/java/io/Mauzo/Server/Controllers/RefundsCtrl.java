@@ -1,3 +1,27 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2020 The Mauzo Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package io.Mauzo.Server.Controllers;
 
 import io.Mauzo.Server.Managers.Connections;
@@ -24,6 +48,16 @@ import javax.ws.rs.core.Response;
 import java.io.StringReader;
 import java.util.Date;
 
+/**
+ * Clase controladora de las devoluciones que gestiona las operaciones CRUD con la base de datos a través de una interfaz Rest API.
+ *
+ * Existen dos formas de acceder a los datos, de manera general, la cual
+ * te mostrará todos los datos existentes en la base de datos en relación
+ * a lo solicitado, y de manera concreta, la cual vas a poder acceder a la
+ * unidad de información solicitada.
+ *
+ * @author lluminar Lidia Martínez
+ */
 @Component
 @Path("/Refunds")
 public class RefundsCtrl {
