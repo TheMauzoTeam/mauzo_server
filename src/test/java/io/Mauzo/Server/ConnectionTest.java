@@ -77,10 +77,10 @@ public class ConnectionTest {
         System.out.println("Ejecutando test de conexiones");
 
         // Obtenemos una conexión indivual.
-        try (Connection conn = ServerApp.getConnection()) {
-            // Si no es nulo, significa que ha pasado la prueba.
-            Assert.assertNotNull(conn);
-        }
+        Connection conn = ServerApp.getConnection();
+        
+        // Si no es nulo, significa que ha pasado la prueba.
+        Assert.assertNotNull(conn);
     }
 
     /**
