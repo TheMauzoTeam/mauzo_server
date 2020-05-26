@@ -155,7 +155,13 @@ public class SalesCtrl {
                     // Agregamos la información de la venta.
                     saleAux.setStampRef(new Date(Long.valueOf(jsonRequest.getString("stampRef"))));
                     saleAux.setUserId(jsonRequest.getInt("userId"));
-                    saleAux.setDiscId(jsonRequest.getInt("discId"));
+                    
+                    try {
+                        saleAux.setDiscId(jsonRequest.getInt("discId"));
+                    } catch (Exception e) {
+                        saleAux.setDiscId(null);
+                    }
+
                     saleAux.setProdId(jsonRequest.getInt("prodId"));
 
                 
