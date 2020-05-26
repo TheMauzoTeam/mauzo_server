@@ -247,7 +247,7 @@ public class ServerUtils {
     }
 
     /**
-     * Método para recuperar el token recibido desde la cabecera AUTHENTICATOR el
+     * Método para recuperar el token recibido desde la cabecera AUTHORIZATION el
      * token de seguridad.
      * 
      * @author Neirth Sergio Martinez
@@ -264,8 +264,13 @@ public class ServerUtils {
         authHeader = Collections.list(req.getHeaders(HttpHeaders.AUTHORIZATION));
 
         // Comprobamos que exista un token.
-        if (authHeader.size() != 0)
-            token = authHeader.get(0).substring(7).trim();
+        try {
+            if (authHeader.size() != 0)
+                token = authHeader.get(0).substring(7).trim();    
+        } catch (Exception e) {
+            token = null;
+        }
+
 
         // Devolvemos el token.
         return token;

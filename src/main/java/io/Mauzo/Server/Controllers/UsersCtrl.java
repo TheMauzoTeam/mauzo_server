@@ -109,7 +109,7 @@ public class UsersCtrl {
                     // Capturamos posible null procedente de la BBDD.
                     try {
                         jsonObj.add("userPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(user.getUserPic(), "png")));
-                    } catch (NullPointerException e) {
+                    } catch (Exception e) {
                         jsonObj.addNull("userPic");
                     }
                     
@@ -167,7 +167,7 @@ public class UsersCtrl {
                     // Capturamos posible null procedente del Json.
                     try {
                         userAux.setUserPic(ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("userPic"))));
-                    } catch (NullPointerException e) {
+                    } catch (Exception e) {
                         userAux.setUserPic(null);
                     }
 
@@ -225,7 +225,7 @@ public class UsersCtrl {
                 // Capturamos posible null procedente de la BBDD.
                 try {
                     jsonResponse.add("userPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(user.getUserPic(), "png")));
-                } catch (NullPointerException e) {
+                } catch (Exception e) {
                     jsonResponse.addNull("userPic");
                 }
 

@@ -106,7 +106,7 @@ public class SalesCtrl {
                     // Capturamos posible null procedente de la BBDD.
                     try {
                         jsonObj.add("discId", saleAux.getDiscId());
-                    } catch (NullPointerException e) {
+                    } catch (Exception e) {
                         jsonObj.addNull("discId");
                     }
     
@@ -209,7 +209,7 @@ public class SalesCtrl {
                 // Capturamos posible null procedente de la BBDD.
                 try {
                     jsonResponse.add("discId", saleAux.getDiscId());
-                } catch (NullPointerException e) {
+                } catch (Exception e) {
                     jsonResponse.addNull("discId");
                 }
 
