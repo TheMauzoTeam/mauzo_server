@@ -96,9 +96,21 @@ public class ProductsCtrl {
                 jsonObj.add("prodId", product.getId());
                 jsonObj.add("prodCode", product.getCode());
                 jsonObj.add("prodName", product.getName());
-                jsonObj.add("prodDesc", product.getDescription());
+
+                try {
+                    jsonObj.add("prodDesc", product.getDescription());
+                } catch (Exception e) {
+                    jsonObj.addNull("prodDesc");
+                }
+
                 jsonObj.add("prodPrice", product.getPrice());
-                jsonObj.add("prodPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(product.getPicture(),"png")));
+
+                try {
+                    jsonObj.add("prodPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(product.getPicture(),"png")));
+                } catch (Exception e) {
+                    jsonObj.addNull("prodPic");
+                }
+
                 // Lo añadimos al Json Array.
                 jsonResponse.add(jsonObj);
             }
@@ -139,12 +151,25 @@ public class ProductsCtrl {
                 // Agregamos la información de la venta.
                 product.setId(jsonRequest.getInt("prodId"));
                 product.setName(jsonRequest.getString("prodName"));
-                product.setDescription(jsonRequest.getString("prodDesc"));
+
+                try {
+                    product.setDescription(jsonRequest.getString("prodDesc"));
+                } catch (Exception e) {
+                    product.setDescription(null);
+                }
+
                 product.setCode(jsonRequest.getString("prodCode"));
                 product.setPrice(Float.valueOf(jsonRequest.getString("prodPrice")));
 
+                try {
+                    product.setPicture(ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("prodPic"))));
+                } catch (Exception e) {
+                    product.setPicture(null);
+                }
+
                 // Agregamos la venta a la lista.
                 productsMgt.add(product);
+
 
                 // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
                 response = Response.status(Status.OK);
@@ -187,9 +212,20 @@ public class ProductsCtrl {
                 jsonResponse.add("prodId", product.getId());
                 jsonResponse.add("prodName", product.getName());
                 jsonResponse.add("prodCode", product.getCode());
+
+                try {
+                    jsonResponse.add("prodDesc", product.getDescription());
+                } catch (Exception e) {
+                    jsonResponse.addNull("prodDesc");
+                }
+
                 jsonResponse.add("prodPrice", product.getPrice());
-                jsonResponse.add("prodDesc", product.getDescription());
-                jsonResponse.add("prodPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(product.getPicture(), "png")));
+
+                try {
+                    jsonResponse.add("prodPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(product.getPicture(),"png")));
+                } catch (Exception e) {
+                    jsonResponse.addNull("prodPic");
+                }
 
                 // Lanzamos la respuesta 200 OK si todo ha ido bien.
                 response = Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
