@@ -197,7 +197,7 @@ public class ProductsCtrl {
     @Path("{param_prodId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProduct(@Context final HttpServletRequest req, @PathParam("param_prodId") int paramProductId) {
-        return ServerUtils.genericAdminMethod(req, paramProductId, null, () -> {
+        return ServerUtils.genericUserMethod(req, paramProductId, null, () -> {
             ResponseBuilder response = null;
 
             // Adquirimos una conexión de productos
@@ -256,7 +256,7 @@ public class ProductsCtrl {
     @Path("{param_prodId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response modifyProduct(@Context final HttpServletRequest req, @PathParam("paramProdId") int paramProdId, String jsonData) {
-        return ServerUtils.genericAdminMethod(req, paramProdId, jsonData, () -> {
+        return ServerUtils.genericUserMethod(req, paramProdId, jsonData, () -> {
             ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
             // Si la informacion que recibe es nula, no se procesa nada.
@@ -308,7 +308,7 @@ public class ProductsCtrl {
     @DELETE
     @Path("{param_prodId}")
     public Response deleteProduct(@Context final HttpServletRequest req, @PathParam("param_productId") int paramProductId) {
-        return ServerUtils.genericAdminMethod(req, paramProductId, null, () -> {
+        return ServerUtils.genericUserMethod(req, paramProductId, null, () -> {
             ResponseBuilder response;
 
             // Adquirimos una conexión de productos
