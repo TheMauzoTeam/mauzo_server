@@ -79,20 +79,22 @@ public class RefundsCtrl {
 
             RefundsMgt refundsMgt = Connections.getController().acquireRefunds();
 
-            for (Refund refund : refundsMgt.getList()) {
-                // Inicializamos los objetos a usar.
-                JsonObjectBuilder jsonObj = Json.createObjectBuilder();
+            try {
+                for (Refund refund : refundsMgt.getList()) {
+                    // Inicializamos los objetos a usar.
+                    JsonObjectBuilder jsonObj = Json.createObjectBuilder();
 
-                // Construimos el objeto Json con los atributo de la venta.
-                jsonObj.add("id", refund.getId());
-                jsonObj.add("dateRefund", refund.getDateRefund().getTime());
-                jsonObj.add("userId", refund.getUserId());
-                jsonObj.add("saleId", refund.getSaleId());
-                // Lo añadimos al Json Array.
-                jsonResponse.add(jsonObj);
+                    // Construimos el objeto Json con los atributo de la venta.
+                    jsonObj.add("id", refund.getId());
+                    jsonObj.add("dateRefund", refund.getDateRefund().getTime());
+                    jsonObj.add("userId", refund.getUserId());
+                    jsonObj.add("saleId", refund.getSaleId());
+                    // Lo añadimos al Json Array.
+                    jsonResponse.add(jsonObj);
+                }
+            } finally {
+                Connections.getController().releaseRefunds(refundsMgt);
             }
-
-            Connections.getController().releaseRefunds(refundsMgt);
 
             return Response.ok(jsonResponse.build().toString());
         });

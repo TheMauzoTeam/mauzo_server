@@ -88,34 +88,36 @@ public class ProductsCtrl {
 
             ProductsMgt productsMgt = Connections.getController().acquireProducts();
 
-            for (Product product : productsMgt.getList()) {
-                // Inicializamos los objetos a usar.
-                JsonObjectBuilder jsonObj = Json.createObjectBuilder();
+            try {
+                for (Product product : productsMgt.getList()) {
+                    // Inicializamos los objetos a usar.
+                    JsonObjectBuilder jsonObj = Json.createObjectBuilder();
 
-                // Construimos el objeto Json con los atributo de la venta.
-                jsonObj.add("prodId", product.getId());
-                jsonObj.add("prodCode", product.getCode());
-                jsonObj.add("prodName", product.getName());
+                    // Construimos el objeto Json con los atributo de la venta.
+                    jsonObj.add("prodId", product.getId());
+                    jsonObj.add("prodCode", product.getCode());
+                    jsonObj.add("prodName", product.getName());
 
-                try {
-                    jsonObj.add("prodDesc", product.getDescription());
-                } catch (Exception e) {
-                    jsonObj.addNull("prodDesc");
+                    try {
+                        jsonObj.add("prodDesc", product.getDescription());
+                    } catch (Exception e) {
+                        jsonObj.addNull("prodDesc");
+                    }
+
+                    jsonObj.add("prodPrice", product.getPrice());
+
+                    try {
+                        jsonObj.add("prodPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(product.getPicture(), "png")));
+                    } catch (Exception e) {
+                        jsonObj.addNull("prodPic");
+                    }
+
+                    // Lo añadimos al Json Array.
+                    jsonResponse.add(jsonObj);
                 }
-
-                jsonObj.add("prodPrice", product.getPrice());
-
-                try {
-                    jsonObj.add("prodPic", ServerUtils.byteArrayToBase64(ServerUtils.imageToByteArray(product.getPicture(),"png")));
-                } catch (Exception e) {
-                    jsonObj.addNull("prodPic");
-                }
-
-                // Lo añadimos al Json Array.
-                jsonResponse.add(jsonObj);
+            } finally {
+                Connections.getController().releaseProducts(productsMgt);
             }
-
-            Connections.getController().releaseProducts(productsMgt);
 
             return Response.ok(jsonResponse.build().toString());
         });
@@ -140,42 +142,44 @@ public class ProductsCtrl {
 
             ProductsMgt productsMgt = Connections.getController().acquireProducts();
 
-            // Si la informacion que recibe es nula, no se procesa nada
-            if (jsonData.length() != 0) {
-                // Convertimos la información JSON recibida en un objeto.
-                final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
+            try {
+                // Si la informacion que recibe es nula, no se procesa nada
+                if (jsonData.length() != 0) {
+                    // Convertimos la información JSON recibida en un objeto.
+                    final JsonObject jsonRequest = Json.createReader(new StringReader(jsonData)).readObject();
 
-                // Incializamos el objeto.
-                Product product = new Product();
+                    // Incializamos el objeto.
+                    Product product = new Product();
 
-                // Agregamos la información de la venta.
-                product.setId(jsonRequest.getInt("prodId"));
-                product.setName(jsonRequest.getString("prodName"));
+                    // Agregamos la información de la venta.
+                    product.setId(jsonRequest.getInt("prodId"));
+                    product.setName(jsonRequest.getString("prodName"));
 
-                try {
-                    product.setDescription(jsonRequest.getString("prodDesc"));
-                } catch (Exception e) {
-                    product.setDescription(null);
+                    try {
+                        product.setDescription(jsonRequest.getString("prodDesc"));
+                    } catch (Exception e) {
+                        product.setDescription(null);
+                    }
+
+                    product.setCode(jsonRequest.getString("prodCode"));
+                    product.setPrice(Float.valueOf(jsonRequest.getString("prodPrice")));
+
+                    try {
+                        product.setPicture(ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("prodPic"))));
+                    } catch (Exception e) {
+                        product.setPicture(null);
+                    }
+
+                    // Agregamos la venta a la lista.
+                    productsMgt.add(product);
+
+
+                    // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
+                    response = Response.status(Status.OK);
                 }
-
-                product.setCode(jsonRequest.getString("prodCode"));
-                product.setPrice(Float.valueOf(jsonRequest.getString("prodPrice")));
-
-                try {
-                    product.setPicture(ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("prodPic"))));
-                } catch (Exception e) {
-                    product.setPicture(null);
-                }
-
-                // Agregamos la venta a la lista.
-                productsMgt.add(product);
-
-
-                // Si todo ha ido bien hasta ahora, lanzamos la respuesta 200 OK.
-                response = Response.status(Status.OK);
+            } finally {
+                Connections.getController().releaseProducts(productsMgt);
             }
-
-            Connections.getController().releaseProducts(productsMgt);
 
             return response;
         });
