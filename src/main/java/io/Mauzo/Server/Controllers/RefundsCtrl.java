@@ -130,7 +130,6 @@ public class RefundsCtrl {
                     Refund refund = new Refund();
 
                     // Agregamos la información al reembolso.
-                    refund.setId(jsonRequest.getInt("id"));
                     refund.setDateRefund(new Date(Long.valueOf(jsonRequest.getString("dateRefund"))));
                     refund.setUserId(jsonRequest.getInt("refundId"));
                     refund.setSaleId(jsonRequest.getInt("saleId"));

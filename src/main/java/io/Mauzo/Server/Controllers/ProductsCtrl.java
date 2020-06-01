@@ -152,7 +152,6 @@ public class ProductsCtrl {
                     Product product = new Product();
 
                     // Agregamos la información de la venta.
-                    product.setId(jsonRequest.getInt("prodId"));
                     product.setName(jsonRequest.getString("prodName"));
 
                     try {
