@@ -161,7 +161,7 @@ public class ProductsCtrl {
                     }
 
                     product.setCode(jsonRequest.getString("prodCode"));
-                    product.setPrice(Float.valueOf(jsonRequest.getString("prodPrice")));
+                    product.setPrice(jsonRequest.getJsonNumber("prodPrice").bigDecimalValue().floatValue());
 
                     try {
                         product.setPicture(ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("prodPic"))));
@@ -277,7 +277,7 @@ public class ProductsCtrl {
                     // Agregamos la información al producto.
                     product.setName(jsonRequest.isNull("prodName") ? product.getName() : jsonRequest.getString("prodName"));
                     product.setCode(jsonRequest.isNull("prodCode") ? product.getCode() : jsonRequest.getString("prodCode"));
-                    product.setPrice(jsonRequest.isNull("prodPrice") ? product.getPrice() : Float.valueOf(jsonRequest.getString("prodPrice")));
+                    product.setPrice(jsonRequest.isNull("prodPrice") ? product.getPrice() : jsonRequest.getJsonNumber("prodPrice").bigDecimalValue().floatValue());
                     product.setDescription(jsonRequest.isNull("prodDesc") ? product.getDescription() : jsonRequest.getString("prodDesc"));
                     product.setPicture(jsonRequest.isNull("prodPic") ? product.getPicture() : ServerUtils.imageFromByteArray(ServerUtils.byteArrayFromBase64(jsonRequest.getString("prodPic"))));
 
