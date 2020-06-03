@@ -69,7 +69,7 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
         // Asociamos los valores respecto a la sentencia sql.
         addQuery.setString(1, discount.getCode());
         addQuery.setString(2, discount.getDesc());
-        addQuery.setFloat(3, discount.getPrizeDisc());
+        addQuery.setFloat(3, discount.getPricePerc());
 
         // Ejecutamos la sentencia sql.
         addQuery.execute();
@@ -99,7 +99,7 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
                 discount.setId(rs.getInt("id"));
                 discount.setCode(rs.getString("codeDisc"));
                 discount.setDesc(rs.getString("descDisc"));
-                discount.setPriceDisc(rs.getFloat("pricePerc"));
+                discount.setPricePerc(rs.getFloat("pricePerc"));
             } else
                 throw new ManagerErrorException("No se ha encontrado el descuento.");
         }
@@ -119,7 +119,7 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
                 discount.setId(rs.getInt("id"));
                 discount.setCode(rs.getString("codeDisc"));
                 discount.setDesc(rs.getString("descDisc"));
-                discount.setPriceDisc(rs.getFloat("pricePerc"));
+                discount.setPricePerc(rs.getFloat("pricePerc"));
             } else
                 throw new ManagerErrorException("No se ha encontrado el descuento");
         }
@@ -147,7 +147,7 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
                 discount.setId(rs.getInt("id"));
                 discount.setCode(rs.getString("codeDisc"));
                 discount.setDesc(rs.getString("descDisc"));
-                discount.setPriceDisc(rs.getFloat("pricePerc"));
+                discount.setPricePerc(rs.getFloat("pricePerc"));
 
                 discountList.add(discount);
             }
@@ -168,7 +168,7 @@ public class DiscountsMgt implements ManagersIntf<Discount> {
         // Asociamos los valores respecto a la sentencia sql.
         modifyQuery.setString(1, discount.getCode());
         modifyQuery.setString(2, discount.getDesc());
-        modifyQuery.setFloat(3, discount.getPrizeDisc());
+        modifyQuery.setFloat(3, discount.getPricePerc());
         modifyQuery.setInt(4, discount.getId());
 
         // Ejecutamos la sentencia sql.

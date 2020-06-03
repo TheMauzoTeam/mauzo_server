@@ -90,7 +90,7 @@ public class ManagersTest {
             Discount discount = new Discount();
             discount.setCode("56230");
             discount.setDesc("50%");
-            discount.setPriceDisc(15f);
+            discount.setPricePerc(15f);
             discountsMgt.add(discount);
 
             Sale sale = new Sale();
@@ -207,11 +207,11 @@ public class ManagersTest {
         DiscountsMgt discountsMgt = Connections.getController().acquireDiscounts();
         Discount discount = discountsMgt.get(1);
 
-        discount.setPriceDisc(78f);
+        discount.setPricePerc(78f);
         discountsMgt.modify(discount);
         discount = discountsMgt.get(1);
         Connections.getController().releaseDiscounts(discountsMgt);
 
-        Assert.assertTrue(discountsMgt != null && discount.getCode() != null && discount.getPrizeDisc().equals(78f));
+        Assert.assertTrue(discountsMgt != null && discount.getCode() != null && discount.getPricePerc().equals(78f));
     }
 }
