@@ -147,7 +147,7 @@ public class DiscountsCtrl {
                     // Agregamos la información al descuento.
                     disAux.setCode(jsonRequest.getString("codeDisc"));
                     disAux.setDesc(jsonRequest.getString("descDisc"));
-                    disAux.setPriceDisc(Float.valueOf(jsonRequest.getString("pricePerc")));
+                    disAux.setPriceDisc(jsonRequest.getJsonNumber("pricePerc").bigDecimalValue().floatValue());
 
                     // Agregamos el descuento al la lista.
                     discountMgt.add(disAux);
@@ -233,7 +233,7 @@ public class DiscountsCtrl {
                     // Agregamos la información al descuento.
                     disAux.setCode(jsonRequest.isNull("codeDisc") ? disAux.getCode() : jsonRequest.getString("codeDisc"));
                     disAux.setDesc(jsonRequest.isNull("descDisc") ? disAux.getDesc() : jsonRequest.getString("descDisc"));
-                    disAux.setPriceDisc(jsonRequest.isNull("pricePerc") ? disAux.getPrizeDisc() : Float.valueOf(jsonRequest.getString("pricePerc")));
+                    disAux.setPriceDisc(jsonRequest.isNull("pricePerc") ? disAux.getPrizeDisc() : jsonRequest.getJsonNumber("pricePerc").bigDecimalValue().floatValue());
 
                     // Agregamos el descuento a la lista.
                     discountMgt.modify(disAux);
