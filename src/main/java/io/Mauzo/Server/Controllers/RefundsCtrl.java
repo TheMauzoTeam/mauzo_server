@@ -59,7 +59,7 @@ import java.util.Date;
  * @author lluminar Lidia Martínez
  */
 @Component
-@Path("/Refunds")
+@Path("/refunds")
 public class RefundsCtrl {
     /**
      * Controlador que permite a un administrador obtener un listado de reembolsos dentro
@@ -130,7 +130,7 @@ public class RefundsCtrl {
                     Refund refund = new Refund();
 
                     // Agregamos la información al reembolso.
-                    refund.setDateRefund(new Date(Long.valueOf(jsonRequest.getString("dateRefund"))));
+                    refund.setDateRefund(new Date(jsonRequest.getJsonNumber("dateRefund").longValue()));
                     refund.setUserId(jsonRequest.getInt("refundId"));
                     refund.setSaleId(jsonRequest.getInt("saleId"));
 
@@ -227,7 +227,7 @@ public class RefundsCtrl {
 
                     // Agregamos la información al reembolso.
                     refund.setId(jsonRequest.isNull("id") ? jsonRequest.getInt("id") : refund.getId());
-                    refund.setDateRefund(new Date(jsonRequest.isNull("dateRefund") ? Long.valueOf(jsonRequest.getString("dateRefund")) : refund.getDateRefund().getTime()));
+                    refund.setDateRefund(new Date(jsonRequest.isNull("dateRefund") ? jsonRequest.getJsonNumber("dateRefund").longValue() : refund.getDateRefund().getTime()));
                     refund.setUserId(jsonRequest.isNull("userId") ? jsonRequest.getInt("userId") : refund.getUserId());
                     refund.setSaleId(jsonRequest.isNull("saleId") ? jsonRequest.getInt("saleId") : refund.getSaleId());
 
