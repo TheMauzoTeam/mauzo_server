@@ -29,15 +29,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.DriverManager;
 
-// Paquetes relacionados con la respuesta por defecto de la API.
-import javax.ws.rs.Produces;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.MediaType;
-import javax.servlet.http.HttpServletRequest;
-
 // Paquetes relacionados con el registro en la consola de salida.
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -70,7 +61,6 @@ import io.Mauzo.Server.Controllers.RefundsCtrl;
  * @author Neirth Sergio Martinez
  */
 @Configuration
-@Path("/liveness")
 @SpringBootApplication
 public class ServerApp {
     private static Connection connection = null;
@@ -114,22 +104,6 @@ public class ServerApp {
          * con la base de datos.
          */
         app.run(args);
-    }
-
-    /**
-     * Pequeño easted egg en caso de que se envie una petición a
-     * http://HOST_SERVIDOR/api/liveness, útil tambien para saber si el servidor
-     * sigue vivo o no.
-     * 
-     * @param req   La cabecera de HTTP.
-     * @return  El mensaje de April Fools de HTTP.
-     */
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getDiscountMethod(@Context final HttpServletRequest req) {
-        return ServerUtils.genericMethod(req, null, null, () -> {
-            return Response.status(418, "{\"message\":\"I'm teapod!\"}");
-        });
     }
 
     /**
