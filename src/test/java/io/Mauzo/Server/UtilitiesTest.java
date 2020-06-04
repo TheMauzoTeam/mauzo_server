@@ -34,7 +34,6 @@ import org.junit.Test;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.security.Key;
 import java.sql.DriverManager;
@@ -90,7 +89,7 @@ public class UtilitiesTest {
             Discount discount = new Discount();
             discount.setCode("56230");
             discount.setDesc("50%");
-            discount.setPriceDisc(15f);
+            discount.setPricePerc(15f);
             discountsMgt.add(discount);
 
             Sale sale = new Sale();

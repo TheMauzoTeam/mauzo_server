@@ -102,7 +102,7 @@ public class DiscountsCtrl {
                     jsonObj.add("id", discount.getId());
                     jsonObj.add("codeDisc", discount.getCode());
                     jsonObj.add("descDisc", discount.getDesc());
-                    jsonObj.add("pricePerc", discount.getPrizeDisc());
+                    jsonObj.add("pricePerc", discount.getPricePerc());
 
                     // Lo añadimos al Json Array.
                     jsonResponse.add(jsonObj);
@@ -147,7 +147,7 @@ public class DiscountsCtrl {
                     // Agregamos la información al descuento.
                     disAux.setCode(jsonRequest.getString("codeDisc"));
                     disAux.setDesc(jsonRequest.getString("descDisc"));
-                    disAux.setPriceDisc(jsonRequest.getJsonNumber("pricePerc").bigDecimalValue().floatValue());
+                    disAux.setPricePerc(jsonRequest.getJsonNumber("pricePerc").bigDecimalValue().floatValue());
 
                     // Agregamos el descuento al la lista.
                     discountMgt.add(disAux);
@@ -189,7 +189,7 @@ public class DiscountsCtrl {
                 jsonResponse.add("id", discount.getId());
                 jsonResponse.add("codeDisc", discount.getId());
                 jsonResponse.add("descDisc", discount.getDesc());
-                jsonResponse.add("pricePerc", discount.getPrizeDisc());
+                jsonResponse.add("pricePerc", discount.getPricePerc());
 
                 response = Response.ok(jsonResponse.build().toString(), MediaType.APPLICATION_JSON);
             } catch (ManagerErrorException e) {
@@ -233,7 +233,7 @@ public class DiscountsCtrl {
                     // Agregamos la información al descuento.
                     disAux.setCode(jsonRequest.isNull("codeDisc") ? disAux.getCode() : jsonRequest.getString("codeDisc"));
                     disAux.setDesc(jsonRequest.isNull("descDisc") ? disAux.getDesc() : jsonRequest.getString("descDisc"));
-                    disAux.setPriceDisc(jsonRequest.isNull("pricePerc") ? disAux.getPrizeDisc() : jsonRequest.getJsonNumber("pricePerc").bigDecimalValue().floatValue());
+                    disAux.setPricePerc(jsonRequest.isNull("pricePerc") ? disAux.getPricePerc() : jsonRequest.getJsonNumber("pricePerc").bigDecimalValue().floatValue());
 
                     // Agregamos el descuento a la lista.
                     discountMgt.modify(disAux);

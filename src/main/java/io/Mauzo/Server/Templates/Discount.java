@@ -33,7 +33,7 @@ public class Discount {
     private Integer id;
     private String code;
     private String desc;
-    private Float priceDisc;
+    private Float pricePerc;
 
     public Integer getId() {
         return id;
@@ -59,11 +59,11 @@ public class Discount {
         this.desc = desc;
     }
 
-    public Float getPrizeDisc() {
-        return priceDisc;
+    public Float getPricePerc() {
+        return pricePerc;
     }
 
-    public void setPriceDisc(Float priceDisc) {
-        this.priceDisc = priceDisc;
+    public void setPricePerc(Float pricePerc) {
+        this.pricePerc = pricePerc;
     }
 }
