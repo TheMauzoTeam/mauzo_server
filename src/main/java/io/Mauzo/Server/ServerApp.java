@@ -117,18 +117,18 @@ public class ServerApp {
 
     /**
      * Pequeño easted egg en caso de que se envie una petición a
-     * http://HOST_SERVIDOR/api/, útil tambien para saber si el servidor
+     * http://HOST_SERVIDOR/api/liveness, útil tambien para saber si el servidor
      * sigue vivo o no.
      * 
      * @param req   La cabecera de HTTP.
      * @return  El mensaje de April Fools de HTTP.
      */
     @GET
-    @Path("/")
+    @Path("/liveness")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDiscountMethod(@Context final HttpServletRequest req) {
         return ServerUtils.genericMethod(req, null, null, () -> {
-            return Response.status(418, "I'm teapod!");
+            return Response.status(418, "{\"message\":\"I'm teapod!\"}");
         });
     }
 
