@@ -94,7 +94,7 @@ public class ProductsCtrl {
                     JsonObjectBuilder jsonObj = Json.createObjectBuilder();
 
                     // Construimos el objeto Json con los atributo de la venta.
-                    jsonObj.add("prodId", product.getId());
+                    jsonObj.add("id", product.getId());
                     jsonObj.add("prodCode", product.getCode());
                     jsonObj.add("prodName", product.getName());
 
@@ -197,9 +197,9 @@ public class ProductsCtrl {
      * @return La respuesta generada por parte de la vista.
      */
     @GET
-    @Path("{param_prodId}")
+    @Path("{param_id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getProduct(@Context final HttpServletRequest req, @PathParam("param_prodId") int paramProductId) {
+    public Response getProduct(@Context final HttpServletRequest req, @PathParam("param_id") int paramProductId) {
         return ServerUtils.genericUserMethod(req, paramProductId, null, () -> {
             ResponseBuilder response = null;
 
@@ -212,7 +212,7 @@ public class ProductsCtrl {
                 Product product = productsMgt.get(paramProductId);
 
                 // Generamos un JSON con los atributos del producto.
-                jsonResponse.add("prodId", product.getId());
+                jsonResponse.add("id", product.getId());
                 jsonResponse.add("prodName", product.getName());
                 jsonResponse.add("prodCode", product.getCode());
 
@@ -256,9 +256,9 @@ public class ProductsCtrl {
      * @return La respuesta generada por parte de la vista.
      */
     @PUT
-    @Path("{param_prodId}")
+    @Path("{param_id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response modifyProduct(@Context final HttpServletRequest req, @PathParam("paramProdId") int paramProdId, String jsonData) {
+    public Response modifyProduct(@Context final HttpServletRequest req, @PathParam("param_id") int paramProdId, String jsonData) {
         return ServerUtils.genericUserMethod(req, paramProdId, jsonData, () -> {
             ResponseBuilder response = Response.status(Status.BAD_REQUEST);
 
@@ -309,8 +309,8 @@ public class ProductsCtrl {
      * @return La respuesta generada por parte de la vista.
      */
     @DELETE
-    @Path("{param_prodId}")
-    public Response deleteProduct(@Context final HttpServletRequest req, @PathParam("param_productId") int paramProductId) {
+    @Path("{param_id}")
+    public Response deleteProduct(@Context final HttpServletRequest req, @PathParam("param_id") int paramProductId) {
         return ServerUtils.genericUserMethod(req, paramProductId, null, () -> {
             ResponseBuilder response;
 
