@@ -70,6 +70,7 @@ import io.Mauzo.Server.Controllers.RefundsCtrl;
  * @author Neirth Sergio Martinez
  */
 @Configuration
+@Path("/liveness")
 @SpringBootApplication
 public class ServerApp {
     private static Connection connection = null;
@@ -124,7 +125,6 @@ public class ServerApp {
      * @return  El mensaje de April Fools de HTTP.
      */
     @GET
-    @Path("/liveness")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDiscountMethod(@Context final HttpServletRequest req) {
         return ServerUtils.genericMethod(req, null, null, () -> {
