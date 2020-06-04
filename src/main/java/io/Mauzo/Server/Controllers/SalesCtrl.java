@@ -153,7 +153,7 @@ public class SalesCtrl {
                     Sale saleAux = new Sale();
 
                     // Agregamos la información de la venta.
-                    saleAux.setStampRef(new Date(jsonRequest.getJsonNumber("dateRefund").longValue()));
+                    saleAux.setStampRef(new Date(jsonRequest.getJsonNumber("stampRef").longValue()));
                     saleAux.setUserId(jsonRequest.getInt("userId"));
                     
                     try {
@@ -262,7 +262,7 @@ public class SalesCtrl {
                     Sale saleAux = salesMgt.get(paramId);
 
                     // Agregamos la información al usuario.
-                    saleAux.setStampRef(new Date(jsonRequest.isNull("stampRef") ? jsonRequest.getJsonNumber("dateRefund").longValue() : saleAux.getStampRef().getTime()));
+                    saleAux.setStampRef(new Date(jsonRequest.isNull("stampRef") ? jsonRequest.getJsonNumber("stampRef").longValue() : saleAux.getStampRef().getTime()));
                     saleAux.setUserId(jsonRequest.isNull("userId") ? jsonRequest.getInt("userId") : saleAux.getUserId());
                     saleAux.setProdId(jsonRequest.isNull("prodId") ? jsonRequest.getInt("prodId") : saleAux.getProdId());
                     saleAux.setDiscId(jsonRequest.isNull("discId") ? jsonRequest.getInt("discId") : saleAux.getDiscId());
