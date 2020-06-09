@@ -30,6 +30,7 @@ package io.Mauzo.Server.Templates;
  * @author Ant04X Antonio Izquierdo
  */
 public class Discount {
+    // FIXME: 08/06/2020 Normalmente el id es un Long
     private Integer id;
     private String code;
     private String desc;

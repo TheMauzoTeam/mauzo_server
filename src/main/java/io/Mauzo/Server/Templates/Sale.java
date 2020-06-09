@@ -31,10 +31,14 @@ import java.util.Date;
  * @author Neirth Sergio Martínez
  */
 public class Sale {
+    // FIXME: 08/06/2020 Normalmente el id es un Long
     private Integer id;
     private Date stampRef;
+    // FIXME: 08/06/2020 Normalmente el id es un Long
     private Integer userId;
+    // FIXME: 08/06/2020 Normalmente el id es un Long
     private Integer prodId;
+    // FIXME: 08/06/2020 Normalmente el id es un Long
     private Integer discId;
 
     public Integer getId() {

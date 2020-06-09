@@ -264,6 +264,7 @@ public class ServerUtils {
         authHeader = Collections.list(req.getHeaders(HttpHeaders.AUTHORIZATION));
 
         // Comprobamos que exista un token.
+        // FIXME: 08/06/2020 Es al contrario, ..., el if va en un nivel superior al try
         try {
             if (authHeader.size() != 0)
                 token = authHeader.get(0).substring(7).trim();    

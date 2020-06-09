@@ -86,7 +86,9 @@ public class ServerApp {
         app.addInitializers((context) -> {
             try {
                 loggerSystem.info("Loading the database connections...");
-
+                // FIXME: 08/06/2020 Pese a que esto es correcto, ..., no me termina de llenar el hecho de que
+                //  se utilice el getter de algo para inicializarlo, ..., a mi, personalmente, me confunde.
+                //  Preferiría un Connections.getController().init() o mejor, Connections.initControllers()
                 Connections.getController();
                 ServerApp.getConnection();
             } catch (Exception e) {
@@ -188,6 +190,9 @@ public class ServerApp {
         // Creamos la estructura de datos de la bbdd, en caso de ser necesario.
         try (Statement st = connection.createStatement()) {
             // Creamos la estructura de la base de datos
+            // FIXME: 08/06/2020 Muy bien, ..., pero en futuros usos, barajaría la idea de tener un fichero de
+            //  texto, ..., por ejemplo initDB.sql conde meta todas estas cosas, y el programa, lo que debe hacer es
+            //  leer ese fichero linea a linea y ejecutarlo
             st.execute("CREATE TABLE IF NOT EXISTS Discounts (id SERIAL, codeDisc VARCHAR(10) NOT NULL, descDisc TEXT NOT NULL, pricePerc FLOAT NOT NULL, PRIMARY KEY (id), UNIQUE (codeDisc));");
             st.execute("CREATE TABLE IF NOT EXISTS Products (id SERIAL, prodName VARCHAR(45) NOT NULL, prodCode VARCHAR(45) NOT NULL, prodPrice FLOAT NOT NULL, prodDesc TEXT NULL, prodPic BYTEA NULL, PRIMARY KEY (id), UNIQUE(prodCode));");
             st.execute("CREATE TABLE IF NOT EXISTS Users (id SERIAL, firstname VARCHAR(45) NOT NULL, lastname VARCHAR(45) NOT NULL, username VARCHAR(45) NOT NULL, password TEXT NOT NULL, email TEXT NOT NULL, isAdmin BOOLEAN NOT NULL, userPic BYTEA NULL, PRIMARY KEY (id), UNIQUE (username));");

@@ -29,6 +29,7 @@ public class Product {
     private String name;
     private String code;
     private Float price;
+    // FIXME: 08/06/2020 Normalmente el id es un Long, y suele ponerse lo primero
     private Integer id;
     private String description;
     private BufferedImage picture;

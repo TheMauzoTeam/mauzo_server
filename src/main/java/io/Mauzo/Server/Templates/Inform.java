@@ -32,6 +32,7 @@ import java.sql.Date;
  */
 public class Inform {
 
+    // FIXME: 08/06/2020 Normalmente el id es un Long
     private Integer id;
     private Integer nSales;
     private Integer nRefunds;

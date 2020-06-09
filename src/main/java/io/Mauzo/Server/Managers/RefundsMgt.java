@@ -45,6 +45,7 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
     private final PreparedStatement removeQuery;
 
     //Constructor con las sentencias a la base de datos
+    // FIXME: 08/06/2020 Un espacio, por favor
     RefundsMgt(Connection connection) throws SQLException{
         addQuery = connection.prepareStatement("INSERT INTO Refunds ( dateRefund, userId, saleId ) VALUES (?, ?, ?);");
         getIdQuery = connection.prepareStatement("SELECT * FROM Refunds WHERE id = ?;");
@@ -67,6 +68,7 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
         addQuery.setInt(2, obj.getUserId());
         addQuery.setInt(3, obj.getSaleId());
 
+        // FIXME: 08/06/2020 Creo que preferiría executeUpdate
         addQuery.execute();
     }
 
@@ -74,7 +76,7 @@ public class RefundsMgt implements  ManagersIntf<Refund>{
      * Método para obtener en forma de objeto la devolución a partir de un id.
      *
      * @param id    ID del objeto en la base de datos.
-     * @return La devolución
+     * @return La devolución EIN!?!?!?!?!?!?!?!?!?!?!?!?
      * @throws SQLException Excepción en la consulta SQL
      * @throws ManagerErrorException Excepción dada al no encontrar la devolución
      */

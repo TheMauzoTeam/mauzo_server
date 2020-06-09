@@ -31,12 +31,14 @@ import java.awt.image.BufferedImage;
  * @author Neirth Sergio Martínez
  */
 public class User {
+    // FIXME: 08/06/2020 Normalmente el id es un Long
     private Integer id;
     private String username;
     private String password;
     private String firstName;
     private String lastName;
     private String email;
+    // FIXME: 08/06/2020 si isAdmin es NOT NULL, puedes usar boolean
     private Boolean isAdmin;
     private BufferedImage userPic;
 

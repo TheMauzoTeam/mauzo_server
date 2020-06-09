@@ -85,7 +85,7 @@ public class ProductsMgt implements ManagersIntf<Product>{
      *
      * @param id ID del objeto en la base de datos.
      * @return el producto en forma de objeto
-     * @throws SQLException Excepción de la consuulta SQL
+     * @throws SQLException Excepción de la consuulta SQL, consuuuuuulta ;)
      * @throws ManagerErrorException Excepción dado al no poder encontrar el producto
      */
     @Override

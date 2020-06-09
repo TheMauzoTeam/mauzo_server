@@ -27,9 +27,12 @@ import java.util.Date;
 
 public class Refund {
 
+    // FIXME: 08/06/2020 Normalmente el id es un Long
     private Integer id;
     private Date dateRefund;
+    // FIXME: 08/06/2020 Normalmente el id es un Long
     private Integer userId;
+    // FIXME: 08/06/2020 Normalmente el id es un Long
     private Integer saleId;
 
     public Integer getId() {

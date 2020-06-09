@@ -26,11 +26,14 @@ package io.Mauzo.Server.Managers;
 import java.sql.SQLException;
 import java.util.List;
 
+// FIXME: 08/06/2020 De quien es esta clase?
+
 public interface ManagersIntf<T> {
     /**
      * Clase estatica para gestionar las excepciones que generen
      * las clases que implementen esta interfaz.
      */
+    // FIXME: 08/06/2020 public y static not needed
     public static class ManagerErrorException extends Exception {
         private static final long serialVersionUID = 4696818002135394231L;
         
@@ -45,6 +48,7 @@ public interface ManagersIntf<T> {
      * @param obj   El objeto en cuestión.
      * @throws SQLException Excepción en la base de datos.
      */
+    // FIXME: 08/06/2020 public
     public void add(T obj) throws Exception;
 
     /**
