@@ -15,7 +15,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <postgresql.jdbc.version>42.2.12</postgresql.jdbc.version>
+    <postgresql.jdbc.version>42.2.25</postgresql.jdbc.version>
     <springboot.version>2.2.6.RELEASE</springboot.version>
     <jwt.version>0.10.7</jwt.version>
   </properties>
