@@ -16,7 +16,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <postgresql.jdbc.version>42.2.12</postgresql.jdbc.version>
-    <springboot.version>2.2.6.RELEASE</springboot.version>
+    <springboot.version>2.5.12</springboot.version>
     <jwt.version>0.10.7</jwt.version>
   </properties>
 
